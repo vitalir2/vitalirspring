@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 public class ServiceMapper {
     Service dataToDomain(ServiceEntity serviceEntity) {
         return new Service(
-                serviceEntity.title
+                serviceEntity.getTitle()
         );
     }
 }

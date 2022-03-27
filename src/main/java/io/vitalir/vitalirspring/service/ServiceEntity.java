@@ -21,7 +21,7 @@ import java.util.Objects;
 public class ServiceEntity {
     @Id
     @Column(name = "title")
-    String title;
+    private String title;
 
     @Override
     public boolean equals(Object o) {
