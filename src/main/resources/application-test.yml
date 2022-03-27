@@ -1,0 +1,14 @@
+spring:
+  jpa:
+    database: h2
+    hibernate:
+      ddl-auto: create-drop
+  datasource:
+    url: jdbc:h2:mem:test;MODE=PostgreSQL
+    driver-class-name: org.h2.Driver
+  h2:
+    console:
+      enabled: true
+  config:
+    activate:
+      on-profile: "test"
