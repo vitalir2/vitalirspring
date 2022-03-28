@@ -1,7 +1,7 @@
 package io.vitalir.vitalirspring.service;
 
-import java.util.List;
+import java.util.Set;
 
 public interface ServiceRepository {
-    List<Service> getServices();
+    Set<Service> getServices();
 }

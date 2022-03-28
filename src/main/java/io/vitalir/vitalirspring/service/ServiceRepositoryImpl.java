@@ -3,8 +3,8 @@ package io.vitalir.vitalirspring.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Component
@@ -13,9 +13,9 @@ public class ServiceRepositoryImpl implements ServiceRepository {
     private final ServiceMapper serviceMapper;
 
     @Override
-    public List<Service> getServices() {
+    public Set<Service> getServices() {
         var entities = serviceDataSource.findAll();
-        List<Service> result = new ArrayList<>();
+        Set<Service> result = new HashSet<>();
         for (ServiceEntity entity: entities) {
             result.add(serviceMapper.dataToDomain(entity));
         }

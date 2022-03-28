@@ -1,14 +1,17 @@
 package io.vitalir.vitalirspring.service;
 
-import java.util.List;
+import lombok.RequiredArgsConstructor;
+
+import java.util.Set;
 
 @org.springframework.stereotype.Service
+@RequiredArgsConstructor
 public class ServicesServiceImpl implements ServicesService {
+
+    private final ServiceRepository serviceRepository;
+
     @Override
-    public List<io.vitalir.vitalirspring.service.Service> getServices() {
-        return List.of(
-                new Service("first"),
-                new Service("second")
-        );
+    public Set<Service> getServices() {
+        return serviceRepository.getServices();
     }
 }

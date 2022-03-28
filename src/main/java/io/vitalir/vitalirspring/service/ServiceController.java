@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/services")
@@ -14,7 +14,7 @@ public class ServiceController {
     private final ServicesService servicesService;
 
     @GetMapping
-    public List<Service> getServices() {
+    public Set<Service> getServices() {
         return servicesService.getServices();
     }
 }

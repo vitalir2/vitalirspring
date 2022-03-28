@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
@@ -31,7 +32,7 @@ public class ServiceControllerTest {
     @Test
     public void getServicesReturnsNotEmptyContent() throws Exception {
         Service service = new Service("Health checking");
-        List<Service> services = List.of(service);
+        Set<Service> services = Set.of(service);
         given(servicesService.getServices()).willReturn(services);
 
         mockMvc.perform(get("/api/v1/services/")
