@@ -10,7 +10,7 @@ import java.util.Set;
 @Component
 public class ServiceRepositoryImpl implements ServiceRepository {
     private final ServiceDataSource serviceDataSource;
-    private final ServiceMapper serviceMapper;
+    private final ServiceDataMapper serviceMapper;
 
     @Override
     public Set<Service> getServices() {
@@ -24,6 +24,6 @@ public class ServiceRepositoryImpl implements ServiceRepository {
 
     @Override
     public void addService(Service service) {
-        serviceDataSource.save(new ServiceEntity(service.title()));
+        serviceDataSource.save(serviceMapper.domainToData(service));
     }
 }

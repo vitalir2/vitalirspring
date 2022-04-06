@@ -5,13 +5,13 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ServiceMapperTest {
+public class ServiceDataMapperTest {
 
-    private ServiceMapper serviceMapper;
+    private ServiceDataMapper serviceMapper;
 
     @BeforeEach
     void init() {
-        serviceMapper = new ServiceMapper();
+        serviceMapper = new ServiceDataMapper();
     }
 
     @Test
@@ -19,5 +19,12 @@ public class ServiceMapperTest {
         var data = new ServiceEntity("myTitle");
         var domainResult = serviceMapper.dataToDomain(data);
         assertThat(domainResult.title()).isEqualTo(data.getTitle());
+    }
+
+    @Test
+    void whenInputIsDomain_getData() {
+        var domain = new Service("Service 1");
+        var dataResult = serviceMapper.domainToData(domain);
+        assertThat(dataResult.getTitle()).isEqualTo(domain.title());
     }
 }

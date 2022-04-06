@@ -29,7 +29,7 @@ public class ServiceRepositoryTest {
     void init() {
         serviceRepository = new ServiceRepositoryImpl(
                 serviceDataSource,
-                new ServiceMapper()
+                new ServiceDataMapper()
         );
     }
 
