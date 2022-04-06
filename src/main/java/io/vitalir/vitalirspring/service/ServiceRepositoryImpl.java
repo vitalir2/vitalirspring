@@ -24,5 +24,6 @@ public class ServiceRepositoryImpl implements ServiceRepository {
 
     @Override
     public void addService(Service service) {
+        serviceDataSource.save(new ServiceEntity(service.title()));
     }
 }

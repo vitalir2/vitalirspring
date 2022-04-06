@@ -12,7 +12,10 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class ServiceRepositoryTest {
@@ -48,5 +51,12 @@ public class ServiceRepositoryTest {
                 .map(Service::title)
                 .collect(Collectors.toSet());
         assertTrue(namesInit.containsAll(namesResult));
+    }
+
+    @Test
+    void whenAddService_addMappedServiceInDataSource() {
+        var service = new Service("Service 1");
+        serviceRepository.addService(service);
+        verify(serviceDataSource).save(eq(new ServiceEntity(service.title())));
     }
 }
