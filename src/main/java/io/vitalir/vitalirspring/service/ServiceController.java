@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -27,5 +28,14 @@ public class ServiceController implements ServiceApi {
             return ResponseEntity.ok().build();
         }
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+    }
+
+    @Override
+    @DeleteMapping("/{title}")
+    public ResponseEntity<?> removeService(@PathVariable String title) {
+        if (servicesService.removeService(title)) {
+            return ResponseEntity.ok(List.of(new Service(title)));
+        }
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 }

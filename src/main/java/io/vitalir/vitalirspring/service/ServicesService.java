@@ -6,4 +6,6 @@ public interface ServicesService {
     Set<Service> getServices();
 
     boolean addService(Service service);
+
+    boolean removeService(String title);
 }

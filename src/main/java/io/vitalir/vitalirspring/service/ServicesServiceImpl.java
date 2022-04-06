@@ -24,6 +24,11 @@ public class ServicesServiceImpl implements ServicesService {
         return false;
     }
 
+    @Override
+    public boolean removeService(String title) {
+        return true;
+    }
+
     private boolean validate(Service service) {
         return service.title() != null;
     }

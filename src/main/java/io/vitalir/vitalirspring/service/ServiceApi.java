@@ -58,4 +58,37 @@ public interface ServiceApi {
                     required = true
             ) Service service
     );
+
+    @Operation(
+            method = "DELETE",
+            summary = "Удалить существующую услугу по её названию"
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successful removal",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            examples = {
+                                                    @ExampleObject(
+                                                            name = "Successful response",
+                                                            value = """
+                                                                    {
+                                                                    "title": "Hello, world!"
+                                                                    }
+                                                                    """
+                                                    )
+                                            }
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Service wasn't found with that title"
+                    )
+            }
+    )
+    ResponseEntity<?> removeService(String title);
 }
