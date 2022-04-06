@@ -44,4 +44,15 @@ public class ServiceDataSourceTest {
         }
         assertThat(testServices).isEmpty();
     }
+
+    @Test
+    void whenAddingNewService_addIt() {
+        var addedService = new ServiceEntity("Service");
+
+        serviceDataSource.save(addedService);
+
+        var findResult = testEntityManager.find(ServiceEntity.class, addedService.getTitle());
+        assertThat(findResult).isNotNull();
+        assertThat(findResult.getTitle()).isEqualTo(addedService.getTitle());
+    }
 }
