@@ -7,5 +7,5 @@ public interface ServicesService {
 
     boolean addService(Service service);
 
-    boolean removeService(String title);
+    Service removeService(String title);
 }

@@ -25,8 +25,10 @@ public class ServicesServiceImpl implements ServicesService {
     }
 
     @Override
-    public boolean removeService(String title) {
-        return true;
+    public Service removeService(String title) {
+        var removedService =  serviceRepository.getServiceByTitle(title);
+        serviceRepository.removeService(title);
+        return removedService;
     }
 
     private boolean validate(Service service) {

@@ -88,7 +88,7 @@ public class ServiceControllerTest {
     public void whenDeleteExistingValidService_returnSuccess() throws Exception {
         var service = new Service("Service");
 
-        given(servicesService.removeService(any())).willReturn(true);
+        given(servicesService.removeService(any())).willReturn(service);
 
         mockMvc.perform(delete("/api/v1/services/" + service.title()))
                 .andExpect(status().isOk())
@@ -100,7 +100,7 @@ public class ServiceControllerTest {
     public void whenDeleteNotExistingValidService_returnNotFound() throws Exception {
         var service = new Service("service 1");
 
-        given(servicesService.removeService(any())).willReturn(false);
+        given(servicesService.removeService(any())).willReturn(null);
 
         mockMvc.perform(delete("/api/v1/services/" + service.title()))
                 .andExpect(status().is(404));

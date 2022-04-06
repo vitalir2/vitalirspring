@@ -33,7 +33,7 @@ public class ServiceController implements ServiceApi {
     @Override
     @DeleteMapping("/{title}")
     public ResponseEntity<?> removeService(@PathVariable String title) {
-        if (servicesService.removeService(title)) {
+        if (servicesService.removeService(title) != null) {
             return ResponseEntity.ok(List.of(new Service(title)));
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND);

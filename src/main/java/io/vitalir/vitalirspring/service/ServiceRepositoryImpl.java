@@ -26,4 +26,13 @@ public class ServiceRepositoryImpl implements ServiceRepository {
     public void addService(Service service) {
         serviceDataSource.save(serviceMapper.domainToDataModel(service));
     }
+
+    @Override
+    public Service getServiceByTitle(String title) {
+        return null;
+    }
+
+    @Override
+    public void removeService(String title) {
+    }
 }
