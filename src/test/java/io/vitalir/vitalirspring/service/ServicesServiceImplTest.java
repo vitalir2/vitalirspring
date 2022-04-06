@@ -10,6 +10,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class ServicesServiceImplTest {
@@ -34,5 +35,12 @@ public class ServicesServiceImplTest {
 
         var result = servicesService.getServices();
         assertEquals(mockServices, result);
+    }
+
+    @Test
+    void whenAddService_callAddingServiceInRepository() {
+        var addedService = new Service("Service one");
+        servicesService.addService(addedService);
+        verify(serviceRepository).addService(addedService);
     }
 }

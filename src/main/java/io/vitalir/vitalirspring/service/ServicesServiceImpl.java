@@ -14,4 +14,9 @@ public class ServicesServiceImpl implements ServicesService {
     public Set<Service> getServices() {
         return serviceRepository.getServices();
     }
+
+    @Override
+    public void addService(Service service) {
+        serviceRepository.addService(service);
+    }
 }

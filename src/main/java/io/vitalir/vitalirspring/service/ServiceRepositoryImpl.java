@@ -21,4 +21,8 @@ public class ServiceRepositoryImpl implements ServiceRepository {
         }
         return result;
     }
+
+    @Override
+    public void addService(Service service) {
+    }
 }
