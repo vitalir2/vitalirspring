@@ -17,13 +17,13 @@ public class ServiceRepositoryImpl implements ServiceRepository {
         var entities = serviceDataSource.findAll();
         Set<Service> result = new HashSet<>();
         for (ServiceEntity entity: entities) {
-            result.add(serviceMapper.dataToDomain(entity));
+            result.add(serviceMapper.dataToDomainModel(entity));
         }
         return result;
     }
 
     @Override
     public void addService(Service service) {
-        serviceDataSource.save(serviceMapper.domainToData(service));
+        serviceDataSource.save(serviceMapper.domainToDataModel(service));
     }
 }

@@ -1,18 +1,21 @@
 package io.vitalir.vitalirspring.service;
 
+import io.vitalir.vitalirspring.common.DataMapper;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ServiceDataMapper {
-    Service dataToDomain(ServiceEntity serviceEntity) {
-        return new Service(
-                serviceEntity.getTitle()
+class ServiceDataMapper implements DataMapper<ServiceEntity, Service> {
+    @Override
+    public ServiceEntity domainToDataModel(Service domainModel) {
+        return new ServiceEntity(
+                domainModel.title()
         );
     }
 
-    ServiceEntity domainToData(Service service) {
-        return new ServiceEntity(
-                service.title()
+    @Override
+    public Service dataToDomainModel(ServiceEntity dataModel) {
+        return new Service(
+                dataModel.getTitle()
         );
     }
 }

@@ -17,14 +17,14 @@ public class ServiceDataMapperTest {
     @Test
     void whenInputIsData_getDomain() {
         var data = new ServiceEntity("myTitle");
-        var domainResult = serviceMapper.dataToDomain(data);
+        var domainResult = serviceMapper.dataToDomainModel(data);
         assertThat(domainResult.title()).isEqualTo(data.getTitle());
     }
 
     @Test
     void whenInputIsDomain_getData() {
         var domain = new Service("Service 1");
-        var dataResult = serviceMapper.domainToData(domain);
+        var dataResult = serviceMapper.domainToDataModel(domain);
         assertThat(dataResult.getTitle()).isEqualTo(domain.title());
     }
 }
