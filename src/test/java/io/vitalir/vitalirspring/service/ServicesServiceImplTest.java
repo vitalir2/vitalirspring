@@ -8,8 +8,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -42,5 +44,26 @@ public class ServicesServiceImplTest {
         var addedService = new Service("Service one");
         servicesService.addService(addedService);
         verify(serviceRepository).addService(addedService);
+    }
+
+    @Test
+    void whenAddServiceSuccessful_returnTrue() {
+        var addedService = new Service("Service one");
+        var result = servicesService.addService(addedService);
+        assertTrue(result);
+    }
+
+    @Test
+    void whenAddServiceIsInvalid_returnFalse() {
+        var addedService = new Service(null);
+        var result = servicesService.addService(addedService);
+        assertFalse(result);
+    }
+
+    @Test
+    void whenAddServiceIsInvalid_doNotAddIt() {
+        var addedService = new Service(null);
+        servicesService.addService(addedService);
+        verify(serviceRepository, never()).addService(any());
     }
 }

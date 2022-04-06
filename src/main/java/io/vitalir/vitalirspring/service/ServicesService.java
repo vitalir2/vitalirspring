@@ -5,5 +5,5 @@ import java.util.Set;
 public interface ServicesService {
     Set<Service> getServices();
 
-    void addService(Service service);
+    boolean addService(Service service);
 }

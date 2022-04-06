@@ -16,7 +16,15 @@ public class ServicesServiceImpl implements ServicesService {
     }
 
     @Override
-    public void addService(Service service) {
-        serviceRepository.addService(service);
+    public boolean addService(Service service) {
+        if (validate(service)) {
+            serviceRepository.addService(service);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean validate(Service service) {
+        return service.title() != null;
     }
 }
