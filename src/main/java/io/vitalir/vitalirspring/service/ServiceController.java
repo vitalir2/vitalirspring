@@ -23,9 +23,9 @@ public class ServiceController implements ServiceApi {
     @Override
     @PostMapping
     public ResponseEntity<?> addService(@RequestBody Service service) {
-        if (service.title() == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        if (servicesService.addService(service)) {
+            return ResponseEntity.ok().build();
         }
-        return ResponseEntity.ok().build();
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
 }

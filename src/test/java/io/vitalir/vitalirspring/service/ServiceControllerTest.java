@@ -12,7 +12,9 @@ import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -31,10 +33,11 @@ public class ServiceControllerTest {
     public void getServicesReturnsNotEmptyContent() throws Exception {
         Service service = new Service("Health checking");
         Set<Service> services = Set.of(service);
+
         given(servicesService.getServices()).willReturn(services);
 
         mockMvc.perform(get("/api/v1/services/")
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].title", is(service.title())));
@@ -45,11 +48,13 @@ public class ServiceControllerTest {
         var newService = new Service("Health checking");
         var objectMapper = new ObjectMapper();
 
+        given(servicesService.addService(any())).willReturn(true);
+
         mockMvc.perform(
-                post("/api/v1/services")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(newService))
-        )
+                        post("/api/v1/services")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(newService))
+                )
                 .andExpect(status().isOk());
     }
 
@@ -59,10 +64,24 @@ public class ServiceControllerTest {
         var objectMapper = new ObjectMapper();
 
         mockMvc.perform(
+                        post("/api/v1/services")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(newInvalidService))
+                )
+                .andExpect(status().is(400));
+    }
+
+    @Test
+    public void addNewInvalidService_callServicesServiceMethodToValidate() throws Exception {
+        var newInvalidService = new Service(null);
+        var objectMapper = new ObjectMapper();
+
+        mockMvc.perform(
                 post("/api/v1/services")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newInvalidService))
-        )
-                .andExpect(status().is(400));
+        );
+
+        verify(servicesService).addService(newInvalidService);
     }
 }
