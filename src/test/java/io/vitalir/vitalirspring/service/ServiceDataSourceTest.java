@@ -55,4 +55,14 @@ public class ServiceDataSourceTest {
         assertThat(findResult).isNotNull();
         assertThat(findResult.getTitle()).isEqualTo(addedService.getTitle());
     }
+
+    @Test
+    void removeExistingService() {
+        var service = new ServiceEntity("Service");
+        testEntityManager.persist(service);
+
+        serviceDataSource.delete(service);
+
+        assertThat(testEntityManager.find(ServiceEntity.class, service.getTitle())).isNull();
+    }
 }
