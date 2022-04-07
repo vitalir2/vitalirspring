@@ -7,12 +7,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -56,7 +56,30 @@ public class ServiceRepositoryTest {
     @Test
     void whenAddService_addMappedServiceInDataSource() {
         var service = new Service("Service 1");
+
         serviceRepository.addService(service);
+
         verify(serviceDataSource).save(eq(new ServiceEntity(service.title())));
+    }
+
+    @Test
+    void whenGetServiceByTitleWhichExists_returnIt() {
+        var service = new Service("Service");
+        given(serviceDataSource.findById(service.title()))
+                .willReturn(Optional.of(new ServiceEntity(service.title())));
+
+        var result = serviceRepository.getServiceByTitle(service.title());
+
+        assertThat(result).isEqualTo(service);
+    }
+
+    @Test
+    void whenGetServiceByTitleWhichDoesNotExist_returnNull() {
+        var service = new Service("Service");
+        given(serviceDataSource.findById(service.title())).willReturn(Optional.empty());
+
+        var result = serviceRepository.getServiceByTitle(service.title());
+
+        assertThat(result).isEqualTo(null);
     }
 }

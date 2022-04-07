@@ -29,7 +29,8 @@ public class ServiceRepositoryImpl implements ServiceRepository {
 
     @Override
     public Service getServiceByTitle(String title) {
-        return null;
+        var result = serviceDataSource.findById(title);
+        return result.map(serviceMapper::dataToDomainModel).orElse(null);
     }
 
     @Override
