@@ -9,5 +9,5 @@ public interface ServiceRepository {
 
     Service getServiceByTitle(String title);
 
-    void removeService(String title);
+    Service removeService(String title);
 }

@@ -82,4 +82,36 @@ public class ServiceRepositoryTest {
 
         assertThat(result).isEqualTo(null);
     }
+
+    @Test
+    void whenRemoveServiceByTitleWhichExists_returnIt() {
+        var service = new Service("Service");
+        given(serviceDataSource.findById(service.title()))
+                .willReturn(Optional.of(new ServiceEntity(service.title())));
+
+        var result = serviceRepository.removeService(service.title());
+
+        assertThat(result).isEqualTo(service);
+    }
+
+    @Test
+    void whenRemoveServiceByTitleWhichDoesNotExist_returnNull() {
+        var service = new Service("Service");
+        given(serviceDataSource.findById(service.title())).willReturn(Optional.empty());
+
+        var result = serviceRepository.removeService(service.title());
+
+        assertThat(result).isEqualTo(null);
+    }
+
+    @Test
+    void whenRemoveServiceByTitleWhichExists_callDeleteFromDatasource() {
+        var service = new Service("Service");
+        given(serviceDataSource.findById(service.title()))
+                .willReturn(Optional.of(new ServiceEntity(service.title())));
+
+        var result = serviceRepository.removeService(service.title());
+
+        verify(serviceDataSource).delete(eq(new ServiceEntity(result.title())));
+    }
 }

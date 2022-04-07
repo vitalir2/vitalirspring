@@ -34,6 +34,11 @@ public class ServiceRepositoryImpl implements ServiceRepository {
     }
 
     @Override
-    public void removeService(String title) {
+    public Service removeService(String title) {
+        var result = getServiceByTitle(title);
+        if (result != null) {
+            serviceDataSource.delete(serviceMapper.domainToDataModel(result));
+        }
+        return result;
     }
 }
