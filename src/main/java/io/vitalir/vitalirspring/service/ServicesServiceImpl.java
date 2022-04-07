@@ -31,6 +31,11 @@ public class ServicesServiceImpl implements ServicesService {
         return removedService;
     }
 
+    @Override
+    public boolean changeService(Service service) {
+        return false;
+    }
+
     private boolean validate(Service service) {
         return service.title() != null;
     }

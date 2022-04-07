@@ -16,8 +16,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(ServiceController.class)
 public class ServiceControllerTest {
@@ -113,5 +112,48 @@ public class ServiceControllerTest {
         mockMvc.perform(delete("/api/v1/services/" + service.title()));
 
         verify(servicesService).removeService(service.title());
+    }
+
+    @Test
+    public void whenChangeExistingService_returnTrue() throws Exception {
+        var serviceAfter = new Service("service after");
+        var objectMapper = new ObjectMapper();
+        given(servicesService.changeService(serviceAfter)).willReturn(true);
+
+        mockMvc.perform(
+                put("/api/v1/services")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(serviceAfter))
+        )
+                .andExpect(status().isOk())
+                .andExpect(content().string("true"));
+    }
+
+    @Test
+    public void whenChangeServiceWhichDoesNotExist_returnFalse() throws Exception {
+        var serviceChanged = new Service("service changed");
+        var objectMapper = new ObjectMapper();
+        given(servicesService.changeService(serviceChanged)).willReturn(false);
+
+        mockMvc.perform(
+                put("/api/v1/services")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(serviceChanged))
+        )
+                .andExpect(status().is(404));
+    }
+
+    @Test
+    public void whenChangeService_callServiceChange() throws Exception {
+        var serviceChanged = new Service("service");
+        var objectMapper = new ObjectMapper();
+
+        mockMvc.perform(
+                put("/api/v1/services")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(serviceChanged))
+        );
+
+        verify(servicesService).changeService(serviceChanged);
     }
 }

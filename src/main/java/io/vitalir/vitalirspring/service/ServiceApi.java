@@ -91,4 +91,32 @@ public interface ServiceApi {
             }
     )
     ResponseEntity<?> removeService(String title);
+
+    @Operation(
+            method = "PUT",
+            description = "Изменение существующей услуги"
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successful changed",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json"
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Service with that key is not found",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json"
+                                    )
+                            }
+                    )
+            }
+    )
+    ResponseEntity<?> changeService(Service service);
 }

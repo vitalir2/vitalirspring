@@ -8,4 +8,6 @@ public interface ServicesService {
     boolean addService(Service service);
 
     Service removeService(String title);
+
+    boolean changeService(Service service);
 }

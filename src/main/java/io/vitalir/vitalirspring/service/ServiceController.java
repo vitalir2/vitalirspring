@@ -38,4 +38,13 @@ public class ServiceController implements ServiceApi {
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
+
+    @Override
+    @PutMapping
+    public ResponseEntity<?> changeService(@RequestBody Service service) {
+        if (servicesService.changeService(service)) {
+            return ResponseEntity.ok(true);
+        }
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    }
 }
