@@ -15,6 +15,7 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -34,8 +35,10 @@ public class ServiceControllerTest {
 
         given(servicesService.getServices()).willReturn(services);
 
-        mockMvc.perform(get("/api/v1/services/")
-                        .contentType(MediaType.APPLICATION_JSON))
+        var requestBuilder = get("/api/v1/services/")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].title", is(service.getTitle())));
@@ -48,11 +51,12 @@ public class ServiceControllerTest {
 
         given(servicesService.addService(any())).willReturn(true);
 
-        mockMvc.perform(
-                        post("/api/v1/services")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(newService))
-                )
+        var requestBuilder = post("/api/v1/services")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(newService))
+                .with(csrf());
+
+        mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk());
     }
 
@@ -61,11 +65,12 @@ public class ServiceControllerTest {
         var newInvalidService = new Service(null);
         var objectMapper = new ObjectMapper();
 
-        mockMvc.perform(
-                        post("/api/v1/services")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(newInvalidService))
-                )
+        var requestBuilder = post("/api/v1/services")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(newInvalidService))
+                .with(csrf());
+
+        mockMvc.perform(requestBuilder)
                 .andExpect(status().is(400));
     }
 
@@ -74,11 +79,11 @@ public class ServiceControllerTest {
         var newInvalidService = new Service(null);
         var objectMapper = new ObjectMapper();
 
-        mockMvc.perform(
-                post("/api/v1/services")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(newInvalidService))
-        );
+        var requestBuilder = post("/api/v1/services")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(newInvalidService))
+                .with(csrf());
+        mockMvc.perform(requestBuilder);
 
         verify(servicesService).addService(newInvalidService);
     }
@@ -89,7 +94,12 @@ public class ServiceControllerTest {
 
         given(servicesService.removeService(any())).willReturn(service);
 
-        mockMvc.perform(delete("/api/v1/services/" + service.getTitle()))
+        var requestBuilder = delete(
+                "/api/v1/services/" + service.getTitle()
+        )
+                .with(csrf());
+
+        mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].title", is(service.getTitle())));
@@ -100,8 +110,12 @@ public class ServiceControllerTest {
         var service = new Service("service 1");
 
         given(servicesService.removeService(any())).willReturn(null);
+        var requestBuilder = delete(
+                "/api/v1/services/" + service.getTitle()
+        )
+                .with(csrf());
 
-        mockMvc.perform(delete("/api/v1/services/" + service.getTitle()))
+        mockMvc.perform(requestBuilder)
                 .andExpect(status().is(404));
     }
 
@@ -109,7 +123,11 @@ public class ServiceControllerTest {
     public void whenDeleteService_callServicesService() throws Exception {
         var service = new Service("service");
 
-        mockMvc.perform(delete("/api/v1/services/" + service.getTitle()));
+        var requestBuilder = delete(
+                "/api/v1/services/" + service.getTitle()
+        )
+                .with(csrf());
+        mockMvc.perform(requestBuilder);
 
         verify(servicesService).removeService(service.getTitle());
     }
@@ -120,11 +138,12 @@ public class ServiceControllerTest {
         var objectMapper = new ObjectMapper();
         given(servicesService.changeService(serviceAfter)).willReturn(true);
 
-        mockMvc.perform(
-                put("/api/v1/services")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(serviceAfter))
-        )
+        var requestBuilder = put("/api/v1/services")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(serviceAfter))
+                .with(csrf());
+
+        mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
                 .andExpect(content().string("true"));
     }
@@ -133,13 +152,15 @@ public class ServiceControllerTest {
     public void whenChangeServiceWhichDoesNotExist_returnFalse() throws Exception {
         var serviceChanged = new Service("service changed");
         var objectMapper = new ObjectMapper();
+
         given(servicesService.changeService(serviceChanged)).willReturn(false);
 
-        mockMvc.perform(
-                put("/api/v1/services")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(serviceChanged))
-        )
+        var requestBuilder = put("/api/v1/services")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(serviceChanged))
+                .with(csrf());
+
+        mockMvc.perform(requestBuilder)
                 .andExpect(status().is(404));
     }
 
@@ -148,11 +169,11 @@ public class ServiceControllerTest {
         var serviceChanged = new Service("service");
         var objectMapper = new ObjectMapper();
 
-        mockMvc.perform(
-                put("/api/v1/services")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(serviceChanged))
-        );
+        var requestBuilder = put("/api/v1/services")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(serviceChanged))
+                .with(csrf());
+        mockMvc.perform(requestBuilder);
 
         verify(servicesService).changeService(serviceChanged);
     }
