@@ -95,4 +95,34 @@ public class ServicesServiceImplTest {
 
         assertThat(result).isNull();
     }
+
+    @Test
+    void whenChangeExistingService_returnTrue() {
+        var service = new Service("service");
+        given(serviceRepository.getByTitle(service.getTitle())).willReturn(service);
+
+        var result = servicesService.changeService(service);
+
+        assertTrue(result);
+    }
+
+    @Test
+    void whenChangeNotExistingService_returnFalse() {
+        var service = new Service("service");
+        given(serviceRepository.getByTitle(service.getTitle())).willReturn(null);
+
+        var result = servicesService.changeService(service);
+
+        assertFalse(result);
+    }
+
+    @Test
+    void whenChangeExistingService_callSaveNewService() {
+        var service = new Service("service");
+        given(serviceRepository.getByTitle(service.getTitle())).willReturn(service);
+
+        servicesService.changeService(service);
+
+        verify(serviceRepository).save(service);
+    }
 }

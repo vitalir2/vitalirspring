@@ -33,6 +33,11 @@ public class ServicesServiceImpl implements ServicesService {
 
     @Override
     public boolean changeService(Service service) {
+        var oldService = serviceRepository.getByTitle(service.getTitle());
+        if (oldService != null) {
+            serviceRepository.save(service);
+            return true;
+        }
         return false;
     }
 
