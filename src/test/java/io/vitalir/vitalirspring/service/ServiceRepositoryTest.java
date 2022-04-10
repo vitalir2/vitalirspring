@@ -1,117 +1,68 @@
 package io.vitalir.vitalirspring.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
 
-@ExtendWith(MockitoExtension.class)
+@DataJpaTest
+@ActiveProfiles({"test"})
 public class ServiceRepositoryTest {
 
+    @Autowired
+    private TestEntityManager testEntityManager;
+
+    @Autowired
     private ServiceRepository serviceRepository;
 
-    @Mock
-    private ServiceDataSource serviceDataSource;
-
-    @BeforeEach
-    void init() {
-        serviceRepository = new ServiceRepositoryImpl(
-                serviceDataSource,
-                new ServiceDataMapper()
-        );
+    @Test
+    void injectedComponentIsNotNull() {
+        assertThat(testEntityManager).isNotNull();
+        assertThat(serviceRepository).isNotNull();
     }
 
     @Test
-    void whenGetServices_returnServices() {
-        var entityServices = Set.of(
-                new ServiceEntity("one"),
-                new ServiceEntity("two")
-        );
-        given(serviceDataSource.findAll()).willReturn(entityServices);
+    void whenGetAllServices_returnThem() {
+        var testServices = new HashSet<>(Set.of(
+                new Service("Well-check"),
+                new Service("Patient appointment")
+        ));
+        for (Service service: testServices) {
+            testEntityManager.persist(service);
+        }
 
-        var result = new HashSet<>(serviceRepository.getServices());
-        assertThat(result).hasSize(entityServices.size());
-
-        var namesInit = entityServices.stream()
-                .map(ServiceEntity::getTitle)
-                .collect(Collectors.toSet());
-        var namesResult = result.stream()
-                .map(Service::title)
-                .collect(Collectors.toSet());
-        assertTrue(namesInit.containsAll(namesResult));
+        var result = serviceRepository.findAll();
+        assertThat(result).hasSize(testServices.size());
+        for (Service service: result) {
+            testServices.remove(service);
+        }
+        assertThat(testServices).isEmpty();
     }
 
     @Test
-    void whenAddService_addMappedServiceInDataSource() {
-        var service = new Service("Service 1");
+    void whenAddingNewService_addIt() {
+        var addedService = new Service("Service");
 
-        serviceRepository.addService(service);
+        serviceRepository.save(addedService);
 
-        verify(serviceDataSource).save(eq(new ServiceEntity(service.title())));
+        var findResult = testEntityManager.find(Service.class, addedService.getTitle());
+        assertThat(findResult).isNotNull();
+        assertThat(findResult.getTitle()).isEqualTo(addedService.getTitle());
     }
 
     @Test
-    void whenGetServiceByTitleWhichExists_returnIt() {
+    void removeExistingService() {
         var service = new Service("Service");
-        given(serviceDataSource.findById(service.title()))
-                .willReturn(Optional.of(new ServiceEntity(service.title())));
+        testEntityManager.persist(service);
 
-        var result = serviceRepository.getServiceByTitle(service.title());
+        serviceRepository.removeByTitle(service.getTitle());
 
-        assertThat(result).isEqualTo(service);
-    }
-
-    @Test
-    void whenGetServiceByTitleWhichDoesNotExist_returnNull() {
-        var service = new Service("Service");
-        given(serviceDataSource.findById(service.title())).willReturn(Optional.empty());
-
-        var result = serviceRepository.getServiceByTitle(service.title());
-
-        assertThat(result).isEqualTo(null);
-    }
-
-    @Test
-    void whenRemoveServiceByTitleWhichExists_returnIt() {
-        var service = new Service("Service");
-        given(serviceDataSource.findById(service.title()))
-                .willReturn(Optional.of(new ServiceEntity(service.title())));
-
-        var result = serviceRepository.removeService(service.title());
-
-        assertThat(result).isEqualTo(service);
-    }
-
-    @Test
-    void whenRemoveServiceByTitleWhichDoesNotExist_returnNull() {
-        var service = new Service("Service");
-        given(serviceDataSource.findById(service.title())).willReturn(Optional.empty());
-
-        var result = serviceRepository.removeService(service.title());
-
-        assertThat(result).isEqualTo(null);
-    }
-
-    @Test
-    void whenRemoveServiceByTitleWhichExists_callDeleteFromDatasource() {
-        var service = new Service("Service");
-        given(serviceDataSource.findById(service.title()))
-                .willReturn(Optional.of(new ServiceEntity(service.title())));
-
-        var result = serviceRepository.removeService(service.title());
-
-        verify(serviceDataSource).delete(eq(new ServiceEntity(result.title())));
+        assertThat(testEntityManager.find(Service.class, service.getTitle())).isNull();
     }
 }

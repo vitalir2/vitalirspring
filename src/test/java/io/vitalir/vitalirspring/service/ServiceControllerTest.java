@@ -38,7 +38,7 @@ public class ServiceControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].title", is(service.title())));
+                .andExpect(jsonPath("$[0].title", is(service.getTitle())));
     }
 
     @Test
@@ -89,10 +89,10 @@ public class ServiceControllerTest {
 
         given(servicesService.removeService(any())).willReturn(service);
 
-        mockMvc.perform(delete("/api/v1/services/" + service.title()))
+        mockMvc.perform(delete("/api/v1/services/" + service.getTitle()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].title", is(service.title())));
+                .andExpect(jsonPath("$[0].title", is(service.getTitle())));
     }
 
     @Test
@@ -101,7 +101,7 @@ public class ServiceControllerTest {
 
         given(servicesService.removeService(any())).willReturn(null);
 
-        mockMvc.perform(delete("/api/v1/services/" + service.title()))
+        mockMvc.perform(delete("/api/v1/services/" + service.getTitle()))
                 .andExpect(status().is(404));
     }
 
@@ -109,9 +109,9 @@ public class ServiceControllerTest {
     public void whenDeleteService_callServicesService() throws Exception {
         var service = new Service("service");
 
-        mockMvc.perform(delete("/api/v1/services/" + service.title()));
+        mockMvc.perform(delete("/api/v1/services/" + service.getTitle()));
 
-        verify(servicesService).removeService(service.title());
+        verify(servicesService).removeService(service.getTitle());
     }
 
     @Test

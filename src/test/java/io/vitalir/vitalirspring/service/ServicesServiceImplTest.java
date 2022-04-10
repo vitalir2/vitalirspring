@@ -34,7 +34,7 @@ public class ServicesServiceImplTest {
                 new Service("service one"),
                 new Service("service two")
         );
-        given(serviceRepository.getServices()).willReturn(mockServices);
+        given(serviceRepository.findAll()).willReturn(mockServices);
 
         var result = servicesService.getServices();
 
@@ -47,7 +47,7 @@ public class ServicesServiceImplTest {
 
         servicesService.addService(addedService);
 
-        verify(serviceRepository).addService(addedService);
+        verify(serviceRepository).save(addedService);
     }
 
     @Test
@@ -74,15 +74,15 @@ public class ServicesServiceImplTest {
 
         servicesService.addService(addedService);
 
-        verify(serviceRepository, never()).addService(any());
+        verify(serviceRepository, never()).save(any());
     }
 
     @Test
     void whenRemoveExistingService_returnRemovedService() {
         var service = new Service("service");
-        given(serviceRepository.getServiceByTitle(service.title())).willReturn(service);
+        given(serviceRepository.getByTitle(service.getTitle())).willReturn(service);
 
-        var result = servicesService.removeService(service.title());
+        var result = servicesService.removeService(service.getTitle());
 
         assertEquals(service, result);
     }
@@ -91,7 +91,7 @@ public class ServicesServiceImplTest {
     void whenRemoveNotExistingService_returnNull() {
         var service = new Service("service");
 
-        var result = servicesService.removeService(service.title());
+        var result = servicesService.removeService(service.getTitle());
 
         assertThat(result).isNull();
     }

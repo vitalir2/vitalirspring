@@ -12,13 +12,13 @@ public class ServicesServiceImpl implements ServicesService {
 
     @Override
     public Set<Service> getServices() {
-        return serviceRepository.getServices();
+        return serviceRepository.findAll();
     }
 
     @Override
     public boolean addService(Service service) {
         if (validate(service)) {
-            serviceRepository.addService(service);
+            serviceRepository.save(service);
             return true;
         }
         return false;
@@ -26,8 +26,8 @@ public class ServicesServiceImpl implements ServicesService {
 
     @Override
     public Service removeService(String title) {
-        var removedService =  serviceRepository.getServiceByTitle(title);
-        serviceRepository.removeService(title);
+        var removedService =  serviceRepository.getByTitle(title);
+        serviceRepository.removeByTitle(title);
         return removedService;
     }
 
@@ -37,6 +37,6 @@ public class ServicesServiceImpl implements ServicesService {
     }
 
     private boolean validate(Service service) {
-        return service.title() != null;
+        return service.getTitle() != null;
     }
 }
