@@ -1,8 +1,6 @@
 package io.vitalir.vitalirspring.service;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -19,25 +17,7 @@ public interface ServiceApi {
             value = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Successful response",
-                            content = {
-                                    @Content(
-                                            mediaType = "application/json",
-                                            examples = {
-                                                    @ExampleObject(
-                                                            name = "Successful response",
-                                                            value = """
-                                                                    [
-                                                                    {
-                                                                    "title": "Посещение гастроэнтеролога"
-                                                                    }, {
-                                                                    "title": "Гастроскопия"
-                                                                    }
-                                                                    ]"""
-                                                    )
-                                            }
-                                    )
-                            }
+                            description = "Successful response"
                     )
             })
     ResponseEntity<Set<Service>> getServices();
@@ -67,22 +47,7 @@ public interface ServiceApi {
             value = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Successful removal",
-                            content = {
-                                    @Content(
-                                            mediaType = "application/json",
-                                            examples = {
-                                                    @ExampleObject(
-                                                            name = "Successful response",
-                                                            value = """
-                                                                    {
-                                                                    "title": "Hello, world!"
-                                                                    }
-                                                                    """
-                                                    )
-                                            }
-                                    )
-                            }
+                            description = "Successful removal"
                     ),
                     @ApiResponse(
                             responseCode = "404",
@@ -100,21 +65,11 @@ public interface ServiceApi {
             value = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Successful changed",
-                            content = {
-                                    @Content(
-                                            mediaType = "application/json"
-                                    )
-                            }
+                            description = "Successful changed"
                     ),
                     @ApiResponse(
                             responseCode = "404",
-                            description = "Service with that key is not found",
-                            content = {
-                                    @Content(
-                                            mediaType = "application/json"
-                                    )
-                            }
+                            description = "Service with that key is not found"
                     )
             }
     )
