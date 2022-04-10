@@ -12,6 +12,36 @@ public class ServicesServiceImpl implements ServicesService {
 
     @Override
     public Set<Service> getServices() {
-        return serviceRepository.getServices();
+        return serviceRepository.findAll();
+    }
+
+    @Override
+    public boolean addService(Service service) {
+        if (validate(service)) {
+            serviceRepository.save(service);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public Service removeService(String title) {
+        var removedService =  serviceRepository.getByTitle(title);
+        serviceRepository.removeByTitle(title);
+        return removedService;
+    }
+
+    @Override
+    public boolean changeService(Service service) {
+        var oldService = serviceRepository.getByTitle(service.getTitle());
+        if (oldService != null) {
+            serviceRepository.save(service);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean validate(Service service) {
+        return service.getTitle() != null;
     }
 }

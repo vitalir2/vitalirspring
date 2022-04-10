@@ -1,52 +1,68 @@
 package io.vitalir.vitalirspring.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.BDDMockito.given;
 
-@ExtendWith(MockitoExtension.class)
+@DataJpaTest
+@ActiveProfiles({"test"})
 public class ServiceRepositoryTest {
 
+    @Autowired
+    private TestEntityManager testEntityManager;
+
+    @Autowired
     private ServiceRepository serviceRepository;
 
-    @Mock
-    private ServiceDataSource serviceDataSource;
-
-    @BeforeEach
-    void init() {
-        serviceRepository = new ServiceRepositoryImpl(
-                serviceDataSource,
-                new ServiceMapper()
-        );
+    @Test
+    void injectedComponentIsNotNull() {
+        assertThat(testEntityManager).isNotNull();
+        assertThat(serviceRepository).isNotNull();
     }
 
     @Test
-    void whenGetServices_returnServices() {
-        var entityServices = Set.of(
-                new ServiceEntity("one"),
-                new ServiceEntity("two")
-        );
-        given(serviceDataSource.findAll()).willReturn(entityServices);
+    void whenGetAllServices_returnThem() {
+        var testServices = new HashSet<>(Set.of(
+                new Service("Well-check"),
+                new Service("Patient appointment")
+        ));
+        for (Service service: testServices) {
+            testEntityManager.persist(service);
+        }
 
-        var result = new HashSet<>(serviceRepository.getServices());
-        assertThat(result).hasSize(entityServices.size());
+        var result = serviceRepository.findAll();
+        assertThat(result).hasSize(testServices.size());
+        for (Service service: result) {
+            testServices.remove(service);
+        }
+        assertThat(testServices).isEmpty();
+    }
 
-        var namesInit = entityServices.stream()
-                .map(ServiceEntity::getTitle)
-                .collect(Collectors.toSet());
-        var namesResult = result.stream()
-                .map(Service::title)
-                .collect(Collectors.toSet());
-        assertTrue(namesInit.containsAll(namesResult));
+    @Test
+    void whenAddingNewService_addIt() {
+        var addedService = new Service("Service");
+
+        serviceRepository.save(addedService);
+
+        var findResult = testEntityManager.find(Service.class, addedService.getId());
+        assertThat(findResult).isNotNull();
+        assertThat(findResult.getTitle()).isEqualTo(addedService.getTitle());
+    }
+
+    @Test
+    void removeExistingService() {
+        var service = new Service( "Service");
+        testEntityManager.persist(service);
+
+        serviceRepository.removeByTitle(service.getTitle());
+
+        assertThat(testEntityManager.find(Service.class, service.getId())).isNull();
     }
 }
