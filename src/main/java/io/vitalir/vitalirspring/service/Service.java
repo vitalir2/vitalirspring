@@ -6,10 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.Hibernate;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
@@ -21,8 +18,19 @@ import java.util.Objects;
 public class Service {
 
     @Id
-    @Column(name = "title")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private long id;
+
+    @Column(name = "title", nullable = false)
     private String title;
+
+    @Column(name = "price", nullable = false)
+    private int price;
+
+    public Service(String title) {
+        this(0, title, 0);
+    }
 
     @Override
     public boolean equals(Object o) {

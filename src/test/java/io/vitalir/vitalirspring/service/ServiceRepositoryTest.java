@@ -51,18 +51,18 @@ public class ServiceRepositoryTest {
 
         serviceRepository.save(addedService);
 
-        var findResult = testEntityManager.find(Service.class, addedService.getTitle());
+        var findResult = testEntityManager.find(Service.class, addedService.getId());
         assertThat(findResult).isNotNull();
         assertThat(findResult.getTitle()).isEqualTo(addedService.getTitle());
     }
 
     @Test
     void removeExistingService() {
-        var service = new Service("Service");
+        var service = new Service( "Service");
         testEntityManager.persist(service);
 
         serviceRepository.removeByTitle(service.getTitle());
 
-        assertThat(testEntityManager.find(Service.class, service.getTitle())).isNull();
+        assertThat(testEntityManager.find(Service.class, service.getId())).isNull();
     }
 }
