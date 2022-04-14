@@ -12,3 +12,5 @@ spring:
   config:
     activate:
       on-profile: "test"
+
+jwt_secret: "secret"
