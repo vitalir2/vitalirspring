@@ -2,6 +2,7 @@ package io.vitalir.vitalirspring.user;
 
 import io.vitalir.vitalirspring.features.user.domain.model.User;
 import io.vitalir.vitalirspring.features.user.domain.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -17,7 +18,7 @@ public class UserRepositoryTest {
 
     private static final String EMAIL = "user@gmail.com";
     private static final String PASSWORD = "1234";
-    private static final User VALID_USER = new User(EMAIL, PASSWORD);
+    private User validUser;
 
     @Autowired
     private UserRepository userRepository;
@@ -25,20 +26,25 @@ public class UserRepositoryTest {
     @Autowired
     private TestEntityManager testEntityManager;
 
+    @BeforeEach
+    public void clear() {
+        validUser = new User(EMAIL, PASSWORD);
+    }
+
     @Test
     public void whenGetUserByEmailAndItExists_returnIt() {
-        testEntityManager.persist(VALID_USER);
+        testEntityManager.persist(validUser);
 
         var result = userRepository.getUserByEmail(EMAIL);
 
         assertTrue(result.isPresent());
-        assertEquals(VALID_USER, result.get());
+        assertEquals(validUser, result.get());
     }
 
     @Test
     public void whenSaveUser_saveIt() {
-        userRepository.save(VALID_USER);
+        userRepository.save(validUser);
 
-        assertEquals(VALID_USER, testEntityManager.find(User.class, VALID_USER.getId()));
+        assertEquals(validUser, testEntityManager.find(User.class, validUser.getId()));
     }
 }
