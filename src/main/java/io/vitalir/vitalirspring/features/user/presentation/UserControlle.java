@@ -1,6 +1,7 @@
-package io.vitalir.vitalirspring.features.user;
+package io.vitalir.vitalirspring.features.user.presentation;
 
 
+import io.vitalir.vitalirspring.features.user.domain.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

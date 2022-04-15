@@ -1,4 +1,4 @@
-package io.vitalir.vitalirspring.features.user;
+package io.vitalir.vitalirspring.features.user.domain;
 
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;

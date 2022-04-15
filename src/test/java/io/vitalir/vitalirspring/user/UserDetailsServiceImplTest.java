@@ -1,8 +1,8 @@
 package io.vitalir.vitalirspring.user;
 
-import io.vitalir.vitalirspring.features.user.User;
-import io.vitalir.vitalirspring.features.user.UserDetailsServiceImpl;
-import io.vitalir.vitalirspring.features.user.UserRepository;
+import io.vitalir.vitalirspring.features.user.domain.model.User;
+import io.vitalir.vitalirspring.features.user.domain.UserDetailsServiceImpl;
+import io.vitalir.vitalirspring.features.user.domain.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

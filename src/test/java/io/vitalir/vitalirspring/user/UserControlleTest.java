@@ -1,9 +1,9 @@
 package io.vitalir.vitalirspring.user;
 
-import io.vitalir.vitalirspring.features.user.Role;
-import io.vitalir.vitalirspring.features.user.User;
-import io.vitalir.vitalirspring.features.user.UserControlle;
-import io.vitalir.vitalirspring.features.user.UserService;
+import io.vitalir.vitalirspring.features.user.domain.model.Role;
+import io.vitalir.vitalirspring.features.user.domain.model.User;
+import io.vitalir.vitalirspring.features.user.presentation.UserControlle;
+import io.vitalir.vitalirspring.features.user.domain.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

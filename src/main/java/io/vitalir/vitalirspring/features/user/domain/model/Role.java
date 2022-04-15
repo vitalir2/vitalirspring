@@ -1,4 +1,4 @@
-package io.vitalir.vitalirspring.features.user;
+package io.vitalir.vitalirspring.features.user.domain.model;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

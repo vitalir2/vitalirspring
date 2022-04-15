@@ -1,8 +1,8 @@
 package io.vitalir.vitalirspring.common;
 
-import io.vitalir.vitalirspring.features.user.Role;
-import io.vitalir.vitalirspring.features.user.User;
-import io.vitalir.vitalirspring.features.user.UserRepository;
+import io.vitalir.vitalirspring.features.user.domain.model.Role;
+import io.vitalir.vitalirspring.features.user.domain.model.User;
+import io.vitalir.vitalirspring.features.user.domain.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 

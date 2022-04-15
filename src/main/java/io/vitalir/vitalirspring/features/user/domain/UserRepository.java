@@ -1,4 +1,6 @@
-package io.vitalir.vitalirspring.features.user;
+package io.vitalir.vitalirspring.features.user.domain;
+
+import io.vitalir.vitalirspring.features.user.domain.model.User;
 
 import java.util.Optional;
 

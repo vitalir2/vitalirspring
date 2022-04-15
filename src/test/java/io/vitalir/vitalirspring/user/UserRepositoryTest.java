@@ -1,7 +1,7 @@
 package io.vitalir.vitalirspring.user;
 
-import io.vitalir.vitalirspring.features.user.User;
-import io.vitalir.vitalirspring.features.user.UserRepository;
+import io.vitalir.vitalirspring.features.user.domain.model.User;
+import io.vitalir.vitalirspring.features.user.domain.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;

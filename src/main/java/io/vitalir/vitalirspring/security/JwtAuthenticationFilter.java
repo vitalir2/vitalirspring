@@ -1,7 +1,7 @@
 package io.vitalir.vitalirspring.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.vitalir.vitalirspring.features.user.User;
+import io.vitalir.vitalirspring.features.user.domain.model.User;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

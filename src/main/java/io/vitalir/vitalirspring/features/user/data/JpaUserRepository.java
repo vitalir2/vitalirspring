@@ -1,5 +1,7 @@
-package io.vitalir.vitalirspring.features.user;
+package io.vitalir.vitalirspring.features.user.data;
 
+import io.vitalir.vitalirspring.features.user.domain.UserRepository;
+import io.vitalir.vitalirspring.features.user.domain.model.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
