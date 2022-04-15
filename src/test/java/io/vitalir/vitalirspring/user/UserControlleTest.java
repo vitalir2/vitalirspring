@@ -1,5 +1,6 @@
 package io.vitalir.vitalirspring.user;
 
+import io.vitalir.vitalirspring.features.user.Role;
 import io.vitalir.vitalirspring.features.user.User;
 import io.vitalir.vitalirspring.features.user.UserControlle;
 import io.vitalir.vitalirspring.features.user.UserService;
@@ -27,7 +28,7 @@ public class UserControlleTest {
     private static final String EMAIL = "g@gmail.com";
     private static final String PASSWORD = "kek";
 
-    private final User validUser = new User(EMAIL, PASSWORD);
+    private final User validUser = new User(EMAIL, PASSWORD, Role.ADMIN);
 
     @MockBean
     private UserService userService;

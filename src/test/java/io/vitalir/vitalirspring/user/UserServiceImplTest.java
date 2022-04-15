@@ -1,9 +1,6 @@
 package io.vitalir.vitalirspring.user;
 
-import io.vitalir.vitalirspring.features.user.User;
-import io.vitalir.vitalirspring.features.user.UserRepository;
-import io.vitalir.vitalirspring.features.user.UserService;
-import io.vitalir.vitalirspring.features.user.UserServiceImpl;
+import io.vitalir.vitalirspring.features.user.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +17,7 @@ public class UserServiceImplTest {
 
     private static final String EMAIL = "g@gmail.com";
     private static final String PASSWORD = "1234";
-    private static final User VALID_USER = new User(EMAIL, PASSWORD);
+    private static final User VALID_USER = new User(EMAIL, PASSWORD, Role.ADMIN);
 
     @Mock
     private UserRepository userRepository;

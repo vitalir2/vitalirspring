@@ -15,6 +15,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ActiveProfiles({"test"})
 public class UserRepositoryTest {
 
+    private static final String EMAIL = "user@gmail.com";
+    private static final String PASSWORD = "1234";
+    private static final User VALID_USER = new User(EMAIL, PASSWORD);
+
     @Autowired
     private UserRepository userRepository;
 
@@ -23,13 +27,18 @@ public class UserRepositoryTest {
 
     @Test
     public void whenGetUserByEmailAndItExists_returnIt() {
-        var email = "User@gmail.com";
-        var user = new User(email, "1234");
-        testEntityManager.persist(user);
+        testEntityManager.persist(VALID_USER);
 
-        var result = userRepository.getUserByEmail(email);
+        var result = userRepository.getUserByEmail(EMAIL);
 
         assertTrue(result.isPresent());
-        assertEquals(user, result.get());
+        assertEquals(VALID_USER, result.get());
+    }
+
+    @Test
+    public void whenSaveUser_saveIt() {
+        userRepository.save(VALID_USER);
+
+        assertEquals(VALID_USER, testEntityManager.find(User.class, VALID_USER.getId()));
     }
 }
