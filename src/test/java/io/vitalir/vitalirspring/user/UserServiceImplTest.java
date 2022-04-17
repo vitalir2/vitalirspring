@@ -5,6 +5,7 @@ import io.vitalir.vitalirspring.features.user.domain.UserService;
 import io.vitalir.vitalirspring.features.user.domain.UserServiceImpl;
 import io.vitalir.vitalirspring.features.user.domain.model.Role;
 import io.vitalir.vitalirspring.features.user.domain.model.User;
+import io.vitalir.vitalirspring.security.JwtProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +15,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -26,11 +29,13 @@ public class UserServiceImplTest {
     @Mock
     private UserRepository userRepository;
 
+    private final JwtProvider jwtProvider = new JwtProvider("secret");
+
     private UserService userService;
 
     @BeforeEach
     public void init() {
-        userService = new UserServiceImpl(userRepository);
+        userService = new UserServiceImpl(userRepository, jwtProvider);
     }
 
     @Test
@@ -49,5 +54,26 @@ public class UserServiceImplTest {
         var result = userService.getUserByEmail(EMAIL);
 
         assertThat(result).isEqualTo(Optional.empty());
+    }
+
+    @Test
+    public void whenLoginWithExistingCredentials_returnToken() {
+        given(userRepository.getUserByEmail(EMAIL)).willReturn(Optional.of(VALID_USER));
+        var expectedToken = jwtProvider.generateToken(EMAIL, Role.ADMIN);
+
+        var result = userService.login(EMAIL, PASSWORD);
+
+        assertTrue(result.isPresent());
+        var jwt = result.get();
+        assertEquals(expectedToken, jwt);
+    }
+
+    @Test
+    public void whenLoginWithNotExistingCredentials_returnEmpty() {
+        given(userRepository.getUserByEmail(EMAIL)).willReturn(Optional.empty());
+
+        var result = userService.login(EMAIL, PASSWORD);
+
+        assertTrue(result.isEmpty());
     }
 }
