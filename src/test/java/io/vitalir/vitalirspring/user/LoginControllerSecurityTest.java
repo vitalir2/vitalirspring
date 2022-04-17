@@ -3,11 +3,9 @@ package io.vitalir.vitalirspring.user;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vitalir.vitalirspring.features.user.domain.UserService;
 import io.vitalir.vitalirspring.features.user.domain.model.Role;
-import io.vitalir.vitalirspring.features.user.domain.model.User;
 import io.vitalir.vitalirspring.features.user.presentation.LoginRequest;
 import io.vitalir.vitalirspring.security.JwtConstants;
 import io.vitalir.vitalirspring.security.JwtProvider;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -15,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -25,6 +24,7 @@ import static org.hamcrest.Matchers.startsWith;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
@@ -47,6 +47,9 @@ public class LoginControllerSecurityTest {
     @MockBean
     private UserService userService;
 
+    @MockBean
+    private UserDetailsService userDetailsService;
+
     @Test
     public void whenLoginWithCorrectLoginAndPassword_loginAndReturnJwt() throws Exception {
         var objectMapper = new ObjectMapper();
@@ -68,6 +71,7 @@ public class LoginControllerSecurityTest {
                     assertEquals(expectedJwt, jwt);
                     assertTrue(jwtProvider.validateToken(jwt));
                 });
+        verify(userDetailsService).loadUserByUsername(VALID_EMAIL);
     }
 
     @Test
