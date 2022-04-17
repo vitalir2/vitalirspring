@@ -6,7 +6,6 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import io.vitalir.vitalirspring.features.user.domain.model.Role;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,6 +16,7 @@ import org.springframework.stereotype.Component;
 import java.util.Collection;
 import java.util.Date;
 
+@Component
 @Slf4j
 public class JwtProvider {
 
@@ -26,8 +26,11 @@ public class JwtProvider {
     private static final String APPLICATION_ISSUER = "VITALIRSPRING";
     private static final long EXPIRATION_TIME = 15 * 60 * 1_000;
 
-    @Value("${jwt_secret}")
-    private String secret;
+    private final String secret;
+
+    public JwtProvider(String secret) {
+        this.secret = secret;
+    }
 
     public String generateToken(String email, Role role) {
         return JWT.create()
@@ -35,11 +38,10 @@ public class JwtProvider {
                 .withClaim(CLAIM, email)
                 .withArrayClaim(
                         CLAIM_AUTHORITIES,
-                        (String[])
-                                role.getAuthorities()
-                                        .stream()
-                                        .map(GrantedAuthority::getAuthority)
-                                        .toArray()
+                        role.getAuthorities()
+                                .stream()
+                                .map(GrantedAuthority::getAuthority)
+                                .toArray(String[]::new)
                 )
                 .withIssuedAt(new Date())
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))

@@ -20,9 +20,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityWebConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
+    private final JwtProvider jwtProvider;
 
-    public SecurityWebConfig(UserDetailsService userDetailsService) {
+    public SecurityWebConfig(UserDetailsService userDetailsService, JwtProvider jwtProvider) {
         this.userDetailsService = userDetailsService;
+        this.jwtProvider = jwtProvider;
     }
 
     @Override
@@ -39,7 +41,7 @@ public class SecurityWebConfig extends WebSecurityConfigurerAdapter {
                 )
                 .userDetailsService(userDetailsService)
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .addFilterBefore(new JwtFilter(new JwtProvider()), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
                 .csrf(csrf -> csrf
                         .ignoringRequestMatchers(request -> request.getHeader("User-Agent").startsWith("Postman"))
                 );

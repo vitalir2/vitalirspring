@@ -18,4 +18,9 @@ public class UserServiceImpl implements UserService {
     public Optional<User> getUserByEmail(String email) {
         return userRepository.getUserByEmail(email);
     }
+
+    @Override
+    public Optional<String> login(String email, String password) {
+        return Optional.empty();
+    }
 }
