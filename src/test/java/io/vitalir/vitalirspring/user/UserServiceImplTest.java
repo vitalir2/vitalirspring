@@ -28,17 +28,17 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 public class UserServiceImplTest {
 
+    private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private static final String EMAIL = "g@gmail.com";
     private static final String PASSWORD = "1234";
-    private static final User VALID_USER = new User(EMAIL, PASSWORD, Role.USER);
+    private static final String HASHED_PASSWORD = passwordEncoder.encode(PASSWORD);
+    private static final User VALID_USER = new User(EMAIL, HASHED_PASSWORD, Role.USER);
 
     @Mock
     private UserRepository userRepository;
 
     @Mock
     private UserDetailsService userDetailsService;
-
-    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     private final JwtProvider jwtProvider = new JwtProvider("secret");
 
@@ -85,6 +85,16 @@ public class UserServiceImplTest {
         given(userRepository.getUserByEmail(EMAIL)).willReturn(Optional.empty());
 
         var result = userService.login(EMAIL, PASSWORD);
+
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void whenLoginWithInvalidPassword_returnEmpty() {
+        given(userRepository.getUserByEmail(EMAIL)).willReturn(Optional.of(VALID_USER));
+        var invalidPassword = "kek";
+
+        var result = userService.login(EMAIL, invalidPassword);
 
         assertTrue(result.isEmpty());
     }

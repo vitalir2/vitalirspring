@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -32,8 +33,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<String> login(String email, String password) {
         var optionalUser = userRepository.getUserByEmail(email);
-        if (optionalUser.isPresent()) {
-            var user = optionalUser.get();
+        if (optionalUser.isEmpty()) {
+            return Optional.empty();
+        }
+
+        var user = optionalUser.get();
+        if (passwordEncoder.matches(password, user.getPassword())) {
             userDetailsService.loadUserByUsername(email);
             var jwt = jwtProvider.generateToken(user.getEmail(), user.getRole());
             return Optional.of(jwt);
