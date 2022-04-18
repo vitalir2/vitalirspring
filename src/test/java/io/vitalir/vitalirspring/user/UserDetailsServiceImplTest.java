@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.Optional;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.*;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -45,9 +45,6 @@ public class UserDetailsServiceImplTest {
         var email = "user@gmail.com";
         var user = new User(email, "1234");
         given(userRepository.getUserByEmail(email)).willReturn(Optional.empty());
-
-        var result = userDetailsService.loadUserByUsername(user.getEmail());
-
-        assertThat(result).isNull();
+        assertThatThrownBy(() -> userDetailsService.loadUserByUsername(user.getEmail()));
     }
 }
