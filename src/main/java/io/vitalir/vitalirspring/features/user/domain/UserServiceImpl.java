@@ -36,4 +36,9 @@ public class UserServiceImpl implements UserService {
         }
         return Optional.empty();
     }
+
+    @Override
+    public boolean register(String email, String password) {
+        return false;
+    }
 }

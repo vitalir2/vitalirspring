@@ -9,4 +9,6 @@ public interface UserService {
     Optional<User> getUserByEmail(String email);
 
     Optional<String> login(String email, String password);
+
+    boolean register(String email, String password);
 }

@@ -20,4 +20,3 @@ logging:
         security: DEBUG
 
 jwt_secret: "secret"
-debug: true
