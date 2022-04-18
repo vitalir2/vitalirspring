@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.Optional;
 
@@ -18,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceImplTest {
@@ -29,13 +31,16 @@ public class UserServiceImplTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private UserDetailsService userDetailsService;
+
     private final JwtProvider jwtProvider = new JwtProvider("secret");
 
     private UserService userService;
 
     @BeforeEach
     public void init() {
-        userService = new UserServiceImpl(userRepository, jwtProvider);
+        userService = new UserServiceImpl(userRepository, jwtProvider, userDetailsService);
     }
 
     @Test
@@ -66,6 +71,7 @@ public class UserServiceImplTest {
         assertTrue(result.isPresent());
         var jwt = result.get();
         assertEquals(expectedToken, jwt);
+        verify(userDetailsService).loadUserByUsername(EMAIL);
     }
 
     @Test

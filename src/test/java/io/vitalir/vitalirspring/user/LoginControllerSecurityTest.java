@@ -47,9 +47,6 @@ public class LoginControllerSecurityTest {
     @MockBean
     private UserService userService;
 
-    @MockBean
-    private UserDetailsService userDetailsService;
-
     @Test
     public void whenLoginWithCorrectLoginAndPassword_loginAndReturnJwt() throws Exception {
         var objectMapper = new ObjectMapper();
@@ -71,7 +68,6 @@ public class LoginControllerSecurityTest {
                     assertEquals(expectedJwt, jwt);
                     assertTrue(jwtProvider.validateToken(jwt));
                 });
-        verify(userDetailsService).loadUserByUsername(VALID_EMAIL);
     }
 
     @Test

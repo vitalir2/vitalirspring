@@ -5,8 +5,10 @@ import io.vitalir.vitalirspring.security.JwtConstants;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
@@ -14,11 +16,9 @@ import org.springframework.web.server.ResponseStatusException;
 public class LoginController implements LoginApi {
 
     private final UserService userService;
-    private final UserDetailsService userDetailsService;
 
-    public LoginController(UserService userService, UserDetailsService userDetailsService) {
+    public LoginController(UserService userService) {
         this.userService = userService;
-        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -30,7 +30,6 @@ public class LoginController implements LoginApi {
         if (jwt.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        userDetailsService.loadUserByUsername(email);
         return ResponseEntity.ok().header(
                 HttpHeaders.AUTHORIZATION,
                 JwtConstants.BEARER_PREFIX + jwt.get()
