@@ -3,7 +3,7 @@ package io.vitalir.vitalirspring.security.jwt;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import io.vitalir.vitalirspring.features.user.domain.model.Role;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,16 +17,16 @@ import java.util.Date;
 import static io.vitalir.vitalirspring.security.jwt.JwtConstants.*;
 
 @Component
-@Slf4j
 public class JwtProvider {
 
+    @NonNull
     private final String secret;
 
-    public JwtProvider(String secret) {
+    public JwtProvider(@NonNull String secret) {
         this.secret = secret;
     }
 
-    public String generateToken(String email, Role role) {
+    public String generateToken(@NonNull String email, @NonNull Role role) {
         return JWT.create()
                 .withSubject(SUBJECT)
                 .withClaim(CLAIM, email)
@@ -43,7 +43,7 @@ public class JwtProvider {
                 .sign(Algorithm.HMAC256(secret));
     }
 
-    public Authentication getAuthentication(String token) {
+    public Authentication getAuthentication(@NonNull String token) {
         var decodedJwt = JWT.decode(token);
         var claims = decodedJwt.getClaims();
         var subject = decodedJwt.getSubject();

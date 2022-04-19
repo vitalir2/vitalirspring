@@ -27,13 +27,18 @@ public class CommandLineAppRunner implements CommandLineRunner {
         if (foundAdmin.isPresent()) {
             return;
         }
+        String password = parsePassword(args);
+        addAdmin(password);
+    }
+
+    private String parsePassword(String... args) {
         String password;
         try {
             password = args[0];
         } catch (ArrayIndexOutOfBoundsException exception) {
             password = DEFAULT_PASSWORD;
         }
-        addAdmin(password);
+        return password;
     }
 
     private void addAdmin(String password) {

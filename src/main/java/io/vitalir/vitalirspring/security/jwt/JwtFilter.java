@@ -16,10 +16,13 @@ import java.io.IOException;
 
 public class JwtFilter extends OncePerRequestFilter {
 
+    @NonNull
     private final JwtVerifier jwtVerifier;
+
+    @NonNull
     private final JwtProvider jwtProvider;
 
-    public JwtFilter(JwtProvider jwtProvider, JwtVerifier jwtVerifier) {
+    public JwtFilter(@NonNull JwtProvider jwtProvider, @NonNull JwtVerifier jwtVerifier) {
         this.jwtVerifier = jwtVerifier;
         this.jwtProvider = jwtProvider;
     }
@@ -40,7 +43,6 @@ public class JwtFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
         }
-
         filterChain.doFilter(request, response);
 
     }
