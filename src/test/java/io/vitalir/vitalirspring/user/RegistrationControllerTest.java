@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -16,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(RegistrationController.class)
@@ -36,13 +38,14 @@ public class RegistrationControllerTest {
         var objectMapper = new ObjectMapper();
         var registrationRequest = new RegistrationRequest(EMAIL, PASSWORD);
         given(registrationService.register(EMAIL, PASSWORD))
-                .willReturn(true);
+                .willReturn(123L);
         var requestBuilder = post("/api/v1/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(registrationRequest));
 
         mockMvc.perform(requestBuilder)
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated())
+                .andExpect(header().string(HttpHeaders.LOCATION, "/api/v1/users/" + 123L));
         verify(registrationService).register(EMAIL, PASSWORD);
     }
 
@@ -51,7 +54,7 @@ public class RegistrationControllerTest {
         var objectMapper = new ObjectMapper();
         var registrationRequest = new RegistrationRequest(EMAIL, PASSWORD);
         given(registrationService.register(EMAIL, PASSWORD))
-                .willReturn(false);
+                .willReturn(-1L);
         var requestBuilder = post("/api/v1/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(registrationRequest));

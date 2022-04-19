@@ -16,7 +16,7 @@ public interface UserApi {
                             description = "Successful response"
                     ),
                     @ApiResponse(
-                            responseCode = "404",
+                            responseCode = "400",
                             description = "User not found"
                     )
             }

@@ -2,6 +2,7 @@ package io.vitalir.vitalirspring.features.user.presentation;
 
 
 import io.vitalir.vitalirspring.features.user.domain.UserService;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,12 +19,12 @@ public class UserControlle implements UserApi {
         this.userService = userService;
     }
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getUserByEmail(@RequestParam String email) {
         var optionalUser = userService.getUserByEmail(email);
         if (optionalUser.isPresent()) {
             return ResponseEntity.ok(optionalUser.get());
         }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.badRequest().build();
     }
 }

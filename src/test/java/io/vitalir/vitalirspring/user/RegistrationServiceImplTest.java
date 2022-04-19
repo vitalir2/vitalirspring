@@ -15,8 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
@@ -47,7 +46,7 @@ public class RegistrationServiceImplTest {
 
         var result = registrationService.register(EMAIL, PASSWORD);
 
-        assertTrue(result);
+        assertNotEquals(-1, result);
         // Should be encrypted
         verify(userRepository, never()).save(new User(EMAIL, PASSWORD, Role.USER));
         verify(userRepository).save(new User(EMAIL, any(), Role.USER));
@@ -59,7 +58,7 @@ public class RegistrationServiceImplTest {
 
         var result = registrationService.register(EMAIL, PASSWORD);
 
-        assertFalse(result);
+        assertEquals(-1, result);
         verify(userRepository, never()).save(new User(EMAIL, any(), Role.USER));
     }
 }

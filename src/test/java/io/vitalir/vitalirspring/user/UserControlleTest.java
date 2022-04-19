@@ -57,6 +57,6 @@ public class UserControlleTest {
                 .queryParam("email", EMAIL);
 
         mockMvc.perform(requestBuilder)
-                .andExpect(status().is(404));
+                .andExpect(status().isBadRequest());
     }
 }

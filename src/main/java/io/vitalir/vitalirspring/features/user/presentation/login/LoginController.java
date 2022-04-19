@@ -4,6 +4,7 @@ import io.vitalir.vitalirspring.features.user.domain.LoginService;
 import io.vitalir.vitalirspring.security.jwt.JwtConstants;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +23,7 @@ public class LoginController implements LoginApi {
     }
 
     @Override
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         var email = loginRequest.email();
         var password = loginRequest.password();

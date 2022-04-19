@@ -59,13 +59,13 @@ public class UserSecurityTest {
 
     @Test
     public void whenRegisterWithoutAuth_permitIt() throws Exception {
-        given(registrationService.register(EMAIL, PASSWORD)).willReturn(true);
+        given(registrationService.register(EMAIL, PASSWORD)).willReturn(123L);
         var requestBuilder = post("/api/v1/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(registrationRequest))
                 .with(csrf());
 
         mockMvc.perform(requestBuilder)
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
     }
 }

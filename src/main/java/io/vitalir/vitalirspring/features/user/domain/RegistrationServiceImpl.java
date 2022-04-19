@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class RegistrationServiceImpl implements RegistrationService {
 
+    private static final long EXISTS_OR_INVALID_FORMAT = -1;
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -17,13 +19,13 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     @Override
-    public boolean register(String email, String password) {
+    public long register(String email, String password) {
         var existingUser = userRepository.getUserByEmail(email);
         if (existingUser.isPresent()) {
-            return false;
+            return EXISTS_OR_INVALID_FORMAT;
         }
         var newUser = new User(email, passwordEncoder.encode(password), Role.USER);
         userRepository.save(newUser);
-        return true;
+        return newUser.getId();
     }
 }
