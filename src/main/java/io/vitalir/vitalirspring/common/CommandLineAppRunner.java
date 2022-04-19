@@ -4,6 +4,7 @@ import io.vitalir.vitalirspring.features.user.domain.model.Role;
 import io.vitalir.vitalirspring.features.user.domain.model.User;
 import io.vitalir.vitalirspring.features.user.domain.UserRepository;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -13,9 +14,11 @@ public class CommandLineAppRunner implements CommandLineRunner {
     private static final String DEFAULT_PASSWORD = "password";
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public CommandLineAppRunner(UserRepository userRepository) {
+    public CommandLineAppRunner(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -36,7 +39,7 @@ public class CommandLineAppRunner implements CommandLineRunner {
     private void addAdmin(String password) {
         User admin = new User(
                 ADMIN_EMAIL,
-                password,
+                passwordEncoder.encode(password),
                 Role.ADMIN
         );
         userRepository.save(admin);

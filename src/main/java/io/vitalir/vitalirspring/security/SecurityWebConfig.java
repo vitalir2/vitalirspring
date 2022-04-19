@@ -1,8 +1,10 @@
 package io.vitalir.vitalirspring.security;
 
-import org.springframework.context.annotation.Bean;
+import io.vitalir.vitalirspring.features.user.domain.model.Role;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -10,7 +12,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -21,10 +22,12 @@ public class SecurityWebConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
     private final JwtProvider jwtProvider;
+    private final PasswordEncoder passwordEncoder;
 
-    public SecurityWebConfig(UserDetailsService userDetailsService, JwtProvider jwtProvider) {
+    public SecurityWebConfig(UserDetailsService userDetailsService, JwtProvider jwtProvider, PasswordEncoder passwordEncoder) {
         this.userDetailsService = userDetailsService;
         this.jwtProvider = jwtProvider;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -36,21 +39,27 @@ public class SecurityWebConfig extends WebSecurityConfigurerAdapter {
                 .authorizeHttpRequests(authorize ->
                         authorize
                                 .mvcMatchers("/api/v1/auth/**").permitAll()
-                                .mvcMatchers("/api/v1/services/**").permitAll()
+                                .mvcMatchers("/api/v1/register/**").permitAll()
+                                .mvcMatchers(HttpMethod.GET, "/api/v1/services/**").permitAll()
+                                .mvcMatchers( "/api/v1/services/**").hasRole(Role.ADMIN.name())
+                                .mvcMatchers("/swagger-ui.html").hasRole(Role.ADMIN.name())
                                 .anyRequest().authenticated()
                 )
                 .userDetailsService(userDetailsService)
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .addFilterBefore(new JwtFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
                 .csrf(csrf -> csrf
-                        .ignoringRequestMatchers(request -> request.getHeader("User-Agent").startsWith("Postman"))
+                        .ignoringRequestMatchers(request -> {
+                            var userAgent = request.getHeader(HttpHeaders.USER_AGENT);
+                            return userAgent != null && userAgent.startsWith("Postman");
+                        })
                 );
 
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService);
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
     }
 
     @Override

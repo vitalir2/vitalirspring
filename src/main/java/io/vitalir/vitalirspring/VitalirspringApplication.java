@@ -27,21 +27,3 @@ public class VitalirspringApplication {
         return new BCryptPasswordEncoder();
     }
 }
-
-/**
-- Create JWT filter
-- Create JWT mechanism
-- Create UserController
-- Create LoginController
-- Create RegistrationController
-- Create UserService
-- Create UserRepository
-- User -> id, login, password, email, firstName, lastName, patronymic?, birthDate
-- RegistrationRequest -> login, password, firstName, last...
-- LoginRequest -> login or email, password
-- Add two roles: Admin (vitalir) and Client
-- Admin -> post, delete, put for many things; other with logged in client -> user; others -> any
-- App config for testing / simple
-- Swagger for controllers
-- Research: testing Swagger docs
- */
