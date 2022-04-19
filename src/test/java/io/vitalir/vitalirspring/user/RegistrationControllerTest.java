@@ -1,6 +1,7 @@
 package io.vitalir.vitalirspring.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.vitalir.vitalirspring.features.user.domain.RegistrationService;
 import io.vitalir.vitalirspring.features.user.domain.UserService;
 import io.vitalir.vitalirspring.features.user.presentation.registration.RegistrationController;
 import io.vitalir.vitalirspring.features.user.presentation.registration.RegistrationRequest;
@@ -28,13 +29,13 @@ public class RegistrationControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private UserService userService;
+    private RegistrationService registrationService;
 
     @Test
     public void whenRegisterWithValidCredentials_addUserToSystem() throws Exception {
         var objectMapper = new ObjectMapper();
         var registrationRequest = new RegistrationRequest(EMAIL, PASSWORD);
-        given(userService.register(EMAIL, PASSWORD))
+        given(registrationService.register(EMAIL, PASSWORD))
                 .willReturn(true);
         var requestBuilder = post("/api/v1/register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -42,14 +43,14 @@ public class RegistrationControllerTest {
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk());
-        verify(userService).register(EMAIL, PASSWORD);
+        verify(registrationService).register(EMAIL, PASSWORD);
     }
 
     @Test
     public void whenRegisterWithInvalidCredentials_returnBadRequest() throws Exception {
         var objectMapper = new ObjectMapper();
         var registrationRequest = new RegistrationRequest(EMAIL, PASSWORD);
-        given(userService.register(EMAIL, PASSWORD))
+        given(registrationService.register(EMAIL, PASSWORD))
                 .willReturn(false);
         var requestBuilder = post("/api/v1/register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -57,6 +58,6 @@ public class RegistrationControllerTest {
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isBadRequest());
-        verify(userService).register(EMAIL, PASSWORD);
+        verify(registrationService).register(EMAIL, PASSWORD);
     }
 }

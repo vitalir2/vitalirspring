@@ -1,6 +1,7 @@
 package io.vitalir.vitalirspring.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.vitalir.vitalirspring.features.user.domain.LoginService;
 import io.vitalir.vitalirspring.features.user.domain.UserService;
 import io.vitalir.vitalirspring.features.user.domain.model.Role;
 import io.vitalir.vitalirspring.features.user.presentation.login.LoginRequest;
@@ -43,14 +44,14 @@ public class LoginControllerSecurityTest {
     private JwtProvider jwtProvider;
 
     @MockBean
-    private UserService userService;
+    private LoginService loginService;
 
     @Test
     public void whenLoginWithCorrectLoginAndPassword_loginAndReturnJwt() throws Exception {
         var objectMapper = new ObjectMapper();
         var loginRequest = new LoginRequest(VALID_EMAIL, VALID_PASSWORD);
         var expectedJwt = jwtProvider.generateToken(VALID_EMAIL, Role.USER);
-        given(userService.login(VALID_EMAIL, VALID_PASSWORD))
+        given(loginService.login(VALID_EMAIL, VALID_PASSWORD))
                 .willReturn(Optional.of(expectedJwt));
         var requestBuilder = post("/api/v1/auth")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -72,7 +73,7 @@ public class LoginControllerSecurityTest {
     public void whenLoginWithInvalidLoginOrPassword_returnBadRequest() throws Exception {
         var objectMapper = new ObjectMapper();
         var loginRequest = new LoginRequest(VALID_EMAIL, VALID_PASSWORD);
-        given(userService.login(VALID_EMAIL, VALID_PASSWORD))
+        given(loginService.login(VALID_EMAIL, VALID_PASSWORD))
                 .willReturn(Optional.empty());
         var requestBuilder = post("/api/v1/auth")
                 .contentType(MediaType.APPLICATION_JSON)

@@ -28,25 +28,18 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 public class UserServiceImplTest {
 
-    private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private static final String EMAIL = "g@gmail.com";
     private static final String PASSWORD = "1234";
-    private static final String HASHED_PASSWORD = passwordEncoder.encode(PASSWORD);
-    private static final User VALID_USER = new User(EMAIL, HASHED_PASSWORD, Role.USER);
+    private static final User VALID_USER = new User(EMAIL, PASSWORD, Role.USER);
 
     @Mock
     private UserRepository userRepository;
-
-    @Mock
-    private UserDetailsService userDetailsService;
-
-    private final JwtProvider jwtProvider = new JwtProvider("secret");
 
     private UserService userService;
 
     @BeforeEach
     public void init() {
-        userService = new UserServiceImpl(userRepository, jwtProvider, passwordEncoder, userDetailsService);
+        userService = new UserServiceImpl(userRepository);
     }
 
     @Test
@@ -65,59 +58,5 @@ public class UserServiceImplTest {
         var result = userService.getUserByEmail(EMAIL);
 
         assertThat(result).isEqualTo(Optional.empty());
-    }
-
-    @Test
-    public void whenLoginWithExistingCredentials_returnToken() {
-        given(userRepository.getUserByEmail(EMAIL)).willReturn(Optional.of(VALID_USER));
-        var expectedToken = jwtProvider.generateToken(EMAIL, Role.USER);
-
-        var result = userService.login(EMAIL, PASSWORD);
-
-        assertTrue(result.isPresent());
-        var jwt = result.get();
-        assertEquals(expectedToken, jwt);
-        verify(userDetailsService).loadUserByUsername(EMAIL);
-    }
-
-    @Test
-    public void whenLoginWithNotExistingCredentials_returnEmpty() {
-        given(userRepository.getUserByEmail(EMAIL)).willReturn(Optional.empty());
-
-        var result = userService.login(EMAIL, PASSWORD);
-
-        assertTrue(result.isEmpty());
-    }
-
-    @Test
-    public void whenLoginWithInvalidPassword_returnEmpty() {
-        given(userRepository.getUserByEmail(EMAIL)).willReturn(Optional.of(VALID_USER));
-        var invalidPassword = "kek";
-
-        var result = userService.login(EMAIL, invalidPassword);
-
-        assertTrue(result.isEmpty());
-    }
-
-    @Test
-    public void whenRegisterWithValidAndNotExistingCredentials_returnTrue() {
-        given(userRepository.getUserByEmail(EMAIL)).willReturn(Optional.empty());
-
-        var result = userService.register(EMAIL, PASSWORD);
-
-        assertTrue(result);
-        // Should be encrypted
-        verify(userRepository, never()).save(new User(EMAIL, PASSWORD, Role.USER));
-        verify(userRepository).save(new User(EMAIL, any(), Role.USER));
-    }
-
-    @Test
-    public void whenRegisterWithExistingCredentials_returnFalse() {
-        given(userRepository.getUserByEmail(EMAIL)).willReturn(Optional.of(VALID_USER));
-
-        var result = userService.register(EMAIL, PASSWORD);
-
-        assertFalse(result);
-        verify(userRepository, never()).save(new User(EMAIL, any(), Role.USER));
     }
 }

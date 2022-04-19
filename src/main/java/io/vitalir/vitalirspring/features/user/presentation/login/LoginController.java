@@ -1,6 +1,6 @@
 package io.vitalir.vitalirspring.features.user.presentation.login;
 
-import io.vitalir.vitalirspring.features.user.domain.UserService;
+import io.vitalir.vitalirspring.features.user.domain.LoginService;
 import io.vitalir.vitalirspring.security.JwtConstants;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -15,10 +15,10 @@ import org.springframework.web.server.ResponseStatusException;
 @RequestMapping("/api/v1/auth")
 public class LoginController implements LoginApi {
 
-    private final UserService userService;
+    private final LoginService loginService;
 
-    public LoginController(UserService userService) {
-        this.userService = userService;
+    public LoginController(LoginService loginService) {
+        this.loginService = loginService;
     }
 
     @Override
@@ -26,7 +26,7 @@ public class LoginController implements LoginApi {
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         var email = loginRequest.email();
         var password = loginRequest.password();
-        var jwt = userService.login(email, password);
+        var jwt = loginService.login(email, password);
         if (jwt.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }

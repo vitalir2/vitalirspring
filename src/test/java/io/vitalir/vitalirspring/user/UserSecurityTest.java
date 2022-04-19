@@ -1,6 +1,8 @@
 package io.vitalir.vitalirspring.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.vitalir.vitalirspring.features.user.domain.LoginService;
+import io.vitalir.vitalirspring.features.user.domain.RegistrationService;
 import io.vitalir.vitalirspring.features.user.domain.UserService;
 import io.vitalir.vitalirspring.features.user.presentation.login.LoginRequest;
 import io.vitalir.vitalirspring.features.user.presentation.registration.RegistrationRequest;
@@ -26,7 +28,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class UserSecurityTest {
 
     @MockBean
-    private UserService userService;
+    private LoginService loginService;
+
+    @MockBean
+    private RegistrationService registrationService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -42,7 +47,7 @@ public class UserSecurityTest {
 
     @Test
     public void whenLoginWithoutAuth_permitIt() throws Exception {
-        given(userService.login(EMAIL, PASSWORD)).willReturn(Optional.of("Bearer ..."));
+        given(loginService.login(EMAIL, PASSWORD)).willReturn(Optional.of("Bearer ..."));
         var requestBuilder = post("/api/v1/auth")
                 .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginRequest))
@@ -54,7 +59,7 @@ public class UserSecurityTest {
 
     @Test
     public void whenRegisterWithoutAuth_permitIt() throws Exception {
-        given(userService.register(EMAIL, PASSWORD)).willReturn(true);
+        given(registrationService.register(EMAIL, PASSWORD)).willReturn(true);
         var requestBuilder = post("/api/v1/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(registrationRequest))
