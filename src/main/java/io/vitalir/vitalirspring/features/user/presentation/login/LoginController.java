@@ -1,4 +1,4 @@
-package io.vitalir.vitalirspring.features.user.presentation;
+package io.vitalir.vitalirspring.features.user.presentation.login;
 
 import io.vitalir.vitalirspring.features.user.domain.UserService;
 import io.vitalir.vitalirspring.security.JwtConstants;

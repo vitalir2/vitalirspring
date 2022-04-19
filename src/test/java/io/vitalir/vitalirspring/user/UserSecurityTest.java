@@ -2,8 +2,8 @@ package io.vitalir.vitalirspring.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vitalir.vitalirspring.features.user.domain.UserService;
-import io.vitalir.vitalirspring.features.user.presentation.LoginRequest;
-import io.vitalir.vitalirspring.features.user.presentation.RegistrationRequest;
+import io.vitalir.vitalirspring.features.user.presentation.login.LoginRequest;
+import io.vitalir.vitalirspring.features.user.presentation.registration.RegistrationRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;

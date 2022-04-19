@@ -9,11 +9,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class UserDetailsServiceImpl implements UserDetailsService {
+public class UserLoadingService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-    public UserDetailsServiceImpl(UserRepository userRepository) {
+    public UserLoadingService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

@@ -3,7 +3,7 @@ package io.vitalir.vitalirspring.user;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vitalir.vitalirspring.features.user.domain.UserService;
 import io.vitalir.vitalirspring.features.user.domain.model.Role;
-import io.vitalir.vitalirspring.features.user.presentation.LoginRequest;
+import io.vitalir.vitalirspring.features.user.presentation.login.LoginRequest;
 import io.vitalir.vitalirspring.security.JwtConstants;
 import io.vitalir.vitalirspring.security.JwtProvider;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package io.vitalir.vitalirspring.features.user.presentation;
+package io.vitalir.vitalirspring.features.user.presentation.login;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.headers.Header;

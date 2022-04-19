@@ -1,7 +1,7 @@
 package io.vitalir.vitalirspring.user;
 
 import io.vitalir.vitalirspring.features.user.domain.model.User;
-import io.vitalir.vitalirspring.features.user.domain.UserDetailsServiceImpl;
+import io.vitalir.vitalirspring.features.user.domain.UserLoadingService;
 import io.vitalir.vitalirspring.features.user.domain.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.*;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-public class UserDetailsServiceImplTest {
+public class UserLoadingServiceTest {
 
     @Mock
     private UserRepository userRepository;
@@ -25,7 +25,7 @@ public class UserDetailsServiceImplTest {
 
     @BeforeEach
     public void init() {
-        userDetailsService = new UserDetailsServiceImpl(userRepository);
+        userDetailsService = new UserLoadingService(userRepository);
     }
 
     @Test

@@ -1,4 +1,4 @@
-package io.vitalir.vitalirspring.features.user.presentation;
+package io.vitalir.vitalirspring.features.user.presentation.registration;
 
 import io.vitalir.vitalirspring.features.user.domain.UserService;
 import org.springframework.http.ResponseEntity;
