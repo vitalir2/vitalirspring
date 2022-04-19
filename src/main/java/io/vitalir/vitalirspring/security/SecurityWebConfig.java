@@ -37,29 +37,9 @@ public class SecurityWebConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .httpBasic().disable()
-                .formLogin().disable()
-                .cors().and()
-                .authorizeHttpRequests(authorize ->
-                        authorize
-                                .mvcMatchers("/api/v1/auth/**").permitAll()
-                                .mvcMatchers("/api/v1/register/**").permitAll()
-                                .mvcMatchers(HttpMethod.GET, "/api/v1/services/**").permitAll()
-                                .mvcMatchers( "/api/v1/services/**").hasRole(Role.ADMIN.name())
-                                .mvcMatchers("/swagger-ui.html").hasRole(Role.ADMIN.name())
-                                .anyRequest().authenticated()
-                )
-                .userDetailsService(userDetailsService)
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .addFilterBefore(new JwtFilter(jwtProvider, jwtVerifier), UsernamePasswordAuthenticationFilter.class)
-                .csrf(csrf -> csrf
-                        .ignoringRequestMatchers(request -> {
-                            var userAgent = request.getHeader(HttpHeaders.USER_AGENT);
-                            return userAgent != null && userAgent.startsWith("Postman");
-                        })
-                );
-
+        configureAuthorization(http);
+        configureCsrf(http);
+        configureMiscellaneous(http);
     }
 
     @Override
@@ -70,5 +50,36 @@ public class SecurityWebConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) {
         web.ignoring().mvcMatchers("/api/v1/auth/**");
+    }
+
+    private void configureAuthorization(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests(authorize ->
+                authorize
+                        .mvcMatchers("/api/v1/auth/**").permitAll()
+                        .mvcMatchers("/api/v1/register/**").permitAll()
+                        .mvcMatchers(HttpMethod.GET, "/api/v1/services/**").permitAll()
+                        .mvcMatchers("/api/v1/services/**").hasRole(Role.ADMIN.name())
+                        .mvcMatchers("/swagger-ui.html").hasRole(Role.ADMIN.name())
+                        .anyRequest().authenticated()
+        );
+    }
+
+    private void configureCsrf(HttpSecurity http) throws Exception {
+        http.csrf(csrf -> csrf
+                .ignoringRequestMatchers(request -> {
+                    var userAgent = request.getHeader(HttpHeaders.USER_AGENT);
+                    return userAgent != null && userAgent.startsWith("Postman");
+                })
+        );
+    }
+
+    private void configureMiscellaneous(HttpSecurity http) throws Exception {
+        http
+                .httpBasic().disable()
+                .formLogin().disable()
+                .cors().and()
+                .userDetailsService(userDetailsService)
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .addFilterBefore(new JwtFilter(jwtProvider, jwtVerifier), UsernamePasswordAuthenticationFilter.class);
     }
 }
