@@ -2,11 +2,11 @@ package io.vitalir.vitalirspring.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vitalir.vitalirspring.features.user.domain.LoginService;
-import io.vitalir.vitalirspring.features.user.domain.UserService;
 import io.vitalir.vitalirspring.features.user.domain.model.Role;
 import io.vitalir.vitalirspring.features.user.presentation.login.LoginRequest;
-import io.vitalir.vitalirspring.security.JwtConstants;
-import io.vitalir.vitalirspring.security.JwtProvider;
+import io.vitalir.vitalirspring.security.jwt.JwtConstants;
+import io.vitalir.vitalirspring.security.jwt.JwtProvider;
+import io.vitalir.vitalirspring.security.jwt.JwtVerifier;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -43,6 +43,9 @@ public class LoginControllerSecurityTest {
     @Autowired
     private JwtProvider jwtProvider;
 
+    @Autowired
+    private JwtVerifier jwtVerifier;
+
     @MockBean
     private LoginService loginService;
 
@@ -65,7 +68,7 @@ public class LoginControllerSecurityTest {
                     var authHeader = result.getResponse().getHeader(HttpHeaders.AUTHORIZATION);
                     var jwt = Objects.requireNonNull(authHeader).substring(JwtConstants.BEARER_PREFIX.length());
                     assertEquals(expectedJwt, jwt);
-                    assertTrue(jwtProvider.validateToken(jwt));
+                    assertTrue(jwtVerifier.validateToken(jwt));
                 });
     }
 

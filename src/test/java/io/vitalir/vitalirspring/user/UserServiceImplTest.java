@@ -5,25 +5,16 @@ import io.vitalir.vitalirspring.features.user.domain.UserService;
 import io.vitalir.vitalirspring.features.user.domain.UserServiceImpl;
 import io.vitalir.vitalirspring.features.user.domain.model.Role;
 import io.vitalir.vitalirspring.features.user.domain.model.User;
-import io.vitalir.vitalirspring.security.JwtProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.AdditionalMatchers.not;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceImplTest {

@@ -5,7 +5,7 @@ import io.vitalir.vitalirspring.features.user.domain.LoginServiceImpl;
 import io.vitalir.vitalirspring.features.user.domain.UserRepository;
 import io.vitalir.vitalirspring.features.user.domain.model.Role;
 import io.vitalir.vitalirspring.features.user.domain.model.User;
-import io.vitalir.vitalirspring.security.JwtProvider;
+import io.vitalir.vitalirspring.security.jwt.JwtProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +20,6 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)

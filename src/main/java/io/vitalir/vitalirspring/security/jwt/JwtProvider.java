@@ -1,9 +1,7 @@
-package io.vitalir.vitalirspring.security;
+package io.vitalir.vitalirspring.security.jwt;
 
 import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import io.vitalir.vitalirspring.features.user.domain.model.Role;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,15 +14,11 @@ import org.springframework.stereotype.Component;
 import java.util.Collection;
 import java.util.Date;
 
+import static io.vitalir.vitalirspring.security.jwt.JwtConstants.*;
+
 @Component
 @Slf4j
 public class JwtProvider {
-
-    private static final String SUBJECT = "User Details";
-    private static final String CLAIM = "email";
-    private static final String CLAIM_AUTHORITIES = "authorities";
-    private static final String APPLICATION_ISSUER = "VITALIRSPRING";
-    private static final long EXPIRATION_TIME = 15 * 60 * 1_000;
 
     private final String secret;
 
@@ -54,7 +48,7 @@ public class JwtProvider {
         var claims = decodedJwt.getClaims();
         var subject = decodedJwt.getSubject();
 
-        var authoritiesClaim = String.join(",", claims.get("authorities").asArray(String.class));
+        var authoritiesClaim = String.join(",", claims.get(CLAIM_AUTHORITIES).asArray(String.class));
 
         Collection<? extends GrantedAuthority> authorities = authoritiesClaim.isBlank() ? AuthorityUtils.NO_AUTHORITIES
                 : AuthorityUtils.commaSeparatedStringToAuthorityList(authoritiesClaim);
@@ -62,19 +56,5 @@ public class JwtProvider {
         User principal = new User(subject, "", authorities);
 
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
-    }
-
-    public boolean validateToken(String token) {
-        JWTVerifier verifier = JWT.require(Algorithm.HMAC256(secret))
-                .withSubject(SUBJECT)
-                .withIssuer(APPLICATION_ISSUER)
-                .build();
-        try {
-            verifier.verify(token);
-            return true;
-        } catch (JWTVerificationException exception) {
-            log.info("Invalid JWT: " + token);
-            return false;
-        }
     }
 }
