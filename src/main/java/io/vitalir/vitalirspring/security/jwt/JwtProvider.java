@@ -2,6 +2,7 @@ package io.vitalir.vitalirspring.security.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import io.vitalir.vitalirspring.common.DateProvider;
 import io.vitalir.vitalirspring.features.user.domain.model.Role;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,7 +13,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
-import java.util.Date;
 
 import static io.vitalir.vitalirspring.security.jwt.JwtConstants.*;
 
@@ -22,8 +22,12 @@ public class JwtProvider {
     @NonNull
     private final String secret;
 
-    public JwtProvider(@NonNull String secret) {
+    @NonNull
+    private final DateProvider dateProvider;
+
+    public JwtProvider(@NonNull String secret, @NonNull DateProvider dateProvider) {
         this.secret = secret;
+        this.dateProvider = dateProvider;
     }
 
     public String generateToken(@NonNull String email, @NonNull Role role) {
@@ -37,8 +41,8 @@ public class JwtProvider {
                                 .map(GrantedAuthority::getAuthority)
                                 .toArray(String[]::new)
                 )
-                .withIssuedAt(new Date())
-                .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .withIssuedAt(dateProvider.getDate())
+                .withExpiresAt(dateProvider.getDate(EXPIRATION_TIME, true))
                 .withIssuer(APPLICATION_ISSUER)
                 .sign(Algorithm.HMAC256(secret));
     }
