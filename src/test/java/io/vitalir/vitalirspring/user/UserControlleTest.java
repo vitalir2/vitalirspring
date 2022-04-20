@@ -1,9 +1,7 @@
 package io.vitalir.vitalirspring.user;
 
-import io.vitalir.vitalirspring.features.user.domain.model.Role;
-import io.vitalir.vitalirspring.features.user.domain.model.User;
-import io.vitalir.vitalirspring.features.user.presentation.UserControlle;
 import io.vitalir.vitalirspring.features.user.domain.UserService;
+import io.vitalir.vitalirspring.features.user.presentation.UserControlle;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -23,12 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(value = UserControlle.class)
 @ActiveProfiles({"test"})
-public class UserControlleTest {
-
-    private static final String EMAIL = "g@gmail.com";
-    private static final String PASSWORD = "kek";
-
-    private final User validUser = new User(EMAIL, PASSWORD, Role.ADMIN);
+public class UserControlleTest extends UserFeatureTest {
 
     @MockBean
     private UserService userService;
@@ -38,23 +31,23 @@ public class UserControlleTest {
 
     @Test
     public void whenGetUserByEmailWhichExists_returnIt() throws Exception {
-        given(userService.getUserByEmail(EMAIL)).willReturn(Optional.of(validUser));
+        given(userService.getUserByEmail(VALID_EMAIL)).willReturn(Optional.of(VALID_USER));
         RequestBuilder requestBuilder = get("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
-                .queryParam("email", EMAIL);
+                .queryParam("email", VALID_EMAIL);
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.email", equalTo(validUser.getEmail())))
-                .andExpect(jsonPath("$.password", equalTo(validUser.getPassword())));
+                .andExpect(jsonPath("$.email", equalTo(VALID_EMAIL)))
+                .andExpect(jsonPath("$.password", equalTo(HASHED_PASSWORD)));
     }
 
     @Test
     public void whenGetUserByEmailWhichDoesNotExist_returnNull() throws Exception {
-        given(userService.getUserByEmail(EMAIL)).willReturn(Optional.empty());
+        given(userService.getUserByEmail(VALID_EMAIL)).willReturn(Optional.empty());
         RequestBuilder requestBuilder = get("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
-                .queryParam("email", EMAIL);
+                .queryParam("email", VALID_EMAIL);
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isBadRequest());

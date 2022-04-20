@@ -33,10 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 @ActiveProfiles("test-security")
-public class LoginControllerSecurityTest {
-
-    private static final String VALID_EMAIL = "g@gmail.com";
-    private static final String VALID_PASSWORD = "1324";
+public class LoginControllerSecurityTest extends UserFeatureTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -50,9 +47,10 @@ public class LoginControllerSecurityTest {
     @MockBean
     private LoginService loginService;
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     @Test
     public void whenLoginWithCorrectLoginAndPassword_loginAndReturnJwt() throws Exception {
-        var objectMapper = new ObjectMapper();
         var loginRequest = new LoginRequest(VALID_EMAIL, VALID_PASSWORD);
         var expectedJwt = jwtProvider.generateToken(VALID_EMAIL, Role.USER);
         given(loginService.login(VALID_EMAIL, VALID_PASSWORD))
@@ -75,7 +73,6 @@ public class LoginControllerSecurityTest {
 
     @Test
     public void whenLoginWithInvalidLoginOrPassword_returnBadRequest() throws Exception {
-        var objectMapper = new ObjectMapper();
         var loginRequest = new LoginRequest(VALID_EMAIL, VALID_PASSWORD);
         given(loginService.login(VALID_EMAIL, VALID_PASSWORD))
                 .willReturn(Optional.empty());

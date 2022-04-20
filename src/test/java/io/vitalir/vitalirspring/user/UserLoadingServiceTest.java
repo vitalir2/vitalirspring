@@ -1,6 +1,5 @@
 package io.vitalir.vitalirspring.user;
 
-import io.vitalir.vitalirspring.features.user.domain.model.User;
 import io.vitalir.vitalirspring.features.user.domain.UserLoadingService;
 import io.vitalir.vitalirspring.features.user.domain.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,11 +11,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.Optional;
 
-import static org.assertj.core.api.AssertionsForClassTypes.*;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-public class UserLoadingServiceTest {
+public class UserLoadingServiceTest extends UserFeatureTest {
 
     @Mock
     private UserRepository userRepository;
@@ -30,21 +30,18 @@ public class UserLoadingServiceTest {
 
     @Test
     public void whenGetUserDetailsForExistingUser_returnIt() {
-        var email = "user@gmail.com";
-        var user = new User(email, "1234");
-        given(userRepository.getUserByEmail(email)).willReturn(Optional.of(user));
+        given(userRepository.getUserByEmail(VALID_EMAIL)).willReturn(Optional.of(VALID_USER));
 
-        var result = userDetailsService.loadUserByUsername(user.getEmail());
+        var result = userDetailsService.loadUserByUsername(VALID_EMAIL);
 
-        assertThat(result.getUsername()).isEqualTo(user.getEmail());
-        assertThat(result.getPassword()).isEqualTo(user.getPassword());
+        assertThat(result.getUsername()).isEqualTo(VALID_EMAIL);
+        assertThat(result.getPassword()).isEqualTo(HASHED_PASSWORD);
     }
 
     @Test
     public void whenGetUserDetailsForNotExistingUser_returnNull() {
-        var email = "user@gmail.com";
-        var user = new User(email, "1234");
-        given(userRepository.getUserByEmail(email)).willReturn(Optional.empty());
-        assertThatThrownBy(() -> userDetailsService.loadUserByUsername(user.getEmail()));
+        given(userRepository.getUserByEmail(VALID_EMAIL)).willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> userDetailsService.loadUserByUsername(VALID_EMAIL));
     }
 }

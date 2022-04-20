@@ -17,11 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-public class UserServiceImplTest {
-
-    private static final String EMAIL = "g@gmail.com";
-    private static final String PASSWORD = "1234";
-    private static final User VALID_USER = new User(EMAIL, PASSWORD, Role.USER);
+public class UserServiceImplTest extends UserFeatureTest {
 
     @Mock
     private UserRepository userRepository;
@@ -35,18 +31,18 @@ public class UserServiceImplTest {
 
     @Test
     public void whenGetUserByEmailWhichExists_returnIt() {
-        given(userRepository.getUserByEmail(EMAIL)).willReturn(Optional.of(VALID_USER));
+        given(userRepository.getUserByEmail(VALID_EMAIL)).willReturn(Optional.of(VALID_USER));
 
-        var result = userService.getUserByEmail(EMAIL);
+        var result = userService.getUserByEmail(VALID_EMAIL);
 
         assertThat(result).isEqualTo(Optional.of(VALID_USER));
     }
 
     @Test
     public void whenGetUserByEmailWhichDoesNotExist_returnEmpty() {
-        given(userRepository.getUserByEmail(EMAIL)).willReturn(Optional.empty());
+        given(userRepository.getUserByEmail(VALID_EMAIL)).willReturn(Optional.empty());
 
-        var result = userService.getUserByEmail(EMAIL);
+        var result = userService.getUserByEmail(VALID_EMAIL);
 
         assertThat(result).isEqualTo(Optional.empty());
     }

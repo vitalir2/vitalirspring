@@ -3,7 +3,6 @@ package io.vitalir.vitalirspring.user;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vitalir.vitalirspring.features.user.domain.LoginService;
 import io.vitalir.vitalirspring.features.user.domain.RegistrationService;
-import io.vitalir.vitalirspring.features.user.domain.UserService;
 import io.vitalir.vitalirspring.features.user.domain.model.LoginResult;
 import io.vitalir.vitalirspring.features.user.presentation.login.LoginRequest;
 import io.vitalir.vitalirspring.features.user.presentation.registration.RegistrationRequest;
@@ -26,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 @ActiveProfiles("test-security")
-public class UserSecurityTest {
+public class UserSecurityTest extends UserFeatureTest {
 
     @MockBean
     private LoginService loginService;
@@ -37,18 +36,15 @@ public class UserSecurityTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private static final String EMAIL = "myemail@amazon.com";
-    private static final String PASSWORD = "1233333";
+    private final LoginRequest loginRequest = new LoginRequest(VALID_EMAIL, VALID_PASSWORD);
 
-    private final LoginRequest loginRequest = new LoginRequest(EMAIL, PASSWORD);
-
-    private final RegistrationRequest registrationRequest = new RegistrationRequest(EMAIL, PASSWORD);
+    private final RegistrationRequest registrationRequest = new RegistrationRequest(VALID_EMAIL, VALID_PASSWORD);
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     public void whenLoginWithoutAuth_permitIt() throws Exception {
-        given(loginService.login(EMAIL, PASSWORD)).willReturn(Optional.of(new LoginResult(123L, "Bearer ...")));
+        given(loginService.login(VALID_EMAIL, VALID_PASSWORD)).willReturn(Optional.of(new LoginResult(123L, "Bearer ...")));
         var requestBuilder = post("/api/v1/auth")
                 .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginRequest))
@@ -60,7 +56,7 @@ public class UserSecurityTest {
 
     @Test
     public void whenRegisterWithoutAuth_permitIt() throws Exception {
-        given(registrationService.register(EMAIL, PASSWORD)).willReturn(123L);
+        given(registrationService.register(VALID_EMAIL, VALID_PASSWORD)).willReturn(123L);
         var requestBuilder = post("/api/v1/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(registrationRequest))

@@ -14,10 +14,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
 @ActiveProfiles({"test"})
-public class UserRepositoryTest {
+public class UserRepositoryTest extends UserFeatureTest {
 
-    private static final String EMAIL = "user@gmail.com";
-    private static final String PASSWORD = "1234";
     private User validUser;
 
     @Autowired
@@ -28,14 +26,14 @@ public class UserRepositoryTest {
 
     @BeforeEach
     public void clear() {
-        validUser = new User(EMAIL, PASSWORD);
+        validUser = new User(VALID_EMAIL, VALID_PASSWORD);
     }
 
     @Test
     public void whenGetUserByEmailAndItExists_returnIt() {
         testEntityManager.persist(validUser);
 
-        var result = userRepository.getUserByEmail(EMAIL);
+        var result = userRepository.getUserByEmail(VALID_EMAIL);
 
         assertTrue(result.isPresent());
         assertEquals(validUser, result.get());

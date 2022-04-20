@@ -23,18 +23,14 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public class LoginServiceImplTest {
+public class LoginServiceImplTest extends UserFeatureTest {
 
-    private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-    private static final String EMAIL = "g@gmail.com";
-    private static final String PASSWORD = "1234";
-    private static final String HASHED_PASSWORD = passwordEncoder.encode(PASSWORD);
-    private static final User VALID_USER = new User(EMAIL, HASHED_PASSWORD, Role.USER);
-    private final JwtProvider jwtProvider = new JwtProvider("secret");
     @Mock
     private UserRepository userRepository;
+
     @Mock
     private UserDetailsService userDetailsService;
+
     private LoginService loginService;
 
     @BeforeEach
@@ -44,32 +40,32 @@ public class LoginServiceImplTest {
 
     @Test
     public void whenLoginWithExistingCredentials_returnToken() {
-        given(userRepository.getUserByEmail(EMAIL)).willReturn(Optional.of(VALID_USER));
-        var expectedToken = jwtProvider.generateToken(EMAIL, Role.USER);
+        given(userRepository.getUserByEmail(VALID_EMAIL)).willReturn(Optional.of(VALID_USER));
+        var expectedToken = jwtProvider.generateToken(VALID_EMAIL, Role.USER);
 
-        var result = loginService.login(EMAIL, PASSWORD);
+        var result = loginService.login(VALID_EMAIL, VALID_PASSWORD);
 
         assertTrue(result.isPresent());
         var loginResult = result.get();
         assertEquals(expectedToken, loginResult.jwt());
-        verify(userDetailsService).loadUserByUsername(EMAIL);
+        verify(userDetailsService).loadUserByUsername(VALID_EMAIL);
     }
 
     @Test
     public void whenLoginWithNotExistingCredentials_returnEmpty() {
-        given(userRepository.getUserByEmail(EMAIL)).willReturn(Optional.empty());
+        given(userRepository.getUserByEmail(VALID_EMAIL)).willReturn(Optional.empty());
 
-        var result = loginService.login(EMAIL, PASSWORD);
+        var result = loginService.login(VALID_EMAIL, VALID_PASSWORD);
 
         assertTrue(result.isEmpty());
     }
 
     @Test
     public void whenLoginWithInvalidPassword_returnEmpty() {
-        given(userRepository.getUserByEmail(EMAIL)).willReturn(Optional.of(VALID_USER));
+        given(userRepository.getUserByEmail(VALID_EMAIL)).willReturn(Optional.of(VALID_USER));
         var invalidPassword = "kek";
 
-        var result = loginService.login(EMAIL, invalidPassword);
+        var result = loginService.login(VALID_EMAIL, invalidPassword);
 
         assertTrue(result.isEmpty());
     }

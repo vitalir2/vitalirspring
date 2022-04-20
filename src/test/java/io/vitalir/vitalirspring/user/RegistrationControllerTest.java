@@ -22,10 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(RegistrationController.class)
 @ActiveProfiles("test")
-public class RegistrationControllerTest {
-
-    private static final String EMAIL = "g@gmail.com";
-    private static final String PASSWORD = "12345";
+public class RegistrationControllerTest extends UserFeatureTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -33,11 +30,12 @@ public class RegistrationControllerTest {
     @MockBean
     private RegistrationService registrationService;
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     @Test
     public void whenRegisterWithValidCredentials_addUserToSystem() throws Exception {
-        var objectMapper = new ObjectMapper();
-        var registrationRequest = new RegistrationRequest(EMAIL, PASSWORD);
-        given(registrationService.register(EMAIL, PASSWORD))
+        var registrationRequest = new RegistrationRequest(VALID_EMAIL, VALID_PASSWORD);
+        given(registrationService.register(VALID_EMAIL, VALID_PASSWORD))
                 .willReturn(123L);
         var requestBuilder = post("/api/v1/register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -46,14 +44,13 @@ public class RegistrationControllerTest {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isCreated())
                 .andExpect(header().string(HttpHeaders.LOCATION, "/api/v1/users/" + 123L));
-        verify(registrationService).register(EMAIL, PASSWORD);
+        verify(registrationService).register(VALID_EMAIL, VALID_PASSWORD);
     }
 
     @Test
     public void whenRegisterWithInvalidCredentials_returnBadRequest() throws Exception {
-        var objectMapper = new ObjectMapper();
-        var registrationRequest = new RegistrationRequest(EMAIL, PASSWORD);
-        given(registrationService.register(EMAIL, PASSWORD))
+        var registrationRequest = new RegistrationRequest(VALID_EMAIL, VALID_PASSWORD);
+        given(registrationService.register(VALID_EMAIL, VALID_PASSWORD))
                 .willReturn(-1L);
         var requestBuilder = post("/api/v1/register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -61,6 +58,6 @@ public class RegistrationControllerTest {
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isBadRequest());
-        verify(registrationService).register(EMAIL, PASSWORD);
+        verify(registrationService).register(VALID_EMAIL, VALID_PASSWORD);
     }
 }
