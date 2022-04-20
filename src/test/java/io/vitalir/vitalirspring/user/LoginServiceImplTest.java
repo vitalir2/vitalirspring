@@ -50,8 +50,8 @@ public class LoginServiceImplTest {
         var result = loginService.login(EMAIL, PASSWORD);
 
         assertTrue(result.isPresent());
-        var jwt = result.get();
-        assertEquals(expectedToken, jwt);
+        var loginResult = result.get();
+        assertEquals(expectedToken, loginResult.jwt());
         verify(userDetailsService).loadUserByUsername(EMAIL);
     }
 

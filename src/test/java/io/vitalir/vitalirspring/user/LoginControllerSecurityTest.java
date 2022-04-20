@@ -2,6 +2,7 @@ package io.vitalir.vitalirspring.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vitalir.vitalirspring.features.user.domain.LoginService;
+import io.vitalir.vitalirspring.features.user.domain.model.LoginResult;
 import io.vitalir.vitalirspring.features.user.domain.model.Role;
 import io.vitalir.vitalirspring.features.user.presentation.login.LoginRequest;
 import io.vitalir.vitalirspring.security.jwt.JwtConstants;
@@ -55,7 +56,7 @@ public class LoginControllerSecurityTest {
         var loginRequest = new LoginRequest(VALID_EMAIL, VALID_PASSWORD);
         var expectedJwt = jwtProvider.generateToken(VALID_EMAIL, Role.USER);
         given(loginService.login(VALID_EMAIL, VALID_PASSWORD))
-                .willReturn(Optional.of(expectedJwt));
+                .willReturn(Optional.of(new LoginResult(123L, expectedJwt)));
         var requestBuilder = post("/api/v1/auth")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(loginRequest))

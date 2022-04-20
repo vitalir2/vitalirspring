@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vitalir.vitalirspring.features.user.domain.LoginService;
 import io.vitalir.vitalirspring.features.user.domain.RegistrationService;
 import io.vitalir.vitalirspring.features.user.domain.UserService;
+import io.vitalir.vitalirspring.features.user.domain.model.LoginResult;
 import io.vitalir.vitalirspring.features.user.presentation.login.LoginRequest;
 import io.vitalir.vitalirspring.features.user.presentation.registration.RegistrationRequest;
 import org.junit.jupiter.api.Test;
@@ -47,7 +48,7 @@ public class UserSecurityTest {
 
     @Test
     public void whenLoginWithoutAuth_permitIt() throws Exception {
-        given(loginService.login(EMAIL, PASSWORD)).willReturn(Optional.of("Bearer ..."));
+        given(loginService.login(EMAIL, PASSWORD)).willReturn(Optional.of(new LoginResult(123L, "Bearer ...")));
         var requestBuilder = post("/api/v1/auth")
                 .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginRequest))

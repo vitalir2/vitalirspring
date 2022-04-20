@@ -1,7 +1,9 @@
 package io.vitalir.vitalirspring.features.user.domain;
 
+import io.vitalir.vitalirspring.features.user.domain.model.LoginResult;
+
 import java.util.Optional;
 
 public interface LoginService {
-    Optional<String> login(String email, String password);
+    Optional<LoginResult> login(String email, String password);
 }

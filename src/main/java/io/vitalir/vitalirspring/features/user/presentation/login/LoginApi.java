@@ -26,10 +26,10 @@ public interface LoginApi {
                             }
                     ),
                     @ApiResponse(
-                            responseCode = "401",
+                            responseCode = "400",
                             description = "Invalid user or password"
                     )
             }
     )
-    ResponseEntity<?> login(LoginRequest loginRequest);
+    ResponseEntity<Long> login(LoginRequest loginRequest);
 }

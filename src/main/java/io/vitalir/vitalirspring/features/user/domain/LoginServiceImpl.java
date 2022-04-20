@@ -1,6 +1,8 @@
 package io.vitalir.vitalirspring.features.user.domain;
 
+import io.vitalir.vitalirspring.features.user.domain.model.LoginResult;
 import io.vitalir.vitalirspring.security.jwt.JwtProvider;
+import lombok.extern.java.Log;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,7 +25,7 @@ public class LoginServiceImpl implements LoginService {
     }
 
     @Override
-    public Optional<String> login(String email, String password) {
+    public Optional<LoginResult> login(String email, String password) {
         var optionalUser = userRepository.getUserByEmail(email);
         if (optionalUser.isEmpty()) {
             return Optional.empty();
@@ -33,7 +35,7 @@ public class LoginServiceImpl implements LoginService {
         if (passwordEncoder.matches(password, user.getPassword())) {
             userDetailsService.loadUserByUsername(email);
             var jwt = jwtProvider.generateToken(user.getEmail(), user.getRole());
-            return Optional.of(jwt);
+            return Optional.of(new LoginResult(user.getId(), jwt));
         }
         return Optional.empty();
     }

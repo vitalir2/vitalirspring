@@ -24,16 +24,18 @@ public class LoginController implements LoginApi {
 
     @Override
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<Long> login(@RequestBody LoginRequest loginRequest) {
         var email = loginRequest.email();
         var password = loginRequest.password();
-        var jwt = loginService.login(email, password);
-        if (jwt.isEmpty()) {
+        var optionalLoginResult = loginService.login(email, password);
+        if (optionalLoginResult.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
+        var jwt = optionalLoginResult.get().jwt();
+        var userId = optionalLoginResult.get().userId();
         return ResponseEntity.ok().header(
                 HttpHeaders.AUTHORIZATION,
-                JwtConstants.BEARER_PREFIX + jwt.get()
-        ).build();
+                JwtConstants.BEARER_PREFIX + jwt
+        ).body(userId);
     }
 }
