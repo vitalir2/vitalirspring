@@ -11,4 +11,12 @@ spring:
       enabled: true
   config:
     activate:
-      on-profile: "test"
+      on-profile: ["test", "test-security"]
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+
+jwt_secret: "secret"
