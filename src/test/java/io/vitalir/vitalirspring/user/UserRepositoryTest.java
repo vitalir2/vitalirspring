@@ -40,6 +40,16 @@ public class UserRepositoryTest extends UserFeatureTest {
     }
 
     @Test
+    public void whenGetUserByIdAndItExists_returnIt() {
+        testEntityManager.persist(validUser);
+
+        var result = userRepository.getById(validUser.getId());
+
+        assertTrue(result.isPresent());
+        assertEquals(validUser, result.get());
+    }
+
+    @Test
     public void whenSaveUser_saveIt() {
         userRepository.save(validUser);
 
