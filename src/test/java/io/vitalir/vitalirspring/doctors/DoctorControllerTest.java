@@ -11,6 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
@@ -39,5 +40,26 @@ public class DoctorControllerTest extends DoctorFeatureTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].id", equalTo((int) DOCTOR.getId())));
+    }
+
+    @Test
+    void whenGetDoctorByIdWhichExists_returnIt() throws Exception {
+        given(doctorService.getDoctorById(DOCTOR.getId())).willReturn(Optional.of(DOCTOR));
+        var requestBuilder = get(DOCTORS_ENDPOINT + DOCTOR.getId())
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", equalTo((int) DOCTOR.getId())));
+    }
+
+    @Test
+    void whenGetDoctorByIdWhichDoesNotExist_returnBadRequest() throws Exception {
+        given(doctorService.getDoctorById(DOCTOR.getId())).willReturn(Optional.empty());
+        var requestBuilder = get(DOCTORS_ENDPOINT + DOCTOR.getId())
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest());
     }
 }

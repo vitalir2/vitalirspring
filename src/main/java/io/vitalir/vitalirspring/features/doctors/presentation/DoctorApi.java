@@ -23,7 +23,21 @@ public interface DoctorApi {
     )
     ResponseEntity<List<Doctor>> getAll();
 
-    ResponseEntity<Doctor> getDoctorById();
+    @Operation(
+            method = HttpMethods.GET,
+            summary = "Получить доктора по его id",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successful response"
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Doctor is not found"
+                    )
+            }
+    )
+    ResponseEntity<Doctor> getDoctorById(long id);
 
     ResponseEntity<Long> addDoctor(Doctor doctor);
 

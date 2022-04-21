@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -36,5 +37,24 @@ public class DoctorServiceImplTest extends DoctorFeatureTest {
         assertThat(result).isNotNull();
         assertThat(result.size()).isEqualTo(1);
         assertThat(result.get(0)).isEqualTo(DOCTOR);
+    }
+
+    @Test
+    void whenGetDoctorByIdWhichExists_returnIt() {
+        given(doctorRepository.findById(DOCTOR.getId())).willReturn(Optional.of(DOCTOR));
+
+        var result = doctorService.getDoctorById(DOCTOR.getId());
+
+        assertThat(result.isPresent()).isTrue();
+        assertThat(result.get()).isEqualTo(DOCTOR);
+    }
+
+    @Test
+    void whenGetDoctorByIdWhichDoesNotExist_returnEmpty() {
+        given(doctorRepository.findById(DOCTOR.getId())).willReturn(Optional.empty());
+
+        var result = doctorService.getDoctorById(DOCTOR.getId());
+
+        assertThat(result.isEmpty()).isTrue();
     }
 }

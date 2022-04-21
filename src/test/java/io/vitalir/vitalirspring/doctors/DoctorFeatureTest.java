@@ -4,7 +4,7 @@ import io.vitalir.vitalirspring.features.doctors.domain.Doctor;
 
 public class DoctorFeatureTest {
 
-    protected static final String DOCTORS_ENDPOINT = "/api/v1/doctors";
+    protected static final String DOCTORS_ENDPOINT = "/api/v1/doctors/";
     protected static final String DOCTOR_NAME = "";
     protected static final Doctor DOCTOR = new Doctor();
 }

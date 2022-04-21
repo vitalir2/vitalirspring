@@ -37,4 +37,21 @@ public class JpaDoctorRepositoryTest extends DoctorFeatureTest {
         assertThat(result.size()).isEqualTo(1);
         assertThat(result.get(0)).isEqualTo(doctor);
     }
+
+    @Test
+    void whenGetDoctorByIdWhichExists_returnIt() {
+        testEntityManager.persist(doctor);
+
+        var result = doctorRepository.findById(doctor.getId());
+
+        assertThat(result).isNotEmpty();
+        assertThat(result.get().getId()).isEqualTo(doctor.getId());
+    }
+
+    @Test
+    void whenGetDoctorByIdWhichDoesNotExist_returnIt() {
+        var result = doctorRepository.findById(doctor.getId());
+
+        assertThat(result).isEmpty();
+    }
 }

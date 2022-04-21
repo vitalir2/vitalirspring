@@ -3,10 +3,13 @@ package io.vitalir.vitalirspring.features.doctors.presentation;
 import io.vitalir.vitalirspring.features.doctors.domain.Doctor;
 import io.vitalir.vitalirspring.features.doctors.domain.DoctorService;
 import io.vitalir.vitalirspring.features.doctors.domain.Specialization;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -27,8 +30,13 @@ public class DoctorController implements DoctorApi {
     }
 
     @Override
-    public ResponseEntity<Doctor> getDoctorById() {
-        return null;
+    @GetMapping("/{id}")
+    public ResponseEntity<Doctor> getDoctorById(@PathVariable long id) {
+        var doctor = doctorService.getDoctorById(id);
+        if (doctor.isPresent()) {
+            return ResponseEntity.ok(doctor.get());
+        }
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
 
     @Override
