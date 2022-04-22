@@ -13,7 +13,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class DoctorServiceImplTest extends DoctorFeatureTest {
@@ -71,6 +73,26 @@ public class DoctorServiceImplTest extends DoctorFeatureTest {
     @Test
     void whenAddInvalidDoctorById_returnEmpty() {
         var result = doctorService.addDoctor(INVALID_DOCTOR);
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    void whenRemoveDoctorByIdWhichExists_returnItAndRemove() {
+        given(doctorRepository.findById(anyLong())).willReturn(Optional.of(DOCTOR));
+
+        var result = doctorService.removeDoctorById(DOCTOR.getId());
+
+        assertThat(result).isPresent();
+        assertThat(result.get().getId()).isEqualTo(DOCTOR.getId());
+        verify(doctorRepository).deleteById(DOCTOR.getId());
+    }
+
+    @Test
+    void whenRemoveDoctorByIdWhichDoesNotExist_returnEmpty() {
+        given(doctorRepository.findById(anyLong())).willReturn(Optional.empty());
+
+        var result = doctorService.removeDoctorById(DOCTOR.getId());
 
         assertThat(result).isEmpty();
     }

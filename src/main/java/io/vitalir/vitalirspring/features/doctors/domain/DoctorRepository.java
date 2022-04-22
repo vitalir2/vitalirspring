@@ -10,4 +10,6 @@ public interface DoctorRepository {
     Optional<Doctor> findById(long id);
 
     Doctor save(Doctor doctor);
+
+    void deleteById(long id);
 }

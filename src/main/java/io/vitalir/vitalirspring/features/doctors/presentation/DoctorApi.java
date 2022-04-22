@@ -55,6 +55,20 @@ public interface DoctorApi {
     )
     ResponseEntity<Long> addDoctor(Doctor doctor);
 
+    @Operation(
+            method = HttpMethods.DELETE,
+            summary = "Удалить доктора из системы по id",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successful deleted"
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Doctor was not found"
+                    )
+            }
+    )
     ResponseEntity<Doctor> removeDoctorById(long id);
 
     ResponseEntity<List<Doctor>> getDoctorsBySpecialization(MedicalSpecialty specialization);

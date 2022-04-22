@@ -64,4 +64,13 @@ public class JpaDoctorRepositoryTest extends DoctorFeatureTest {
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(doctor.getId());
     }
+
+    @Test
+    void whenRemoveDoctorWhichExists_removeIt() {
+        var id = testEntityManager.persistAndGetId(doctor, Long.class);
+
+        doctorRepository.deleteById(id);
+
+        assertThat(testEntityManager.find(Doctor.class, id)).isNull();
+    }
 }

@@ -9,4 +9,6 @@ public interface DoctorService {
     Optional<Doctor> getDoctorById(long id);
 
     Optional<Long> addDoctor(Doctor doctor);
+
+    Optional<Doctor> removeDoctorById(long id);
 }

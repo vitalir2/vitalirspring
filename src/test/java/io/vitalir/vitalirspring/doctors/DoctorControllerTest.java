@@ -18,8 +18,8 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -86,6 +86,28 @@ public class DoctorControllerTest extends DoctorFeatureTest {
         var requestBuilder = post(DOCTORS_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(INVALID_DOCTOR));
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void whenRemoveDoctorByIdWhichExists_returnIt() throws Exception {
+        given(doctorService.removeDoctorById(DOCTOR.getId())).willReturn(Optional.of(DOCTOR));
+        var requestBuilder = delete(DOCTORS_ENDPOINT + DOCTOR.getId())
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", equalTo((int) DOCTOR.getId())));
+        verify(doctorService).removeDoctorById(DOCTOR.getId());
+    }
+
+    @Test
+    void whenRemoveDoctorByIdWhichDoesNotExist_returnBadRequest() throws Exception {
+        given(doctorService.removeDoctorById(DOCTOR.getId())).willReturn(Optional.empty());
+        var requestBuilder = delete(DOCTORS_ENDPOINT + DOCTOR.getId())
+                .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isBadRequest());

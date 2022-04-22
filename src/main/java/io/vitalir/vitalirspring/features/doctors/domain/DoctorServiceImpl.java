@@ -33,6 +33,15 @@ public class DoctorServiceImpl implements DoctorService {
         return Optional.empty();
     }
 
+    @Override
+    public Optional<Doctor> removeDoctorById(long id) {
+        var optionalDoctor = doctorRepository.findById(id);
+        if (optionalDoctor.isPresent()) {
+            doctorRepository.deleteById(id);
+        }
+        return optionalDoctor;
+    }
+
     private boolean validate(Doctor doctor) {
         return doctor.getName() != null;
     }

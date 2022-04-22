@@ -50,8 +50,13 @@ public class DoctorController implements DoctorApi {
     }
 
     @Override
-    public ResponseEntity<Doctor> removeDoctorById(long id) {
-        return null;
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Doctor> removeDoctorById(@PathVariable long id) {
+        var doctor = doctorService.removeDoctorById(id);
+        if (doctor.isPresent()) {
+            return ResponseEntity.ok(doctor.get());
+        }
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
 
     @Override
