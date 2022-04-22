@@ -5,12 +5,10 @@ import io.vitalir.vitalirspring.features.doctors.domain.DoctorService;
 import io.vitalir.vitalirspring.features.doctors.domain.MedicalSpecialty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -40,8 +38,15 @@ public class DoctorController implements DoctorApi {
     }
 
     @Override
+    @PostMapping
     public ResponseEntity<Long> addDoctor(Doctor doctor) {
-        return null;
+        var optionalDoctorId = doctorService.addDoctor(doctor);
+        if (optionalDoctorId.isPresent()) {
+            return ResponseEntity
+                    .created(URI.create("/api/v1/doctors/" + doctor.getId()))
+                    .body(optionalDoctorId.get());
+        }
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
 
     @Override

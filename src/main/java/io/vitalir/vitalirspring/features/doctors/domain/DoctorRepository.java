@@ -8,4 +8,6 @@ public interface DoctorRepository {
     List<Doctor> findAll();
 
     Optional<Doctor> findById(long id);
+
+    Doctor save(Doctor doctor);
 }

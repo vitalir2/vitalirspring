@@ -39,6 +39,20 @@ public interface DoctorApi {
     )
     ResponseEntity<Doctor> getDoctorById(long id);
 
+    @Operation(
+            method = HttpMethods.POST,
+            summary = "Добавить нового доктора в систему",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "Successfully created"
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Invalid doctor model"
+                    )
+            }
+    )
     ResponseEntity<Long> addDoctor(Doctor doctor);
 
     ResponseEntity<Doctor> removeDoctorById(long id);

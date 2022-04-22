@@ -7,4 +7,6 @@ public interface DoctorService {
     List<Doctor> getAll();
 
     Optional<Doctor> getDoctorById(long id);
+
+    Optional<Long> addDoctor(Doctor doctor);
 }

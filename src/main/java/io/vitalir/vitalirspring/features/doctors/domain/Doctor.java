@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -31,6 +32,13 @@ public class Doctor {
     @CollectionTable(name = "medical_specialties", joinColumns = @JoinColumn(name = "id"))
     @Enumerated(EnumType.STRING)
     private List<MedicalSpecialty> medicalSpecialties;
+
+    public Doctor(String name) {
+        this.id = 0;
+        this.name = name;
+        this.experienceYears = 0;
+        this.medicalSpecialties = Collections.emptyList();
+    }
 
     @Override
     public boolean equals(Object o) {

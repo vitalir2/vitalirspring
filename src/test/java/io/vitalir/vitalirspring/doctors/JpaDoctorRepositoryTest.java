@@ -23,7 +23,7 @@ public class JpaDoctorRepositoryTest extends DoctorFeatureTest {
 
     @BeforeEach
     void initModels() {
-        doctor = new Doctor();
+        doctor = new Doctor("name");
     }
 
 
@@ -53,5 +53,15 @@ public class JpaDoctorRepositoryTest extends DoctorFeatureTest {
         var result = doctorRepository.findById(doctor.getId());
 
         assertThat(result).isEmpty();
+    }
+
+    @Test
+    void whenAddDoctor_addIt() {
+        doctorRepository.save(doctor);
+
+        var result = testEntityManager.find(Doctor.class, doctor.getId());
+
+        assertThat(result).isNotNull();
+        assertThat(result.getId()).isEqualTo(doctor.getId());
     }
 }

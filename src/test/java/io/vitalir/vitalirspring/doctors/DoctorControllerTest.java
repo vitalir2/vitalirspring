@@ -1,5 +1,6 @@
 package io.vitalir.vitalirspring.doctors;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vitalir.vitalirspring.features.doctors.domain.DoctorService;
 import io.vitalir.vitalirspring.features.doctors.presentation.DoctorController;
 import org.junit.jupiter.api.Test;
@@ -15,8 +16,10 @@ import java.util.Optional;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -58,6 +61,31 @@ public class DoctorControllerTest extends DoctorFeatureTest {
         given(doctorService.getDoctorById(DOCTOR.getId())).willReturn(Optional.empty());
         var requestBuilder = get(DOCTORS_ENDPOINT + DOCTOR.getId())
                 .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void whenAddValidDoctor_returnItsId() throws Exception {
+        var objectMapper = new ObjectMapper();
+        given(doctorService.addDoctor(any())).willReturn(Optional.of(DOCTOR.getId()));
+        var requestBuilder = post(DOCTORS_ENDPOINT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(DOCTOR));
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$", equalTo((int) DOCTOR.getId())));
+    }
+
+    @Test
+    void whenAddInvalidDoctor_returnBadRequest() throws Exception {
+        var objectMapper = new ObjectMapper();
+        given(doctorService.addDoctor(any())).willReturn(Optional.empty());
+        var requestBuilder = post(DOCTORS_ENDPOINT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(INVALID_DOCTOR));
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isBadRequest());
