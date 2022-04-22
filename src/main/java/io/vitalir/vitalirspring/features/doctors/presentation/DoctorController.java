@@ -65,7 +65,14 @@ public class DoctorController implements DoctorApi {
     }
 
     @Override
-    public ResponseEntity<Doctor> changeDoctor(Doctor changedDoctor) {
-        return null;
+    @PutMapping
+    public ResponseEntity<Long> changeDoctor(@RequestBody Doctor changedDoctor) {
+        var optionalDoctorId = doctorService.changeDoctor(changedDoctor);
+        if (optionalDoctorId.isPresent()) {
+            return ResponseEntity
+                    .created(URI.create("/api/v1/doctors/" + changedDoctor.getId()))
+                    .body(optionalDoctorId.get());
+        }
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
 }

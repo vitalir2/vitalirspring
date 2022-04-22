@@ -112,4 +112,29 @@ public class DoctorControllerTest extends DoctorFeatureTest {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    void whenChangeValidDoctor_returnItsId() throws Exception {
+        var objectMapper = new ObjectMapper();
+        given(doctorService.changeDoctor(any())).willReturn(Optional.of(DOCTOR.getId()));
+        var requestBuilder = put(DOCTORS_ENDPOINT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(DOCTOR));
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$", equalTo((int) DOCTOR.getId())));
+    }
+
+    @Test
+    void whenChangeInvalidDoctor_returnBadRequest() throws Exception {
+        var objectMapper = new ObjectMapper();
+        given(doctorService.changeDoctor(any())).willReturn(Optional.empty());
+        var requestBuilder = put(DOCTORS_ENDPOINT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(INVALID_DOCTOR));
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest());
+    }
 }

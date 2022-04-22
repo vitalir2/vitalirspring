@@ -73,5 +73,19 @@ public interface DoctorApi {
 
     ResponseEntity<List<Doctor>> getDoctorsBySpecialization(MedicalSpecialty specialization);
 
-    ResponseEntity<Doctor> changeDoctor(Doctor changedDoctor);
+    @Operation(
+            method = HttpMethods.GET,
+            summary = "Поменять существующего доктора с таким же id",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "Successful changed"
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Doctor with this id does not exist or invalid doctor model"
+                    )
+            }
+    )
+    ResponseEntity<Long> changeDoctor(Doctor changedDoctor);
 }

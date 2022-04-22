@@ -96,4 +96,21 @@ public class DoctorServiceImplTest extends DoctorFeatureTest {
 
         assertThat(result).isEmpty();
     }
+
+    @Test
+    void whenChangeValidDoctorById_returnItsId() {
+        given(doctorRepository.save(DOCTOR)).willReturn(DOCTOR);
+
+        var result = doctorService.changeDoctor(DOCTOR);
+
+        assertThat(result).isPresent();
+        assertThat(result.get()).isEqualTo(DOCTOR.getId());
+    }
+
+    @Test
+    void whenChangeInvalidDoctorById_returnEmpty() {
+        var result = doctorService.changeDoctor(INVALID_DOCTOR);
+
+        assertThat(result).isEmpty();
+    }
 }
