@@ -2,11 +2,14 @@ package io.vitalir.vitalirspring.doctors;
 
 import io.vitalir.vitalirspring.features.doctors.domain.Doctor;
 import io.vitalir.vitalirspring.features.doctors.domain.DoctorRepository;
+import io.vitalir.vitalirspring.features.doctors.domain.MedicalSpecialty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+
+import java.util.Set;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -72,5 +75,17 @@ public class JpaDoctorRepositoryTest extends DoctorFeatureTest {
         doctorRepository.deleteById(id);
 
         assertThat(testEntityManager.find(Doctor.class, id)).isNull();
+    }
+
+    @Test
+    void whenGetDoctorsBySpec_returnThem() {
+        var doctor = new Doctor("name", Set.of(MedicalSpecialty.CARDIOLOGY));
+        testEntityManager.persist(doctor);
+
+        var result = doctorRepository.findBySpecialty(MedicalSpecialty.CARDIOLOGY);
+
+        assertThat(result).isNotNull();
+        assertThat(result.size()).isEqualTo(1);
+        assertThat(result.get(0)).isEqualTo(doctor);
     }
 }

@@ -1,6 +1,8 @@
 package io.vitalir.vitalirspring.features.doctors.presentation;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.vitalir.vitalirspring.common.HttpMethods;
 import io.vitalir.vitalirspring.features.doctors.domain.Doctor;
@@ -14,14 +16,23 @@ public interface DoctorApi {
     @Operation(
             method = HttpMethods.GET,
             summary = "Получение всех докторов в системе",
+            parameters = {
+                    @Parameter(
+                            name = "specialty",
+                            in = ParameterIn.QUERY,
+                            description = "Фильтрация по специальности"
+                    )
+            },
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Successful response"
+                            description = "A successful response"
                     )
             }
     )
-    ResponseEntity<List<Doctor>> getAll();
+    ResponseEntity<List<Doctor>> getDoctors(
+            MedicalSpecialty medicalSpecialty
+    );
 
     @Operation(
             method = HttpMethods.GET,
@@ -70,8 +81,6 @@ public interface DoctorApi {
             }
     )
     ResponseEntity<Doctor> removeDoctorById(long id);
-
-    ResponseEntity<List<Doctor>> getDoctorsBySpecialization(MedicalSpecialty specialization);
 
     @Operation(
             method = HttpMethods.GET,

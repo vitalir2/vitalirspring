@@ -1,19 +1,19 @@
 package io.vitalir.vitalirspring.features.doctors.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Table(name = "doctors")
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Doctor {
 
     @Id
@@ -29,15 +29,15 @@ public class Doctor {
 
     @Column(name = "specialties")
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "medical_specialties", joinColumns = @JoinColumn(name = "id"))
+    @CollectionTable(name = "doctor_specialties", joinColumns = @JoinColumn(name = "doctor_id"))
     @Enumerated(EnumType.STRING)
-    private List<MedicalSpecialty> medicalSpecialties;
+    private Set<MedicalSpecialty> medicalSpecialties = new HashSet<>();
 
+    public Doctor(String name, Set<MedicalSpecialty> medicalSpecialties) {
+        this(0, name, 0, medicalSpecialties);
+    }
     public Doctor(String name) {
-        this.id = 0;
-        this.name = name;
-        this.experienceYears = 0;
-        this.medicalSpecialties = Collections.emptyList();
+        this(0, name, 0, Collections.emptySet());
     }
 
     @Override

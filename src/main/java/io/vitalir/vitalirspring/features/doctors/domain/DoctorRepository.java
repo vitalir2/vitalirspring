@@ -12,4 +12,6 @@ public interface DoctorRepository {
     Doctor save(Doctor doctor);
 
     void deleteById(long id);
+
+    List<Doctor> findBySpecialty(MedicalSpecialty medicalSpecialty);
 }

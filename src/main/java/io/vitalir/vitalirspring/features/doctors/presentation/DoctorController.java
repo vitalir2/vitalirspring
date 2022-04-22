@@ -4,6 +4,7 @@ import io.vitalir.vitalirspring.features.doctors.domain.Doctor;
 import io.vitalir.vitalirspring.features.doctors.domain.DoctorService;
 import io.vitalir.vitalirspring.features.doctors.domain.MedicalSpecialty;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -22,13 +23,18 @@ public class DoctorController implements DoctorApi {
     }
 
     @Override
-    @GetMapping
-    public ResponseEntity<List<Doctor>> getAll() {
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Doctor>> getDoctors(
+            @RequestParam(name = "specialty", required = false) MedicalSpecialty medicalSpecialty
+    ) {
+        if (medicalSpecialty != null) {
+            return ResponseEntity.ok(doctorService.getDoctorsBySpecialty(medicalSpecialty));
+        }
         return ResponseEntity.ok(doctorService.getAll());
     }
 
     @Override
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Doctor> getDoctorById(@PathVariable long id) {
         var doctor = doctorService.getDoctorById(id);
         if (doctor.isPresent()) {
@@ -38,7 +44,7 @@ public class DoctorController implements DoctorApi {
     }
 
     @Override
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Long> addDoctor(Doctor doctor) {
         var optionalDoctorId = doctorService.addDoctor(doctor);
         if (optionalDoctorId.isPresent()) {
@@ -50,7 +56,7 @@ public class DoctorController implements DoctorApi {
     }
 
     @Override
-    @DeleteMapping("/{id}")
+    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Doctor> removeDoctorById(@PathVariable long id) {
         var doctor = doctorService.removeDoctorById(id);
         if (doctor.isPresent()) {
@@ -60,12 +66,7 @@ public class DoctorController implements DoctorApi {
     }
 
     @Override
-    public ResponseEntity<List<Doctor>> getDoctorsBySpecialization(MedicalSpecialty specialization) {
-        return null;
-    }
-
-    @Override
-    @PutMapping
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Long> changeDoctor(@RequestBody Doctor changedDoctor) {
         var optionalDoctorId = doctorService.changeDoctor(changedDoctor);
         if (optionalDoctorId.isPresent()) {

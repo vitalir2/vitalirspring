@@ -1,5 +1,7 @@
 package io.vitalir.vitalirspring.features.doctors.domain;
 
+import org.springframework.http.ResponseEntity;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -13,4 +15,6 @@ public interface DoctorService {
     Optional<Doctor> removeDoctorById(long id);
 
     Optional<Long> changeDoctor(Doctor doctor);
+
+    List<Doctor> getDoctorsBySpecialty(MedicalSpecialty specialty);
 }

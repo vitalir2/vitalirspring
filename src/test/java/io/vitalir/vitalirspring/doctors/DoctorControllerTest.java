@@ -2,6 +2,7 @@ package io.vitalir.vitalirspring.doctors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vitalir.vitalirspring.features.doctors.domain.DoctorService;
+import io.vitalir.vitalirspring.features.doctors.domain.MedicalSpecialty;
 import io.vitalir.vitalirspring.features.doctors.presentation.DoctorController;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -136,5 +137,32 @@ public class DoctorControllerTest extends DoctorFeatureTest {
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void whenGetDoctorsBySpecWhichExist_returnThem() throws Exception {
+        given(doctorService.getDoctorsBySpecialty(MedicalSpecialty.GASTROENTEROLOGY))
+                .willReturn(List.of(DOCTOR));
+        var requestBuilder = get(DOCTORS_ENDPOINT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .queryParam("specialty", MedicalSpecialty.GASTROENTEROLOGY.name());
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].id", equalTo((int) DOCTOR.getId())));
+    }
+
+    @Test
+    void whenGetDoctorsBySpecWhichDoNotExist_returnEmpty() throws Exception {
+        given(doctorService.getDoctorsBySpecialty(MedicalSpecialty.GASTROENTEROLOGY))
+                .willReturn(List.of(DOCTOR));
+        var requestBuilder = get(DOCTORS_ENDPOINT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .queryParam("specialty", MedicalSpecialty.PEDIATRICS.name());
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(0)));
     }
 }

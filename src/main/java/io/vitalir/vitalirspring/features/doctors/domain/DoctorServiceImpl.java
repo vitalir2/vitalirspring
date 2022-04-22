@@ -49,6 +49,11 @@ public class DoctorServiceImpl implements DoctorService {
         return Optional.empty();
     }
 
+    @Override
+    public List<Doctor> getDoctorsBySpecialty(MedicalSpecialty specialty) {
+        return doctorRepository.findBySpecialty(specialty);
+    }
+
     private boolean validate(Doctor doctor) {
         return doctor.getName() != null;
     }

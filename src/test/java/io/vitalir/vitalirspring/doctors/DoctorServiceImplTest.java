@@ -3,6 +3,7 @@ package io.vitalir.vitalirspring.doctors;
 import io.vitalir.vitalirspring.features.doctors.domain.DoctorRepository;
 import io.vitalir.vitalirspring.features.doctors.domain.DoctorService;
 import io.vitalir.vitalirspring.features.doctors.domain.DoctorServiceImpl;
+import io.vitalir.vitalirspring.features.doctors.domain.MedicalSpecialty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -112,5 +113,15 @@ public class DoctorServiceImplTest extends DoctorFeatureTest {
         var result = doctorService.changeDoctor(INVALID_DOCTOR);
 
         assertThat(result).isEmpty();
+    }
+
+    @Test
+    void whenGetDoctorsBySpecWhichExist_returnThem() {
+        given(doctorRepository.findBySpecialty(MedicalSpecialty.CARDIOLOGY)).willReturn(List.of(DOCTOR));
+
+        var result = doctorService.getDoctorsBySpecialty(MedicalSpecialty.CARDIOLOGY);
+
+        assertThat(result).isNotNull();
+        assertThat(result.get(0)).isEqualTo(DOCTOR);
     }
 }
