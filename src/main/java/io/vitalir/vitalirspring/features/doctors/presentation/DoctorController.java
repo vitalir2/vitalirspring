@@ -2,7 +2,7 @@ package io.vitalir.vitalirspring.features.doctors.presentation;
 
 import io.vitalir.vitalirspring.features.doctors.domain.Doctor;
 import io.vitalir.vitalirspring.features.doctors.domain.DoctorService;
-import io.vitalir.vitalirspring.features.doctors.domain.Specialization;
+import io.vitalir.vitalirspring.features.doctors.domain.MedicalSpecialty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,7 +50,7 @@ public class DoctorController implements DoctorApi {
     }
 
     @Override
-    public ResponseEntity<List<Doctor>> getDoctorsBySpecialization(Specialization specialization) {
+    public ResponseEntity<List<Doctor>> getDoctorsBySpecialization(MedicalSpecialty specialization) {
         return null;
     }
 

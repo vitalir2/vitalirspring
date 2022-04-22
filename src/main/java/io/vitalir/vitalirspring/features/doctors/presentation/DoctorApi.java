@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.vitalir.vitalirspring.common.HttpMethods;
 import io.vitalir.vitalirspring.features.doctors.domain.Doctor;
-import io.vitalir.vitalirspring.features.doctors.domain.Specialization;
+import io.vitalir.vitalirspring.features.doctors.domain.MedicalSpecialty;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -43,7 +43,7 @@ public interface DoctorApi {
 
     ResponseEntity<Doctor> removeDoctorById(long id);
 
-    ResponseEntity<List<Doctor>> getDoctorsBySpecialization(Specialization specialization);
+    ResponseEntity<List<Doctor>> getDoctorsBySpecialization(MedicalSpecialty specialization);
 
     ResponseEntity<Doctor> changeDoctor(Doctor changedDoctor);
 }
