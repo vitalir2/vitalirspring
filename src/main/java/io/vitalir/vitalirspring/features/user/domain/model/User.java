@@ -1,12 +1,15 @@
 package io.vitalir.vitalirspring.features.user.domain.model;
 
+import io.vitalir.vitalirspring.features.doctors.domain.Appointment;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -29,6 +32,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private Role role;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private Set<Appointment> appointments = new HashSet<>();
 
     public User(String email, String password) {
         this.email = email;

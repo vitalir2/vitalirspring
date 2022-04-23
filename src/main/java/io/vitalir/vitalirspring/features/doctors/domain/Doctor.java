@@ -33,6 +33,12 @@ public class Doctor {
     @Enumerated(EnumType.STRING)
     private Set<MedicalSpecialty> medicalSpecialties = new HashSet<>();
 
+    @OneToMany(mappedBy = "doctor", fetch = FetchType.LAZY)
+    private Set<Appointment> appointments = new HashSet<>();
+
+    public Doctor(long id, String name, int experienceYears, Set<MedicalSpecialty> medicalSpecialties) {
+        this(id, name, experienceYears, medicalSpecialties, new HashSet<>());
+    }
     public Doctor(String name, Set<MedicalSpecialty> medicalSpecialties) {
         this(0, name, 0, medicalSpecialties);
     }
