@@ -2,6 +2,7 @@ package io.vitalir.vitalirspring.features.appointment.domain;
 
 import io.vitalir.vitalirspring.features.doctors.domain.Doctor;
 import io.vitalir.vitalirspring.features.user.domain.model.User;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Appointment {
 
     @Id

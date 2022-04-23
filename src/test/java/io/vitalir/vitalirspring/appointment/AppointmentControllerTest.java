@@ -1,6 +1,7 @@
 package io.vitalir.vitalirspring.appointment;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.vitalir.vitalirspring.common.HttpEndpoints;
 import io.vitalir.vitalirspring.features.appointment.domain.*;
 import io.vitalir.vitalirspring.features.appointment.presentation.AppointmentController;
@@ -40,6 +41,8 @@ public class AppointmentControllerTest {
     private static final Appointment APPOINTMENT = new Appointment();
 
     private static final long APPOINTMENT_ID = APPOINTMENT.getId();
+
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().registerModule(new JavaTimeModule());
 
     @Test
     void whenGetAppointmentsByExistingUserId_returnIt() throws Exception {
@@ -108,7 +111,7 @@ public class AppointmentControllerTest {
         var addAppointmentRequest = new AddAppointmentRequest(
                 1,
                 2,
-                LocalDate.now().toEpochDay(),
+                LocalDate.now(),
                 1000 * 60 * 15,
                 "A description"
         );
@@ -116,7 +119,7 @@ public class AppointmentControllerTest {
                 .willReturn(APPOINTMENT_ID);
         var requestBuilder = post(HttpEndpoints.APPOINTMENT_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsBytes(addAppointmentRequest));
+                .content(OBJECT_MAPPER.writeValueAsBytes(addAppointmentRequest));
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isCreated())
@@ -129,7 +132,7 @@ public class AppointmentControllerTest {
         var addAppointmentRequest = new AddAppointmentRequest(
                 1,
                 2,
-                LocalDate.now().toEpochDay(),
+                LocalDate.now(),
                 1000 * 60 * 15,
                 "A description"
         );
@@ -137,7 +140,7 @@ public class AppointmentControllerTest {
                 .willThrow(new IllegalUserIdException());
         var requestBuilder = post(HttpEndpoints.APPOINTMENT_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsBytes(addAppointmentRequest));
+                .content(OBJECT_MAPPER.writeValueAsBytes(addAppointmentRequest));
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isBadRequest());
@@ -148,7 +151,7 @@ public class AppointmentControllerTest {
         var addAppointmentRequest = new AddAppointmentRequest(
                 1,
                 2,
-                LocalDate.now().toEpochDay(),
+                LocalDate.now(),
                 1000 * 60 * 15,
                 "A description"
         );
@@ -156,7 +159,7 @@ public class AppointmentControllerTest {
                 .willThrow(new InvalidDoctorIdException());
         var requestBuilder = post(HttpEndpoints.APPOINTMENT_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsBytes(addAppointmentRequest));
+                .content(OBJECT_MAPPER.writeValueAsBytes(addAppointmentRequest));
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isBadRequest());

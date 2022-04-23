@@ -7,4 +7,6 @@ public interface AppointmentRepository {
     List<Appointment> getAppointmentsByUserId(long userId);
 
     void deleteById(long appointmentId);
+
+    Appointment save(Appointment appointment);
 }

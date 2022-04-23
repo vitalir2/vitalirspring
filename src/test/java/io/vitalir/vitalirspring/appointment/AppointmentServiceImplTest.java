@@ -1,6 +1,8 @@
 package io.vitalir.vitalirspring.appointment;
 
 import io.vitalir.vitalirspring.features.appointment.domain.*;
+import io.vitalir.vitalirspring.features.doctors.domain.Doctor;
+import io.vitalir.vitalirspring.features.doctors.domain.DoctorRepository;
 import io.vitalir.vitalirspring.features.user.domain.UserRepository;
 import io.vitalir.vitalirspring.features.user.domain.model.Role;
 import io.vitalir.vitalirspring.features.user.domain.model.User;
@@ -10,34 +12,52 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class AppointmentServiceImplTest extends AppointmentFeatureTest {
-
     @Mock
     private UserRepository userRepository;
 
     @Mock
     private AppointmentRepository appointmentRepository;
 
+    @Mock
+    private DoctorRepository doctorRepository;
+
     private AppointmentService appointmentService;
 
     @BeforeEach
     void initBeforeEach() {
-        appointmentService = new AppointmentServiceImpl(userRepository, appointmentRepository);
+        appointmentService = new AppointmentServiceImpl(userRepository, appointmentRepository, doctorRepository);
     }
 
     private static final Appointment APPOINTMENT = new Appointment();
 
     private static final long APPOINTMENT_ID = APPOINTMENT.getId();
+
+    private static final long DOCTOR_ID = 2;
+
+    private static final AddAppointmentRequest ADD_APPOINTMENT_REQUEST = new AddAppointmentRequest(
+            USER_ID,
+            DOCTOR_ID,
+            LocalDate.now(),
+            60 * 1000,
+            ""
+    );
+
+    private static final User USER = new User("", "");
+
+    private static final Doctor DOCTOR = new Doctor("");
 
     @Test
     void whenGetAppointmentsByUserIdWhichExist_returnThem() {
@@ -95,5 +115,40 @@ public class AppointmentServiceImplTest extends AppointmentFeatureTest {
         var result = appointmentService.removeAppointmentByIds(USER_ID, APPOINTMENT_ID);
 
         assertThat(result).isEmpty();
+    }
+
+    @Test
+    void whenAddAppointmentWhichDoesNotExist_returnNewId() {
+        given(userRepository.getById(USER_ID))
+                .willReturn(Optional.of(USER));
+        given(doctorRepository.findById(DOCTOR_ID))
+                .willReturn(Optional.of(DOCTOR));
+        given(appointmentRepository.save(any()))
+                .willReturn(APPOINTMENT);
+
+        var result = appointmentService.addAppointment(ADD_APPOINTMENT_REQUEST);
+
+        assertThat(result).isNotNull();
+        verify(appointmentRepository).save(any());
+    }
+
+    @Test
+    void whenAddAppointmentByUserIdWhichDoesNotExist_throwInvalidUserId() {
+        given(userRepository.getById(USER_ID))
+                .willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> appointmentService.addAppointment(ADD_APPOINTMENT_REQUEST))
+                .isInstanceOf(IllegalUserIdException.class);
+    }
+
+    @Test
+    void whenAddAppointmentByDoctorIdWhichDoesNotExist_throwInvalidDoctorId() {
+        given(userRepository.getById(USER_ID))
+                .willReturn(Optional.of(USER));
+        given(doctorRepository.findById(DOCTOR_ID))
+                .willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> appointmentService.addAppointment(ADD_APPOINTMENT_REQUEST))
+                .isInstanceOf(InvalidDoctorIdException.class);
     }
 }

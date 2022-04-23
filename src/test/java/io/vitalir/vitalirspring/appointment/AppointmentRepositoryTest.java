@@ -50,4 +50,11 @@ public class AppointmentRepositoryTest {
 
         assertThat(testEntityManager.find(Appointment.class, appointment.getId())).isNull();
     }
+
+    @Test
+    void whenSaveAppointment_saveIt() {
+        appointmentRepository.save(appointment);
+
+        assertThat(testEntityManager.find(Appointment.class, appointment.getId())).isEqualTo(appointment);
+    }
 }
