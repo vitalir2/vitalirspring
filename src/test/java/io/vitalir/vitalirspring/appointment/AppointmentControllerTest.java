@@ -1,9 +1,8 @@
 package io.vitalir.vitalirspring.appointment;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vitalir.vitalirspring.common.HttpEndpoints;
-import io.vitalir.vitalirspring.features.appointment.domain.Appointment;
-import io.vitalir.vitalirspring.features.appointment.domain.AppointmentService;
-import io.vitalir.vitalirspring.features.appointment.domain.IllegalUserIdException;
+import io.vitalir.vitalirspring.features.appointment.domain.*;
 import io.vitalir.vitalirspring.features.appointment.presentation.AppointmentController;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,23 +12,23 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AppointmentController.class)
 @ActiveProfiles("test")
 public class AppointmentControllerTest {
-
     @Autowired
     private MockMvc mockMvc;
 
@@ -39,6 +38,8 @@ public class AppointmentControllerTest {
     private static final long USER_ID = 1;
 
     private static final Appointment APPOINTMENT = new Appointment();
+
+    private static final long APPOINTMENT_ID = APPOINTMENT.getId();
 
     @Test
     void whenGetAppointmentsByExistingUserId_returnIt() throws Exception {
@@ -97,6 +98,65 @@ public class AppointmentControllerTest {
         var requestBuilder = delete(HttpEndpoints.APPOINTMENT_ENDPOINT +
                 USER_ID + "/" + APPOINTMENT.getId())
                 .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void whenAddAppointmentByIdsWhichExist_returnAddedAppointmentId() throws Exception {
+        var addAppointmentRequest = new AddAppointmentRequest(
+                1,
+                2,
+                LocalDate.now().toEpochDay(),
+                1000 * 60 * 15,
+                "A description"
+        );
+        given(appointmentService.addAppointment(any()))
+                .willReturn(APPOINTMENT_ID);
+        var requestBuilder = post(HttpEndpoints.APPOINTMENT_ENDPOINT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsBytes(addAppointmentRequest));
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$", equalTo((int) APPOINTMENT_ID)));
+        verify(appointmentService).addAppointment(any());
+    }
+
+    @Test
+    void whenAddAppointmentByUserIdWhichDoesNotExist_returnBadRequest() throws Exception {
+        var addAppointmentRequest = new AddAppointmentRequest(
+                1,
+                2,
+                LocalDate.now().toEpochDay(),
+                1000 * 60 * 15,
+                "A description"
+        );
+        given(appointmentService.addAppointment(any()))
+                .willThrow(new IllegalUserIdException());
+        var requestBuilder = post(HttpEndpoints.APPOINTMENT_ENDPOINT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsBytes(addAppointmentRequest));
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void whenAddAppointmentByDoctorIdWhichDoesNotExist_returnBadRequest() throws Exception {
+        var addAppointmentRequest = new AddAppointmentRequest(
+                1,
+                2,
+                LocalDate.now().toEpochDay(),
+                1000 * 60 * 15,
+                "A description"
+        );
+        given(appointmentService.addAppointment(any()))
+                .willThrow(new InvalidDoctorIdException());
+        var requestBuilder = post(HttpEndpoints.APPOINTMENT_ENDPOINT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsBytes(addAppointmentRequest));
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isBadRequest());

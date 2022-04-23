@@ -42,4 +42,9 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
         throw new IllegalUserIdException();
     }
+
+    @Override
+    public long addAppointment(AddAppointmentRequest request) {
+        return 0;
+    }
 }

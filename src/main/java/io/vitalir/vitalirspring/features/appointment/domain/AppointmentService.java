@@ -7,4 +7,6 @@ public interface AppointmentService {
     List<Appointment> getAppointmentsByUserId(long userId);
 
     Optional<Appointment> removeAppointmentByIds(long userId, long appointmentId);
+
+    long addAppointment(AddAppointmentRequest request);
 }

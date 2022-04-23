@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.vitalir.vitalirspring.common.HttpMethods;
+import io.vitalir.vitalirspring.features.appointment.domain.AddAppointmentRequest;
 import io.vitalir.vitalirspring.features.appointment.domain.Appointment;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -61,7 +62,28 @@ public interface AppointmentApi {
     )
     ResponseEntity<Appointment> removeAppointmentByIds(long userId, long appointmentId);
 
-    ResponseEntity<Long> addAppointmentByIds(long userId, long doctorId, Appointment appointment);
+    // TODO @vitalir: Add handling for dates time
+    @Operation(
+            method = HttpMethods.POST,
+            summary = "Добавить новую запись для пользователя с userId и доктора с doctorId",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "A successful response",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = Long.class
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Invalid userId or doctorId"
+                    )
+            }
+    )
+    ResponseEntity<Long> addAppointmentByIds(AddAppointmentRequest request);
 
     ResponseEntity<Long> changeAppointmentByIds(long userId, Appointment appointment);
 }

@@ -1,15 +1,14 @@
 package io.vitalir.vitalirspring.features.appointment.presentation;
 
 import io.vitalir.vitalirspring.common.HttpEndpoints;
-import io.vitalir.vitalirspring.features.appointment.domain.Appointment;
-import io.vitalir.vitalirspring.features.appointment.domain.AppointmentService;
-import io.vitalir.vitalirspring.features.appointment.domain.IllegalUserIdException;
+import io.vitalir.vitalirspring.features.appointment.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -43,8 +42,12 @@ public class AppointmentController implements AppointmentApi {
     }
 
     @Override
-    public ResponseEntity<Long> addAppointmentByIds(long userId, long doctorId, Appointment appointment) {
-        return null;
+    @PostMapping
+    public ResponseEntity<Long> addAppointmentByIds(@RequestBody AddAppointmentRequest request) {
+        var result = appointmentService.addAppointment(request);
+        var createdLocation = HttpEndpoints.APPOINTMENT_ENDPOINT + request.userId() +
+                '/' + result;
+        return ResponseEntity.created(URI.create(createdLocation)).body(result);
     }
 
     @Override
@@ -54,6 +57,11 @@ public class AppointmentController implements AppointmentApi {
 
     @ExceptionHandler(value = IllegalUserIdException.class)
     ResponseEntity<IllegalUserIdException> handleIllegalUserId(IllegalUserIdException exception) {
+        return ResponseEntity.badRequest().body(exception);
+    }
+
+    @ExceptionHandler(value = InvalidDoctorIdException.class)
+    ResponseEntity<InvalidDoctorIdException> handleInvalidDoctorId(InvalidDoctorIdException exception) {
         return ResponseEntity.badRequest().body(exception);
     }
 }
