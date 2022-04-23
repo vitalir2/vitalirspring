@@ -31,13 +31,14 @@ public class AppointmentServiceImpl implements AppointmentService {
             if (user == null) {
                 throw new IllegalUserIdException();
             }
-            for (Appointment appointment: user.getAppointments()) {
-                if (appointment.getId() == appointmentId) {
-                    appointmentRepository.deleteById(appointmentId);
-                    return Optional.of(appointment);
-                }
+            var foundAppointment = user.getAppointments()
+                    .stream()
+                    .filter(appointment -> appointment.getId() == appointmentId)
+                    .findFirst();
+            if (foundAppointment.isPresent()) {
+                appointmentRepository.deleteById(appointmentId);
             }
-            return Optional.empty();
+            return foundAppointment;
         }
         throw new IllegalUserIdException();
     }
