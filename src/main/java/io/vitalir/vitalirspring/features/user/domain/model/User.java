@@ -1,10 +1,9 @@
 package io.vitalir.vitalirspring.features.user.domain.model;
 
-import io.vitalir.vitalirspring.features.doctors.domain.Appointment;
+import io.vitalir.vitalirspring.features.appointment.domain.Appointment;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
 import java.util.HashSet;

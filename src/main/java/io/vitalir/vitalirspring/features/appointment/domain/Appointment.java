@@ -1,5 +1,6 @@
-package io.vitalir.vitalirspring.features.doctors.domain;
+package io.vitalir.vitalirspring.features.appointment.domain;
 
+import io.vitalir.vitalirspring.features.doctors.domain.Doctor;
 import io.vitalir.vitalirspring.features.user.domain.model.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,11 +21,10 @@ public class Appointment {
     @Column(name = "id")
     private long id;
 
-    // TODO: remove optional = true (set to false)
-    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Doctor doctor;
 
-    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
     @Column(name = "description", nullable = false)
@@ -35,4 +35,13 @@ public class Appointment {
 
     @Column(name = "duration", nullable = false)
     private long durationMillis;
+
+    public Appointment(User user) {
+        this.id = 0;
+        this.description = "";
+        this.doctor = null;
+        this.user = user;
+        this.startDate = LocalDate.now();
+        this.durationMillis = 0;
+    }
 }

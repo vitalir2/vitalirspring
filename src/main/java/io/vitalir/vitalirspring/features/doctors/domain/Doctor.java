@@ -1,5 +1,6 @@
 package io.vitalir.vitalirspring.features.doctors.domain;
 
+import io.vitalir.vitalirspring.features.appointment.domain.Appointment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

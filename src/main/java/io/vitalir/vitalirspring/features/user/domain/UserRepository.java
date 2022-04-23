@@ -11,4 +11,6 @@ public interface UserRepository {
     Optional<User> getById(long id);
 
     User save(User user);
+
+    boolean existsById(long id);
 }
