@@ -30,8 +30,16 @@ public class AppointmentController implements AppointmentApi {
     }
 
     @Override
-    public ResponseEntity<Appointment> removeAppointmentByIds(long userId, long appointmentId) {
-        return null;
+    @DeleteMapping("/{userId}/{appointmentId}")
+    public ResponseEntity<Appointment> removeAppointmentByIds(
+            @PathVariable long userId,
+            @PathVariable long appointmentId
+    ) {
+        var result = appointmentService.removeAppointmentByIds(userId, appointmentId);
+        if (result.isPresent()) {
+            return ResponseEntity.ok(result.get());
+        }
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
 
     @Override

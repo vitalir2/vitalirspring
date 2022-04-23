@@ -41,4 +41,13 @@ public class AppointmentRepositoryTest {
         assertThat(result.size()).isEqualTo(1);
         assertThat(result.get(0).getId()).isEqualTo(appointment.getId());
     }
+
+    @Test
+    void whenDeleteAppointmentById_deleteIt() {
+        testEntityManager.persist(appointment);
+
+        appointmentRepository.deleteById(appointment.getId());
+
+        assertThat(testEntityManager.find(Appointment.class, appointment.getId())).isNull();
+    }
 }

@@ -5,4 +5,6 @@ import java.util.List;
 public interface AppointmentRepository {
 
     List<Appointment> getAppointmentsByUserId(long userId);
+
+    void deleteById(long appointmentId);
 }

@@ -4,6 +4,7 @@ import io.vitalir.vitalirspring.features.user.domain.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AppointmentServiceImpl implements AppointmentService {
@@ -21,6 +22,24 @@ public class AppointmentServiceImpl implements AppointmentService {
     public List<Appointment> getAppointmentsByUserId(long userId) {
         if (userRepository.existsById(userId)) {
             return appointmentRepository.getAppointmentsByUserId(userId);
+        }
+        throw new IllegalUserIdException();
+    }
+
+    @Override
+    public Optional<Appointment> removeAppointmentByIds(long userId, long appointmentId) {
+        if (userRepository.existsById(userId)) {
+            var user = userRepository.getById(userId).orElse(null);
+            if (user == null) {
+                throw new IllegalUserIdException();
+            }
+            for (Appointment appointment: user.getAppointments()) {
+                if (appointment.getId() == appointmentId) {
+                    appointmentRepository.deleteById(appointmentId);
+                    return Optional.of(appointment);
+                }
+            }
+            return Optional.empty();
         }
         throw new IllegalUserIdException();
     }

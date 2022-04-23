@@ -47,6 +47,13 @@ public class User {
         this.role = role;
     }
 
+    public User(String email, String password, Role role, Set<Appointment> appointments) {
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.appointments = appointments;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
