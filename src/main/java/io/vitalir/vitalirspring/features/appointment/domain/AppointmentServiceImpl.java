@@ -6,6 +6,7 @@ import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidDoc
 import io.vitalir.vitalirspring.features.appointment.domain.request.AddAppointmentRequest;
 import io.vitalir.vitalirspring.features.appointment.domain.request.ChangeAppointmentRequest;
 import io.vitalir.vitalirspring.features.doctors.domain.DoctorRepository;
+import io.vitalir.vitalirspring.features.doctors.domain.MedicalSpecialty;
 import io.vitalir.vitalirspring.features.user.domain.UserRepository;
 import io.vitalir.vitalirspring.features.user.domain.model.User;
 
@@ -97,14 +98,23 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<Appointment> getAppointmentsInInterval(User currentUser, LocalDateTime start, LocalDateTime end) {
+    public List<Appointment> getAppointmentsInInterval(
+            User currentUser,
+            LocalDateTime start,
+            LocalDateTime end,
+            MedicalSpecialty medicalSpecialty
+    ) {
         if (start.isAfter(end)) {
             throw new IllegalArgumentException("Date start=" + start + " happens before end=" + end);
         }
-        return currentUser.getAppointments()
+        var filteredAppointments = currentUser.getAppointments()
                 .stream()
-                .filter(appointment -> happensInInterval(appointment, start, end))
-                .toList();
+                .filter(appointment -> happensInInterval(appointment, start, end));
+        if (medicalSpecialty != null) {
+            filteredAppointments = filteredAppointments
+                    .filter(appointment -> appointment.getDoctor().getMedicalSpecialties().contains(medicalSpecialty));
+        }
+        return filteredAppointments.toList();
     }
 
     private boolean happensInInterval(Appointment appointment, LocalDateTime startDate, LocalDateTime endDate) {

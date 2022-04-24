@@ -2,6 +2,7 @@ package io.vitalir.vitalirspring.features.appointment.domain;
 
 import io.vitalir.vitalirspring.features.appointment.domain.request.AddAppointmentRequest;
 import io.vitalir.vitalirspring.features.appointment.domain.request.ChangeAppointmentRequest;
+import io.vitalir.vitalirspring.features.doctors.domain.MedicalSpecialty;
 import io.vitalir.vitalirspring.features.user.domain.model.User;
 
 import java.time.LocalDate;
@@ -18,5 +19,7 @@ public interface AppointmentService {
 
     long changeAppointment(long userId, ChangeAppointmentRequest request);
 
-    List<Appointment> getAppointmentsInInterval(User currentUser, LocalDateTime start, LocalDateTime end);
+    List<Appointment> getAppointmentsInInterval(
+            User currentUser, LocalDateTime start, LocalDateTime end, MedicalSpecialty medicalSpecialty
+    );
 }

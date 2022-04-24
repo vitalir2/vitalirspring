@@ -200,7 +200,7 @@ public class AppointmentServiceImplTest extends AppointmentFeatureTest {
         var startDate = LocalDateTime.of(2022, 1, 14, 14, 30);
         var endDate = LocalDateTime.of(2022, 5, 14, 22, 0);
 
-        var result = appointmentService.getAppointmentsInInterval(USER_WITH_APPOINTMENTS, startDate, endDate);
+        var result = appointmentService.getAppointmentsInInterval(USER_WITH_APPOINTMENTS, startDate, endDate, null);
 
         assertThat(result).isNotNull();
         assertThat(result.size()).isEqualTo(2);
@@ -213,7 +213,7 @@ public class AppointmentServiceImplTest extends AppointmentFeatureTest {
         var startDate = LocalDateTime.of(2022, 3, 14, 14, 30);
         var endDate = LocalDateTime.of(2022, 5, 14, 22, 0);
 
-        var result = appointmentService.getAppointmentsInInterval(USER_WITH_APPOINTMENTS, startDate, endDate);
+        var result = appointmentService.getAppointmentsInInterval(USER_WITH_APPOINTMENTS, startDate, endDate, null);
 
         assertThat(result).isNotNull();
         assertThat(result.size()).isEqualTo(1);
@@ -226,7 +226,7 @@ public class AppointmentServiceImplTest extends AppointmentFeatureTest {
         var startDate = LocalDateTime.of(2022, 2, 14, 14, 30);
         var endDate = LocalDateTime.of(2022, 3, 14, 22, 0);
 
-        var result = appointmentService.getAppointmentsInInterval(USER_WITH_APPOINTMENTS, startDate, endDate);
+        var result = appointmentService.getAppointmentsInInterval(USER_WITH_APPOINTMENTS, startDate, endDate, null);
 
         assertThat(result).isNotNull();
         assertThat(result.size()).isEqualTo(1);
@@ -239,7 +239,12 @@ public class AppointmentServiceImplTest extends AppointmentFeatureTest {
         var startDate = LocalDateTime.of(2022, 6, 14, 14, 30);
         var endDate = LocalDateTime.of(2022, 7, 14, 22, 0);
 
-        var result = appointmentService.getAppointmentsInInterval(USER_WITH_APPOINTMENTS, startDate, endDate);
+        var result = appointmentService.getAppointmentsInInterval(
+                USER_WITH_APPOINTMENTS,
+                startDate,
+                endDate,
+                null
+        );
 
         assertThat(result).isNotNull();
         assertThat(result.size()).isEqualTo(0);
@@ -251,7 +256,7 @@ public class AppointmentServiceImplTest extends AppointmentFeatureTest {
         var endDate = LocalDateTime.of(2022, 3, 14, 22, 0);
 
         assertThatThrownBy(
-                () -> appointmentService.getAppointmentsInInterval(USER_WITH_APPOINTMENTS, startDate, endDate))
+                () -> appointmentService.getAppointmentsInInterval(USER_WITH_APPOINTMENTS, startDate, endDate, null))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

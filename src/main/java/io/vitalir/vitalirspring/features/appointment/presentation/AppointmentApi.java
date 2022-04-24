@@ -10,6 +10,7 @@ import io.vitalir.vitalirspring.common.HttpMethods;
 import io.vitalir.vitalirspring.features.appointment.domain.request.AddAppointmentRequest;
 import io.vitalir.vitalirspring.features.appointment.domain.Appointment;
 import io.vitalir.vitalirspring.features.appointment.domain.request.ChangeAppointmentRequest;
+import io.vitalir.vitalirspring.features.doctors.domain.MedicalSpecialty;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -160,6 +161,12 @@ public interface AppointmentApi {
                             in = ParameterIn.QUERY
                     ),
                     @Parameter(
+                            name = "specialty",
+                            description = "Специальность врача",
+                            example = "cardiology",
+                            in = ParameterIn.QUERY
+                    ),
+                    @Parameter(
                             name = HttpHeaders.AUTHORIZATION,
                             description = "Bearer token",
                             required = true,
@@ -183,6 +190,7 @@ public interface AppointmentApi {
     )
     ResponseEntity<List<Appointment>> getAppointmentsForCurrentUserByPeriodOfTime(
             LocalDateTime startDate,
-            LocalDateTime endDate
+            LocalDateTime endDate,
+            MedicalSpecialty medicalSpecialty
     );
 }

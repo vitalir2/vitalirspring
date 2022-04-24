@@ -1,12 +1,15 @@
 package io.vitalir.vitalirspring.appointment;
 
 import io.vitalir.vitalirspring.common.HttpEndpoints;
+import io.vitalir.vitalirspring.features.appointment.domain.Appointment;
 import io.vitalir.vitalirspring.features.appointment.domain.AppointmentService;
 import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidAppointmentIdException;
 import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidDoctorIdException;
 import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidUserIdException;
 import io.vitalir.vitalirspring.features.appointment.domain.request.AddAppointmentRequest;
 import io.vitalir.vitalirspring.features.appointment.presentation.AppointmentController;
+import io.vitalir.vitalirspring.features.doctors.domain.Doctor;
+import io.vitalir.vitalirspring.features.doctors.domain.MedicalSpecialty;
 import io.vitalir.vitalirspring.features.user.domain.CurrentUserService;
 import io.vitalir.vitalirspring.features.user.domain.model.User;
 import org.junit.jupiter.api.Test;
@@ -23,6 +26,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
@@ -206,6 +210,7 @@ public class AppointmentControllerTest extends AppointmentFeatureTest {
         given(appointmentService.getAppointmentsInInterval(
                 any(),
                 any(),
+                any(),
                 any()
         )).willReturn(List.of(FIRST_APPOINTMENT, SECOND_APPOINTMENT));
         LocalDateTime startDate = LocalDateTime.of(2022, 3, 15, 12, 0);
@@ -226,6 +231,7 @@ public class AppointmentControllerTest extends AppointmentFeatureTest {
         given(appointmentService.getAppointmentsInInterval(
                 any(),
                 any(),
+                any(),
                 any()
         )).willThrow(new IllegalArgumentException("Kek"));
         LocalDateTime from = LocalDateTime.of(2022, 5, 15, 12, 0);
@@ -237,6 +243,31 @@ public class AppointmentControllerTest extends AppointmentFeatureTest {
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void whenGetCurrentUserAppointmentsByValidDateIntervalAndSpec_returnThem() throws Exception {
+        setupMockUser(USER_WITH_APPOINTMENTS);
+        var appointment = new Appointment();
+        appointment.setDoctor(new Doctor("Helly", Set.of(MedicalSpecialty.HEPATOLOGY)));
+        given(appointmentService.getAppointmentsInInterval(
+                any(),
+                any(),
+                any(),
+                eq(MedicalSpecialty.HEPATOLOGY)
+        )).willReturn(List.of(appointment));
+        LocalDateTime from = LocalDateTime.of(2022, 4, 15, 12, 0);
+        LocalDateTime to = LocalDateTime.of(2022, 5, 25, 15, 30);
+        var requestBuilder = get(HttpEndpoints.APPOINTMENT_ENDPOINT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .queryParam("startDate", from.toString())
+                .queryParam("endDate", to.toString())
+                .queryParam("specialty", MedicalSpecialty.HEPATOLOGY.name());
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].id", equalTo((int) appointment.getId())));
     }
 
     private void setupMockUser() {

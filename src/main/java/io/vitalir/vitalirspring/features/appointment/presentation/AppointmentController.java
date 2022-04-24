@@ -7,6 +7,7 @@ import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidApp
 import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidDoctorIdException;
 import io.vitalir.vitalirspring.features.appointment.domain.request.AddAppointmentRequest;
 import io.vitalir.vitalirspring.features.appointment.domain.request.ChangeAppointmentRequest;
+import io.vitalir.vitalirspring.features.doctors.domain.MedicalSpecialty;
 import io.vitalir.vitalirspring.features.user.domain.CurrentUserService;
 import io.vitalir.vitalirspring.features.user.domain.model.User;
 import lombok.extern.slf4j.Slf4j;
@@ -82,8 +83,9 @@ public class AppointmentController implements AppointmentApi {
     @GetMapping
     public ResponseEntity<List<Appointment>> getAppointmentsForCurrentUserByPeriodOfTime(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate
-    ) {
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
+            @RequestParam(name = "specialty", required = false) MedicalSpecialty medicalSpecialty
+            ) {
         if (log.isDebugEnabled()) {
             log.debug("Got query params: startDate=" + startDate + ", endDate=" + endDate);
         }
@@ -91,7 +93,7 @@ public class AppointmentController implements AppointmentApi {
         if (currentUser.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
-        var result = appointmentService.getAppointmentsInInterval(currentUser.get(), startDate, endDate);
+        var result = appointmentService.getAppointmentsInInterval(currentUser.get(), startDate, endDate, medicalSpecialty);
         return ResponseEntity.ok(result);
     }
 

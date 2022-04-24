@@ -17,8 +17,6 @@ import java.util.Set;
 
 public class AppointmentFeatureTest {
 
-    protected static final long USER_ID = 1;
-
     protected static final long DOCTOR_ID = 2;
 
     protected static final Appointment APPOINTMENT = new Appointment();
@@ -36,6 +34,8 @@ public class AppointmentFeatureTest {
             "12345",
             Role.USER
     );
+
+    protected static final long USER_ID = USER.getId();
 
     protected static final String BEARER_TOKEN = JWT_PROVIDER.generateToken(USER.getEmail(), USER.getRole());
 
