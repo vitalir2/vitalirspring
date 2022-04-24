@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.vitalir.vitalirspring.common.HttpMethods;
 import io.vitalir.vitalirspring.features.appointment.domain.request.AddAppointmentRequest;
 import io.vitalir.vitalirspring.features.appointment.domain.Appointment;
@@ -14,8 +13,8 @@ import io.vitalir.vitalirspring.features.appointment.domain.request.ChangeAppoin
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface AppointmentApi {
@@ -140,4 +139,50 @@ public interface AppointmentApi {
             }
     )
     ResponseEntity<Long> changeAppointmentByIds(ChangeAppointmentRequest request);
+
+
+    @Operation(
+            method = HttpMethods.GET,
+            summary = "Получить все записи текущего клиента по промежутку времени",
+            parameters = {
+                    @Parameter(
+                            name = "startDate",
+                            description = "Начало промежутка времени",
+                            required = true,
+                            example = "2000-10-31T01:30:00.000-05:00",
+                            in = ParameterIn.QUERY
+                    ),
+                    @Parameter(
+                            name = "endDate",
+                            description = "Конец промежутка времени",
+                            required = true,
+                            example = "2000-10-31T01:30:00.000-05:00",
+                            in = ParameterIn.QUERY
+                    ),
+                    @Parameter(
+                            name = HttpHeaders.AUTHORIZATION,
+                            description = "Bearer token",
+                            required = true,
+                            in = ParameterIn.HEADER
+                    )
+            },
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "A successful response"
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Invalid query params"
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Invalid Authorization header"
+                    )
+            }
+    )
+    ResponseEntity<List<Appointment>> getAppointmentsForCurrentUserByPeriodOfTime(
+            LocalDateTime startDate,
+            LocalDateTime endDate
+    );
 }

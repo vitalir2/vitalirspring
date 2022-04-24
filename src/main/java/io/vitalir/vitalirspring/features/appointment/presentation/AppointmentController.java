@@ -9,6 +9,8 @@ import io.vitalir.vitalirspring.features.appointment.domain.request.AddAppointme
 import io.vitalir.vitalirspring.features.appointment.domain.request.ChangeAppointmentRequest;
 import io.vitalir.vitalirspring.features.user.domain.CurrentUserService;
 import io.vitalir.vitalirspring.features.user.domain.model.User;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +18,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
 @RequestMapping(HttpEndpoints.APPOINTMENT_ENDPOINT)
+@Slf4j
 public class AppointmentController implements AppointmentApi {
 
     private final AppointmentService appointmentService;
@@ -74,10 +78,32 @@ public class AppointmentController implements AppointmentApi {
         return ResponseEntity.ok(result);
     }
 
+    @Override
+    @GetMapping
+    public ResponseEntity<List<Appointment>> getAppointmentsForCurrentUserByPeriodOfTime(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate
+    ) {
+        if (log.isDebugEnabled()) {
+            log.debug("Got query params: startDate=" + startDate + ", endDate=" + endDate);
+        }
+        var currentUser = currentUserService.getCurrentUser();
+        if (currentUser.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+        var result = appointmentService.getAppointmentsInInterval(currentUser.get(), startDate, endDate);
+        return ResponseEntity.ok(result);
+    }
+
     @ExceptionHandler(
-            value = {InvalidDoctorIdException.class, InvalidUserIdException.class, InvalidAppointmentIdException.class}
+            value = {
+                    InvalidDoctorIdException.class,
+                    InvalidUserIdException.class,
+                    InvalidAppointmentIdException.class,
+                    IllegalArgumentException.class
+            }
     )
-    ResponseEntity<RuntimeException> handleIllegalUserId(RuntimeException exception) {
+    ResponseEntity<RuntimeException> handleException(RuntimeException exception) {
         return ResponseEntity.badRequest().body(exception);
     }
 

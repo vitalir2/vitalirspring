@@ -6,12 +6,14 @@ import io.vitalir.vitalirspring.common.JavaDateProvider;
 import io.vitalir.vitalirspring.features.appointment.domain.Appointment;
 import io.vitalir.vitalirspring.features.appointment.domain.request.AddAppointmentRequest;
 import io.vitalir.vitalirspring.features.appointment.domain.request.ChangeAppointmentRequest;
+import io.vitalir.vitalirspring.features.doctors.domain.Doctor;
 import io.vitalir.vitalirspring.features.user.domain.model.Role;
 import io.vitalir.vitalirspring.features.user.domain.model.User;
 import io.vitalir.vitalirspring.security.jwt.JwtProvider;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 public class AppointmentFeatureTest {
 
@@ -51,5 +53,32 @@ public class AppointmentFeatureTest {
             LocalDateTime.now(),
             1000 * 60,
             "String"
+    );
+
+    protected static final Doctor DOCTOR = new Doctor("");
+
+    protected static final Appointment FIRST_APPOINTMENT = new Appointment(
+            0L,
+            DOCTOR,
+            USER,
+            "fid",
+            LocalDateTime.of(2022, 3, 23, 14, 30),
+            15
+    );
+
+    protected static final Appointment SECOND_APPOINTMENT = new Appointment(
+            2L,
+            DOCTOR,
+            USER,
+            "fid",
+            LocalDateTime.of(2022, 2, 26, 15, 50),
+            15
+    );
+
+    protected static final User USER_WITH_APPOINTMENTS = new User(
+            "Hekker",
+            "hackyou",
+            Role.USER,
+            Set.of(FIRST_APPOINTMENT, SECOND_APPOINTMENT)
     );
 }

@@ -8,10 +8,12 @@ import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidUse
 import io.vitalir.vitalirspring.features.appointment.domain.request.AddAppointmentRequest;
 import io.vitalir.vitalirspring.features.appointment.presentation.AppointmentController;
 import io.vitalir.vitalirspring.features.user.domain.CurrentUserService;
+import io.vitalir.vitalirspring.features.user.domain.model.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
@@ -24,8 +26,7 @@ import java.util.Optional;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -199,10 +200,53 @@ public class AppointmentControllerTest extends AppointmentFeatureTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    void whenGetCurrentUserAppointmentsByDate_returnThem() throws Exception {
+        setupMockUser(USER_WITH_APPOINTMENTS);
+        given(appointmentService.getAppointmentsInInterval(
+                any(),
+                any(),
+                any()
+        )).willReturn(List.of(FIRST_APPOINTMENT, SECOND_APPOINTMENT));
+        LocalDateTime startDate = LocalDateTime.of(2022, 3, 15, 12, 0);
+        LocalDateTime endDate = LocalDateTime.of(2022, 4, 25, 15, 30);
+        var requestBuilder = get(HttpEndpoints.APPOINTMENT_ENDPOINT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .queryParam("startDate", startDate.toString())
+                .queryParam("endDate", endDate.toString());
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)));
+    }
+
+    @Test
+    void whenGetCurrentUserAppointmentsByInvalidDate_returnThem() throws Exception {
+        setupMockUser(USER_WITH_APPOINTMENTS);
+        given(appointmentService.getAppointmentsInInterval(
+                any(),
+                any(),
+                any()
+        )).willThrow(new IllegalArgumentException("Kek"));
+        LocalDateTime from = LocalDateTime.of(2022, 5, 15, 12, 0);
+        LocalDateTime to = LocalDateTime.of(2022, 4, 25, 15, 30);
+        var requestBuilder = get(HttpEndpoints.APPOINTMENT_ENDPOINT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .queryParam("startDate", from.toString())
+                .queryParam("endDate", to.toString());
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest());
+    }
+
     private void setupMockUser() {
+        setupMockUser(USER);
+    }
+
+    private void setupMockUser(User user) {
         given(currentUserService.getCurrentUser())
-                .willReturn(Optional.of(USER));
+                .willReturn(Optional.of(user));
         given(currentUserService.getCurrentUserId())
-                .willReturn(Optional.of(USER_ID));
+                .willReturn(Optional.of(user.getId()));
     }
 }

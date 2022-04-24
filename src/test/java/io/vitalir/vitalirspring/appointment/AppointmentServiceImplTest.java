@@ -61,8 +61,6 @@ public class AppointmentServiceImplTest extends AppointmentFeatureTest {
 
     private static final User USER = new User("", "");
 
-    private static final Doctor DOCTOR = new Doctor("");
-
     @Test
     void whenGetAppointmentsByUserIdWhichExist_returnThem() {
         given(userRepository.existsById(USER_ID))
@@ -196,31 +194,6 @@ public class AppointmentServiceImplTest extends AppointmentFeatureTest {
         assertThatThrownBy(() -> appointmentService.changeAppointment(USER_ID, CHANGE_APPOINTMENT_REQUEST))
                 .isInstanceOf(InvalidDoctorIdException.class);
     }
-
-    private static final Appointment FIRST_APPOINTMENT = new Appointment(
-            0L,
-            DOCTOR,
-            USER,
-            "fid",
-            LocalDateTime.of(2022, 3, 23, 14, 30),
-            15
-    );
-
-    private static final Appointment SECOND_APPOINTMENT = new Appointment(
-            2L,
-            DOCTOR,
-            USER,
-            "fid",
-            LocalDateTime.of(2022, 2, 26, 15, 50),
-            15
-    );
-
-    private static final User USER_WITH_APPOINTMENTS = new User(
-            "Hekker",
-            "hackyou",
-            Role.USER,
-            Set.of(FIRST_APPOINTMENT, SECOND_APPOINTMENT)
-    );
 
     @Test
     void whenGetAppointmentsByIntervalWhenAllAppointmentsThere_returnThem() {
