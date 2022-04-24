@@ -78,7 +78,10 @@ public class SecurityWebConfig extends WebSecurityConfigurerAdapter {
                             .mvcMatchers("/api/v1/auth/**").permitAll()
                             .mvcMatchers("/api/v1/register/**").permitAll()
                             .mvcMatchers(HttpMethod.GET, "/api/v1/services/**").permitAll()
-                            .mvcMatchers("/api/v1/services/**").hasRole(Role.ADMIN.name());
+                            .mvcMatchers("/api/v1/services/**").hasRole(Role.ADMIN.name())
+                            .mvcMatchers("/api/v1/appointments/**").hasRole(Role.USER.name())
+                            .mvcMatchers(HttpMethod.GET, "/api/v1/doctors/**").permitAll()
+                            .mvcMatchers("/api/v1/doctors/**").hasRole(Role.ADMIN.name());
                     configureSwaggerAuth(authorize);
                     authorize.anyRequest().authenticated();
                 }
@@ -88,7 +91,7 @@ public class SecurityWebConfig extends WebSecurityConfigurerAdapter {
     private void configureSwaggerAuth(
             AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authorize
     ) {
-        for (String endpoint: HttpEndpoints.SWAGGER_ENDPOINTS) {
+        for (String endpoint : HttpEndpoints.SWAGGER_ENDPOINTS) {
             if (enableSwaggerSecurity) {
                 authorize.mvcMatchers(endpoint).hasRole(Role.ADMIN.name());
             } else {
