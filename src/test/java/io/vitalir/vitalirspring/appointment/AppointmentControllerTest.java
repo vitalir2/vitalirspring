@@ -1,14 +1,11 @@
 package io.vitalir.vitalirspring.appointment;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.vitalir.vitalirspring.common.HttpEndpoints;
 import io.vitalir.vitalirspring.features.appointment.domain.*;
-import io.vitalir.vitalirspring.features.appointment.domain.exception.IllegalUserIdException;
+import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidUserIdException;
 import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidAppointmentIdException;
 import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidDoctorIdException;
 import io.vitalir.vitalirspring.features.appointment.domain.request.AddAppointmentRequest;
-import io.vitalir.vitalirspring.features.appointment.domain.request.ChangeAppointmentRequest;
 import io.vitalir.vitalirspring.features.appointment.presentation.AppointmentController;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +54,7 @@ public class AppointmentControllerTest extends AppointmentFeatureTest {
     @Test
     void whenGetAppointmentsByNotExistingUserId_returnBadRequest() throws Exception {
         given(appointmentService.getAppointmentsByUserId(USER_ID))
-                .willThrow(new IllegalUserIdException());
+                .willThrow(new InvalidUserIdException());
         var requestBuilder = get(HttpEndpoints.APPOINTMENT_ENDPOINT + USER_ID)
                 .contentType(MediaType.APPLICATION_JSON);
 
@@ -82,7 +79,7 @@ public class AppointmentControllerTest extends AppointmentFeatureTest {
     @Test
     void whenRemoveAppointmentByUserIdWhichDoesNotExist_returnBadRequest() throws Exception {
         given(appointmentService.removeAppointmentByIds(anyLong(), anyLong()))
-                .willThrow(new IllegalUserIdException());
+                .willThrow(new InvalidUserIdException());
         var requestBuilder = delete(HttpEndpoints.APPOINTMENT_ENDPOINT +
                 USER_ID + "/" + APPOINTMENT.getId())
                 .contentType(MediaType.APPLICATION_JSON);
@@ -134,7 +131,7 @@ public class AppointmentControllerTest extends AppointmentFeatureTest {
                 "A description"
         );
         given(appointmentService.addAppointment(any()))
-                .willThrow(new IllegalUserIdException());
+                .willThrow(new InvalidUserIdException());
         var requestBuilder = post(HttpEndpoints.APPOINTMENT_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(OBJECT_MAPPER.writeValueAsBytes(addAppointmentRequest));
@@ -178,7 +175,7 @@ public class AppointmentControllerTest extends AppointmentFeatureTest {
     @Test
     void whenChangeAppointmentByUserIdWhichDoesNotExist_returnBadRequest() throws Exception {
         given(appointmentService.changeAppointment(USER_ID, CHANGE_APPOINTMENT_REQUEST))
-                .willThrow(new IllegalUserIdException());
+                .willThrow(new InvalidUserIdException());
         var requestBuilder = put(HttpEndpoints.APPOINTMENT_ENDPOINT + USER_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(OBJECT_MAPPER.writeValueAsBytes(CHANGE_APPOINTMENT_REQUEST));

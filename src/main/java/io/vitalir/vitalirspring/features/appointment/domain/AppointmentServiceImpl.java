@@ -1,6 +1,6 @@
 package io.vitalir.vitalirspring.features.appointment.domain;
 
-import io.vitalir.vitalirspring.features.appointment.domain.exception.IllegalUserIdException;
+import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidUserIdException;
 import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidAppointmentIdException;
 import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidDoctorIdException;
 import io.vitalir.vitalirspring.features.appointment.domain.request.AddAppointmentRequest;
@@ -30,7 +30,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         if (userRepository.existsById(userId)) {
             return appointmentRepository.getAppointmentsByUserId(userId);
         }
-        throw new IllegalUserIdException();
+        throw new InvalidUserIdException();
     }
 
     @Override
@@ -38,7 +38,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         if (userRepository.existsById(userId)) {
             var user = userRepository.getById(userId).orElse(null);
             if (user == null) {
-                throw new IllegalUserIdException();
+                throw new InvalidUserIdException();
             }
             var foundAppointment = user.getAppointments()
                     .stream()
@@ -49,14 +49,14 @@ public class AppointmentServiceImpl implements AppointmentService {
             }
             return foundAppointment;
         }
-        throw new IllegalUserIdException();
+        throw new InvalidUserIdException();
     }
 
     @Override
     public long addAppointment(AddAppointmentRequest request) {
         var user = userRepository.getById(request.userId());
         if (user.isEmpty()) {
-            throw new IllegalUserIdException();
+            throw new InvalidUserIdException();
         }
         var doctor = doctorRepository.findById(request.doctorId());
         if (doctor.isEmpty()) {

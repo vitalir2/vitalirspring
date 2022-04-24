@@ -2,7 +2,7 @@ package io.vitalir.vitalirspring.features.appointment.presentation;
 
 import io.vitalir.vitalirspring.common.HttpEndpoints;
 import io.vitalir.vitalirspring.features.appointment.domain.*;
-import io.vitalir.vitalirspring.features.appointment.domain.exception.IllegalUserIdException;
+import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidUserIdException;
 import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidAppointmentIdException;
 import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidDoctorIdException;
 import io.vitalir.vitalirspring.features.appointment.domain.request.AddAppointmentRequest;
@@ -66,7 +66,7 @@ public class AppointmentController implements AppointmentApi {
     }
 
     @ExceptionHandler(
-            value = {InvalidDoctorIdException.class, IllegalUserIdException.class, InvalidAppointmentIdException.class}
+            value = {InvalidDoctorIdException.class, InvalidUserIdException.class, InvalidAppointmentIdException.class}
     )
     ResponseEntity<RuntimeException> handleIllegalUserId(RuntimeException exception) {
         return ResponseEntity.badRequest().body(exception);

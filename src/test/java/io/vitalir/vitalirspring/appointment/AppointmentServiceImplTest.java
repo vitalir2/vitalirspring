@@ -1,7 +1,7 @@
 package io.vitalir.vitalirspring.appointment;
 
 import io.vitalir.vitalirspring.features.appointment.domain.*;
-import io.vitalir.vitalirspring.features.appointment.domain.exception.IllegalUserIdException;
+import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidUserIdException;
 import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidAppointmentIdException;
 import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidDoctorIdException;
 import io.vitalir.vitalirspring.features.appointment.domain.request.AddAppointmentRequest;
@@ -84,7 +84,7 @@ public class AppointmentServiceImplTest extends AppointmentFeatureTest {
                 .willReturn(false);
 
         assertThatThrownBy(() -> appointmentService.getAppointmentsByUserId(USER_ID))
-                .isInstanceOf(IllegalUserIdException.class);
+                .isInstanceOf(InvalidUserIdException.class);
     }
 
     @Test
@@ -107,7 +107,7 @@ public class AppointmentServiceImplTest extends AppointmentFeatureTest {
                 .willReturn(false);
 
         assertThatThrownBy(() -> appointmentService.getAppointmentsByUserId(USER_ID))
-                .isInstanceOf(IllegalUserIdException.class);
+                .isInstanceOf(InvalidUserIdException.class);
     }
 
     @Test
@@ -143,7 +143,7 @@ public class AppointmentServiceImplTest extends AppointmentFeatureTest {
                 .willReturn(Optional.empty());
 
         assertThatThrownBy(() -> appointmentService.addAppointment(ADD_APPOINTMENT_REQUEST))
-                .isInstanceOf(IllegalUserIdException.class);
+                .isInstanceOf(InvalidUserIdException.class);
     }
 
     @Test
@@ -195,7 +195,7 @@ public class AppointmentServiceImplTest extends AppointmentFeatureTest {
                 .willReturn(false);
 
         assertThatThrownBy(() -> appointmentService.changeAppointment(USER_ID, CHANGE_APPOINTMENT_REQUEST))
-                .isInstanceOf(IllegalUserIdException.class);
+                .isInstanceOf(InvalidUserIdException.class);
     }
 
     @Test
