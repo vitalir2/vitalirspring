@@ -6,10 +6,12 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.vitalir.vitalirspring.common.HttpMethods;
 import io.vitalir.vitalirspring.features.appointment.domain.request.AddAppointmentRequest;
 import io.vitalir.vitalirspring.features.appointment.domain.Appointment;
 import io.vitalir.vitalirspring.features.appointment.domain.request.ChangeAppointmentRequest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
@@ -46,7 +48,7 @@ public interface AppointmentApi {
             summary = "Удалить запись с appointmentId для пользователя с userId",
             parameters = {
                     @Parameter(
-                            name = "Autharization",
+                            name = HttpHeaders.AUTHORIZATION,
                             in = ParameterIn.HEADER,
                             description = "Bearer token",
                             required = true
@@ -66,6 +68,10 @@ public interface AppointmentApi {
                                             implementation = ResponseEntity.class
                                     )
                             )
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized"
                     )
             }
     )
@@ -75,6 +81,14 @@ public interface AppointmentApi {
     @Operation(
             method = HttpMethods.POST,
             summary = "Добавить новую запись для пользователя с userId и доктора с doctorId",
+            parameters = {
+                    @Parameter(
+                            name = HttpHeaders.AUTHORIZATION,
+                            in = ParameterIn.HEADER,
+                            description = "Bearer token",
+                            required = true
+                    )
+            },
             responses = {
                     @ApiResponse(
                             responseCode = "201",
@@ -89,6 +103,10 @@ public interface AppointmentApi {
                     @ApiResponse(
                             responseCode = "400",
                             description = "Invalid userId or doctorId"
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized"
                     )
             }
     )
