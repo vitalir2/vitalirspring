@@ -8,3 +8,8 @@ spring:
   datasource:
     username: vitalir
     url: jdbc:postgresql://localhost:5432/vitalirspring
+
+vitalirspring:
+  enable-swagger-security: true
+  enable-csrf: true
+jwt_secret: default

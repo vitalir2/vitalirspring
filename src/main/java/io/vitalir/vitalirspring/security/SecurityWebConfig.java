@@ -36,18 +36,23 @@ public class SecurityWebConfig extends WebSecurityConfigurerAdapter {
 
     private final boolean enableSwaggerSecurity;
 
+    private final boolean isCsrfEnabled;
+
     public SecurityWebConfig(
             UserDetailsService userDetailsService,
             JwtProvider jwtProvider, JwtVerifier jwtVerifier,
             PasswordEncoder passwordEncoder,
             @Qualifier("enable-swagger-security")
-            boolean enableSwaggerSecurity
+            boolean enableSwaggerSecurity,
+            @Qualifier("enable-csrf")
+            boolean isCsrfEnabled
     ) {
         this.userDetailsService = userDetailsService;
         this.jwtProvider = jwtProvider;
         this.jwtVerifier = jwtVerifier;
         this.passwordEncoder = passwordEncoder;
         this.enableSwaggerSecurity = enableSwaggerSecurity;
+        this.isCsrfEnabled = isCsrfEnabled;
     }
 
     @Override
@@ -93,12 +98,16 @@ public class SecurityWebConfig extends WebSecurityConfigurerAdapter {
     }
 
     private void configureCsrf(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf
-                .ignoringRequestMatchers(request -> {
-                    var userAgent = request.getHeader(HttpHeaders.USER_AGENT);
-                    return userAgent != null && userAgent.startsWith("Postman");
-                })
-        );
+        if (isCsrfEnabled) {
+            http.csrf(csrf -> csrf
+                    .ignoringRequestMatchers(request -> {
+                        var userAgent = request.getHeader(HttpHeaders.USER_AGENT);
+                        return userAgent != null && userAgent.startsWith("Postman");
+                    })
+            );
+        } else {
+            http.csrf().disable();
+        }
     }
 
     private void configureMiscellaneous(HttpSecurity http) throws Exception {
