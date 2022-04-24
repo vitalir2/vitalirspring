@@ -8,6 +8,7 @@ import io.vitalir.vitalirspring.features.appointment.domain.request.AddAppointme
 import io.vitalir.vitalirspring.features.appointment.domain.request.ChangeAppointmentRequest;
 import io.vitalir.vitalirspring.features.doctors.domain.Doctor;
 import io.vitalir.vitalirspring.features.doctors.domain.MedicalSpecialty;
+import io.vitalir.vitalirspring.features.service.Service;
 import io.vitalir.vitalirspring.features.user.domain.model.Role;
 import io.vitalir.vitalirspring.features.user.domain.model.User;
 import io.vitalir.vitalirspring.security.jwt.JwtProvider;
@@ -21,6 +22,10 @@ public class AppointmentFeatureTest {
     protected static final long DOCTOR_ID = 2;
 
     protected static final Appointment APPOINTMENT = new Appointment();
+
+    protected static final Service SERVICE = new Service();
+
+    protected static final long SERVICE_ID = SERVICE.getId();
 
     protected static final long APPOINTMENT_ID = APPOINTMENT.getId();
 
@@ -44,16 +49,16 @@ public class AppointmentFeatureTest {
 
     protected static final AddAppointmentRequest ADD_APPOINTMENT_REQUEST = new AddAppointmentRequest(
             2,
+            SERVICE_ID,
             LocalDateTime.now(),
-            1000 * 60 * 15,
-            "A description"
+            1000 * 60 * 15
     );
     protected static final ChangeAppointmentRequest CHANGE_APPOINTMENT_REQUEST = new ChangeAppointmentRequest(
             APPOINTMENT_ID,
             DOCTOR_ID,
+            SERVICE_ID,
             LocalDateTime.now(),
-            1000 * 60,
-            "String"
+            60
     );
 
     protected static final Doctor DOCTOR = new Doctor("", Set.of(MedicalSpecialty.ENDOCRINOLOGY));
@@ -62,7 +67,7 @@ public class AppointmentFeatureTest {
             0L,
             DOCTOR,
             USER,
-            "fid",
+            SERVICE,
             LocalDateTime.of(2022, 3, 23, 14, 30),
             15
     );
@@ -71,7 +76,7 @@ public class AppointmentFeatureTest {
             2L,
             DOCTOR,
             USER,
-            "fid",
+            SERVICE,
             LocalDateTime.of(2022, 2, 26, 15, 50),
             15
     );

@@ -1,6 +1,7 @@
 package io.vitalir.vitalirspring.features.appointment.domain;
 
 import io.vitalir.vitalirspring.features.doctors.domain.Doctor;
+import io.vitalir.vitalirspring.features.service.Service;
 import io.vitalir.vitalirspring.features.user.domain.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,8 +30,9 @@ public class Appointment {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @Column(name = "description", nullable = false)
-    private String description = "";
+    @OneToOne
+    @JoinColumn(name = "service_id")
+    private Service service;
 
     @Column(name = "start_date", nullable = false)
     private LocalDateTime startDate;
@@ -40,7 +42,7 @@ public class Appointment {
 
     public Appointment(User user) {
         this.id = 0;
-        this.description = "";
+        this.service = null;
         this.doctor = null;
         this.user = user;
         this.startDate = LocalDateTime.now();

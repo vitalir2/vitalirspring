@@ -5,8 +5,8 @@ import java.time.LocalDateTime;
 public record ChangeAppointmentRequest(
         long appointmentId,
         long doctorId,
+        long serviceId,
         LocalDateTime date,
-        long duration,
-        String description
+        long duration
 ) {
 }

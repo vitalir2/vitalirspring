@@ -8,6 +8,7 @@ import io.vitalir.vitalirspring.features.appointment.domain.request.AddAppointme
 import io.vitalir.vitalirspring.features.appointment.domain.request.ChangeAppointmentRequest;
 import io.vitalir.vitalirspring.features.doctors.domain.DoctorRepository;
 import io.vitalir.vitalirspring.features.doctors.domain.MedicalSpecialty;
+import io.vitalir.vitalirspring.features.service.ServiceRepository;
 import io.vitalir.vitalirspring.features.user.domain.UserRepository;
 import io.vitalir.vitalirspring.features.user.domain.model.Role;
 import io.vitalir.vitalirspring.features.user.domain.model.User;
@@ -39,11 +40,14 @@ public class AppointmentServiceImplTest extends AppointmentFeatureTest {
     @Mock
     private DoctorRepository doctorRepository;
 
+    @Mock
+    private ServiceRepository serviceRepository;
+
     private AppointmentService appointmentService;
 
     @BeforeEach
     void initBeforeEach() {
-        appointmentService = new AppointmentServiceImpl(userRepository, appointmentRepository, doctorRepository);
+        appointmentService = new AppointmentServiceImpl(userRepository, appointmentRepository, doctorRepository, serviceRepository);
     }
 
     private static final Appointment APPOINTMENT = new Appointment();
@@ -54,9 +58,9 @@ public class AppointmentServiceImplTest extends AppointmentFeatureTest {
 
     private static final AddAppointmentRequest ADD_APPOINTMENT_REQUEST = new AddAppointmentRequest(
             DOCTOR_ID,
+            SERVICE_ID,
             LocalDateTime.now(),
-            60 * 1000,
-            ""
+            60
     );
 
     private static final User USER = new User("", "");
@@ -125,6 +129,8 @@ public class AppointmentServiceImplTest extends AppointmentFeatureTest {
                 .willReturn(Optional.of(DOCTOR));
         given(appointmentRepository.save(any()))
                 .willReturn(APPOINTMENT);
+        given(serviceRepository.findById(SERVICE_ID))
+                .willReturn(Optional.of(SERVICE));
 
         var result = appointmentService.addAppointment(USER, ADD_APPOINTMENT_REQUEST);
 
@@ -149,6 +155,8 @@ public class AppointmentServiceImplTest extends AppointmentFeatureTest {
                 .willReturn(List.of((APPOINTMENT)));
         given(doctorRepository.findById(DOCTOR_ID))
                 .willReturn(Optional.of(DOCTOR));
+        given(serviceRepository.findById(SERVICE_ID))
+                .willReturn(Optional.of(SERVICE));
 
         var result = appointmentService.changeAppointment(USER_ID, CHANGE_APPOINTMENT_REQUEST);
 
@@ -166,9 +174,9 @@ public class AppointmentServiceImplTest extends AppointmentFeatureTest {
         assertThatThrownBy(() -> appointmentService.changeAppointment(USER_ID, new ChangeAppointmentRequest(
                 -1,
                 -1,
+                -1,
                 LocalDateTime.now(),
-                0L,
-                ""
+                0L
         )))
                 .isInstanceOf(InvalidAppointmentIdException.class);
     }

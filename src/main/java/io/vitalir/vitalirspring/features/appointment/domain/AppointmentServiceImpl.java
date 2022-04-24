@@ -5,8 +5,11 @@ import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidApp
 import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidDoctorIdException;
 import io.vitalir.vitalirspring.features.appointment.domain.request.AddAppointmentRequest;
 import io.vitalir.vitalirspring.features.appointment.domain.request.ChangeAppointmentRequest;
+import io.vitalir.vitalirspring.features.doctors.domain.Doctor;
 import io.vitalir.vitalirspring.features.doctors.domain.DoctorRepository;
 import io.vitalir.vitalirspring.features.doctors.domain.MedicalSpecialty;
+import io.vitalir.vitalirspring.features.service.Service;
+import io.vitalir.vitalirspring.features.service.ServiceRepository;
 import io.vitalir.vitalirspring.features.user.domain.UserRepository;
 import io.vitalir.vitalirspring.features.user.domain.model.User;
 
@@ -22,10 +25,13 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final DoctorRepository doctorRepository;
 
-    public AppointmentServiceImpl(UserRepository userRepository, AppointmentRepository appointmentRepository, DoctorRepository doctorRepository) {
+    private final ServiceRepository serviceRepository;
+
+    public AppointmentServiceImpl(UserRepository userRepository, AppointmentRepository appointmentRepository, DoctorRepository doctorRepository, ServiceRepository serviceRepository) {
         this.userRepository = userRepository;
         this.appointmentRepository = appointmentRepository;
         this.doctorRepository = doctorRepository;
+        this.serviceRepository = serviceRepository;
     }
 
     @Override
@@ -57,15 +63,13 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public long addAppointment(User user, AddAppointmentRequest request) {
-        var doctor = doctorRepository.findById(request.doctorId());
-        if (doctor.isEmpty()) {
-            throw new InvalidDoctorIdException();
-        }
+        var doctor = getDoctorByIdOrThrow(request.doctorId());
+        var service = getServiceByIdOrThrow(request.serviceId());
         var appointment = new Appointment(
                 0,
-                doctor.get(),
+                doctor,
                 user,
-                request.description(),
+                service,
                 request.date(),
                 request.duration()
         );
@@ -81,15 +85,13 @@ public class AppointmentServiceImpl implements AppointmentService {
         if (optionalAppointment.isEmpty()) {
             throw new InvalidAppointmentIdException();
         }
-        var optionalDoctor = doctorRepository.findById(request.doctorId());
-        if (optionalDoctor.isEmpty()) {
-            throw new InvalidDoctorIdException();
-        }
+        var doctor = getDoctorByIdOrThrow(request.doctorId());
+        var service = getServiceByIdOrThrow(request.serviceId());
         var newAppointment = new Appointment(
                 0,
-                optionalDoctor.get(),
+                doctor,
                 optionalAppointment.get().getUser(),
-                request.description(),
+                service,
                 request.date(),
                 request.duration()
         );
@@ -130,5 +132,21 @@ public class AppointmentServiceImpl implements AppointmentService {
         var appointmentStartDateInInterval = appointmentStartDate.isAfter(startDate);
         var appointmentEndDateInInterval = appointmentEndDate.isBefore(endDate);
         return appointmentStartDateInInterval && appointmentEndDateInInterval;
+    }
+
+    private Doctor getDoctorByIdOrThrow(long doctorId) {
+        var optionalDoctor = doctorRepository.findById(doctorId);
+        if (optionalDoctor.isEmpty()) {
+            throw new InvalidDoctorIdException();
+        }
+        return optionalDoctor.get();
+    }
+
+    private Service getServiceByIdOrThrow(long serviceId) {
+        var optionalService = serviceRepository.findById(serviceId);
+        if (optionalService.isEmpty()) {
+            throw new IllegalArgumentException("Service with id=" + serviceId + " is not found");
+        }
+        return optionalService.get();
     }
 }

@@ -2,6 +2,7 @@ package io.vitalir.vitalirspring.service;
 
 import io.vitalir.vitalirspring.features.service.Service;
 import io.vitalir.vitalirspring.features.service.ServiceRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -22,6 +23,13 @@ public class ServiceRepositoryTest {
 
     @Autowired
     private ServiceRepository serviceRepository;
+
+    private Service service;
+
+    @BeforeEach
+    void initBeforeEach() {
+        service = new Service("Service");
+    }
 
     @Test
     void injectedComponentIsNotNull() {
@@ -66,5 +74,15 @@ public class ServiceRepositoryTest {
         serviceRepository.removeByTitle(service.getTitle());
 
         assertThat(testEntityManager.find(Service.class, service.getId())).isNull();
+    }
+
+    @Test
+    void whenGetServiceById_returnIt() {
+        testEntityManager.persist(service);
+
+        var result = serviceRepository.findById(service.getId());
+
+        assertThat(result).isNotEmpty();
+        assertThat(result.get().getId()).isEqualTo(service.getId());
     }
 }

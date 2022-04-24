@@ -147,9 +147,9 @@ public class AppointmentControllerTest extends AppointmentFeatureTest {
     void whenAddAppointmentByDoctorIdWhichDoesNotExist_returnBadRequest() throws Exception {
         var addAppointmentRequest = new AddAppointmentRequest(
                 2,
+                SERVICE_ID,
                 LocalDateTime.now(),
-                1000 * 60 * 15,
-                "A description"
+                15
         );
         setupMockUser();
         given(appointmentService.addAppointment(any(), any()))

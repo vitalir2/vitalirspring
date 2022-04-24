@@ -4,9 +4,9 @@ import java.time.LocalDateTime;
 
 public record AddAppointmentRequest(
         long doctorId,
+        long serviceId,
         LocalDateTime date,
-        long duration,
-        String description
+        long duration
 ) {
 
 }
