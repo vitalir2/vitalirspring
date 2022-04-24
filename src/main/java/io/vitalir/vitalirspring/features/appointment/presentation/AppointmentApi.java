@@ -44,6 +44,14 @@ public interface AppointmentApi {
     @Operation(
             method = HttpMethods.DELETE,
             summary = "Удалить запись с appointmentId для пользователя с userId",
+            parameters = {
+                    @Parameter(
+                            name = "Autharization",
+                            in = ParameterIn.HEADER,
+                            description = "Bearer token",
+                            required = true
+                    )
+            },
             responses = {
                     @ApiResponse(
                             responseCode = "200",
@@ -61,7 +69,7 @@ public interface AppointmentApi {
                     )
             }
     )
-    ResponseEntity<Appointment> removeAppointmentByIds(long userId, long appointmentId);
+    ResponseEntity<Appointment> removeAppointmentByIds(long appointmentId);
 
     // TODO @vitalir: Add handling for dates time
     @Operation(

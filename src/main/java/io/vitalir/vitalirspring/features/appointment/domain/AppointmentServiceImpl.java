@@ -7,6 +7,7 @@ import io.vitalir.vitalirspring.features.appointment.domain.request.AddAppointme
 import io.vitalir.vitalirspring.features.appointment.domain.request.ChangeAppointmentRequest;
 import io.vitalir.vitalirspring.features.doctors.domain.DoctorRepository;
 import io.vitalir.vitalirspring.features.user.domain.UserRepository;
+import io.vitalir.vitalirspring.features.user.domain.model.User;
 
 import java.util.List;
 import java.util.Optional;
@@ -53,11 +54,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public long addAppointment(AddAppointmentRequest request) {
-        var user = userRepository.getById(request.userId());
-        if (user.isEmpty()) {
-            throw new InvalidUserIdException();
-        }
+    public long addAppointment(User user, AddAppointmentRequest request) {
         var doctor = doctorRepository.findById(request.doctorId());
         if (doctor.isEmpty()) {
             throw new InvalidDoctorIdException();
@@ -65,7 +62,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         var appointment = new Appointment(
                 0,
                 doctor.get(),
-                user.get(),
+                user,
                 request.description(),
                 request.date(),
                 request.duration()

@@ -7,11 +7,13 @@ import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidApp
 import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidDoctorIdException;
 import io.vitalir.vitalirspring.features.appointment.domain.request.AddAppointmentRequest;
 import io.vitalir.vitalirspring.features.appointment.presentation.AppointmentController;
+import io.vitalir.vitalirspring.features.user.domain.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -38,6 +40,9 @@ public class AppointmentControllerTest extends AppointmentFeatureTest {
     @MockBean
     private AppointmentService appointmentService;
 
+    @MockBean
+    private UserService userService;
+
     @Test
     void whenGetAppointmentsByExistingUserId_returnIt() throws Exception {
         given(appointmentService.getAppointmentsByUserId(USER_ID))
@@ -63,11 +68,13 @@ public class AppointmentControllerTest extends AppointmentFeatureTest {
     }
 
     @Test
+    @WithMockUser(username = USER_EMAIL)
     void whenRemoveAppointmentByIdsWhichExists_returnRemovedAppointment() throws Exception {
+        setupMockUser();
         given(appointmentService.removeAppointmentByIds(anyLong(), anyLong()))
                 .willReturn(Optional.of(APPOINTMENT));
         var requestBuilder = delete(HttpEndpoints.APPOINTMENT_ENDPOINT +
-                USER_ID + "/" + APPOINTMENT.getId())
+                APPOINTMENT_ID)
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder)
@@ -77,11 +84,13 @@ public class AppointmentControllerTest extends AppointmentFeatureTest {
     }
 
     @Test
+    @WithMockUser(username = USER_EMAIL)
     void whenRemoveAppointmentByUserIdWhichDoesNotExist_returnBadRequest() throws Exception {
+        setupMockUser();
         given(appointmentService.removeAppointmentByIds(anyLong(), anyLong()))
                 .willThrow(new InvalidUserIdException());
         var requestBuilder = delete(HttpEndpoints.APPOINTMENT_ENDPOINT +
-                USER_ID + "/" + APPOINTMENT.getId())
+                APPOINTMENT_ID)
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder)
@@ -89,11 +98,13 @@ public class AppointmentControllerTest extends AppointmentFeatureTest {
     }
 
     @Test
+    @WithMockUser(username = USER_EMAIL)
     void whenRemoveAppointmentByAppointmentIdWhichDoesNotExist_returnBadRequest() throws Exception {
+        setupMockUser();
         given(appointmentService.removeAppointmentByIds(anyLong(), anyLong()))
                 .willReturn(Optional.empty());
         var requestBuilder = delete(HttpEndpoints.APPOINTMENT_ENDPOINT +
-                USER_ID + "/" + APPOINTMENT.getId())
+                APPOINTMENT_ID)
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder)
@@ -103,13 +114,13 @@ public class AppointmentControllerTest extends AppointmentFeatureTest {
     @Test
     void whenAddAppointmentByIdsWhichExist_returnAddedAppointmentId() throws Exception {
         var addAppointmentRequest = new AddAppointmentRequest(
-                1,
                 2,
                 LocalDate.now(),
                 1000 * 60 * 15,
                 "A description"
         );
-        given(appointmentService.addAppointment(any()))
+        setupMockUser();
+        given(appointmentService.addAppointment(any(), any()))
                 .willReturn(APPOINTMENT_ID);
         var requestBuilder = post(HttpEndpoints.APPOINTMENT_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -118,19 +129,19 @@ public class AppointmentControllerTest extends AppointmentFeatureTest {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$", equalTo((int) APPOINTMENT_ID)));
-        verify(appointmentService).addAppointment(any());
+        verify(appointmentService).addAppointment(any(), any());
     }
 
     @Test
     void whenAddAppointmentByUserIdWhichDoesNotExist_returnBadRequest() throws Exception {
         var addAppointmentRequest = new AddAppointmentRequest(
-                1,
                 2,
                 LocalDate.now(),
                 1000 * 60 * 15,
                 "A description"
         );
-        given(appointmentService.addAppointment(any()))
+        setupMockUser();
+        given(appointmentService.addAppointment(any(), any()))
                 .willThrow(new InvalidUserIdException());
         var requestBuilder = post(HttpEndpoints.APPOINTMENT_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -143,13 +154,13 @@ public class AppointmentControllerTest extends AppointmentFeatureTest {
     @Test
     void whenAddAppointmentByDoctorIdWhichDoesNotExist_returnBadRequest() throws Exception {
         var addAppointmentRequest = new AddAppointmentRequest(
-                1,
                 2,
                 LocalDate.now(),
                 1000 * 60 * 15,
                 "A description"
         );
-        given(appointmentService.addAppointment(any()))
+        setupMockUser();
+        given(appointmentService.addAppointment(any(), any()))
                 .willThrow(new InvalidDoctorIdException());
         var requestBuilder = post(HttpEndpoints.APPOINTMENT_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -194,5 +205,10 @@ public class AppointmentControllerTest extends AppointmentFeatureTest {
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isBadRequest());
+    }
+
+    private void setupMockUser() {
+        given(userService.getCurrentUser())
+                .willReturn(Optional.of(USER));
     }
 }

@@ -53,7 +53,6 @@ public class AppointmentServiceImplTest extends AppointmentFeatureTest {
     private static final long DOCTOR_ID = 2;
 
     private static final AddAppointmentRequest ADD_APPOINTMENT_REQUEST = new AddAppointmentRequest(
-            USER_ID,
             DOCTOR_ID,
             LocalDate.now(),
             60 * 1000,
@@ -124,36 +123,23 @@ public class AppointmentServiceImplTest extends AppointmentFeatureTest {
 
     @Test
     void whenAddAppointmentWhichDoesNotExist_returnNewId() {
-        given(userRepository.getById(USER_ID))
-                .willReturn(Optional.of(USER));
         given(doctorRepository.findById(DOCTOR_ID))
                 .willReturn(Optional.of(DOCTOR));
         given(appointmentRepository.save(any()))
                 .willReturn(APPOINTMENT);
 
-        var result = appointmentService.addAppointment(ADD_APPOINTMENT_REQUEST);
+        var result = appointmentService.addAppointment(USER, ADD_APPOINTMENT_REQUEST);
 
         assertThat(result).isNotNull();
         verify(appointmentRepository).save(any());
     }
 
     @Test
-    void whenAddAppointmentByUserIdWhichDoesNotExist_throwInvalidUserId() {
-        given(userRepository.getById(USER_ID))
-                .willReturn(Optional.empty());
-
-        assertThatThrownBy(() -> appointmentService.addAppointment(ADD_APPOINTMENT_REQUEST))
-                .isInstanceOf(InvalidUserIdException.class);
-    }
-
-    @Test
     void whenAddAppointmentByDoctorIdWhichDoesNotExist_throwInvalidDoctorId() {
-        given(userRepository.getById(USER_ID))
-                .willReturn(Optional.of(USER));
         given(doctorRepository.findById(DOCTOR_ID))
                 .willReturn(Optional.empty());
 
-        assertThatThrownBy(() -> appointmentService.addAppointment(ADD_APPOINTMENT_REQUEST))
+        assertThatThrownBy(() -> appointmentService.addAppointment(USER, ADD_APPOINTMENT_REQUEST))
                 .isInstanceOf(InvalidDoctorIdException.class);
     }
 

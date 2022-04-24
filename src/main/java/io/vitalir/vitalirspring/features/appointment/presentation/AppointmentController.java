@@ -7,9 +7,11 @@ import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidApp
 import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidDoctorIdException;
 import io.vitalir.vitalirspring.features.appointment.domain.request.AddAppointmentRequest;
 import io.vitalir.vitalirspring.features.appointment.domain.request.ChangeAppointmentRequest;
+import io.vitalir.vitalirspring.features.user.domain.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -22,8 +24,11 @@ public class AppointmentController implements AppointmentApi {
 
     private final AppointmentService appointmentService;
 
-    public AppointmentController(AppointmentService appointmentService) {
+    private final UserService userService;
+
+    public AppointmentController(AppointmentService appointmentService, UserService userService) {
         this.appointmentService = appointmentService;
+        this.userService = userService;
     }
 
     @Override
@@ -34,11 +39,11 @@ public class AppointmentController implements AppointmentApi {
     }
 
     @Override
-    @DeleteMapping("/{userId}/{appointmentId}")
+    @DeleteMapping("/{appointmentId}")
     public ResponseEntity<Appointment> removeAppointmentByIds(
-            @PathVariable long userId,
             @PathVariable long appointmentId
     ) {
+        var userId = getCurrentUserIdOrUnauthorized();
         var result = appointmentService.removeAppointmentByIds(userId, appointmentId);
         if (result.isPresent()) {
             return ResponseEntity.ok(result.get());
@@ -49,8 +54,12 @@ public class AppointmentController implements AppointmentApi {
     @Override
     @PostMapping
     public ResponseEntity<Long> addAppointmentByIds(@RequestBody AddAppointmentRequest request) {
-        var result = appointmentService.addAppointment(request);
-        var createdLocation = HttpEndpoints.APPOINTMENT_ENDPOINT + request.userId() +
+        var currentUser = userService.getCurrentUser();
+        if (currentUser.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+        var result = appointmentService.addAppointment(currentUser.get(), request);
+        var createdLocation = HttpEndpoints.APPOINTMENT_ENDPOINT + currentUser.get().getId() +
                 '/' + result;
         return ResponseEntity.created(URI.create(createdLocation)).body(result);
     }
@@ -70,5 +79,13 @@ public class AppointmentController implements AppointmentApi {
     )
     ResponseEntity<RuntimeException> handleIllegalUserId(RuntimeException exception) {
         return ResponseEntity.badRequest().body(exception);
+    }
+
+    private long getCurrentUserIdOrUnauthorized() {
+        var userOptional = userService.getCurrentUser();
+        if (userOptional.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+        return userOptional.get().getId();
     }
 }

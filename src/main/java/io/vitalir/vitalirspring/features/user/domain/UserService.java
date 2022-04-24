@@ -9,4 +9,6 @@ public interface UserService {
     Optional<User> getUserByEmail(String email);
 
     Optional<User> getUserById(long id);
+
+    Optional<User> getCurrentUser();
 }
