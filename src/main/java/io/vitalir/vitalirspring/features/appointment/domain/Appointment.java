@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "appointments")
@@ -33,17 +33,17 @@ public class Appointment {
     private String description = "";
 
     @Column(name = "start_date", nullable = false)
-    private LocalDate startDate;
+    private LocalDateTime startDate;
 
     @Column(name = "duration", nullable = false)
-    private long durationMillis;
+    private long durationMinutes;
 
     public Appointment(User user) {
         this.id = 0;
         this.description = "";
         this.doctor = null;
         this.user = user;
-        this.startDate = LocalDate.now();
-        this.durationMillis = 0;
+        this.startDate = LocalDateTime.now();
+        this.durationMinutes = 0;
     }
 }

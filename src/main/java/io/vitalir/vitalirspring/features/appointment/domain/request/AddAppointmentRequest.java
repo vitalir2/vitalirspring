@@ -1,10 +1,10 @@
 package io.vitalir.vitalirspring.features.appointment.domain.request;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public record AddAppointmentRequest(
         long doctorId,
-        LocalDate date,
+        LocalDateTime date,
         long duration,
         String description
 ) {

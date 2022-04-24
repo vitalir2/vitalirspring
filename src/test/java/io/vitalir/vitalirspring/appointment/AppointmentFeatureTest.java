@@ -11,6 +11,7 @@ import io.vitalir.vitalirspring.features.user.domain.model.User;
 import io.vitalir.vitalirspring.security.jwt.JwtProvider;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class AppointmentFeatureTest {
 
@@ -40,14 +41,14 @@ public class AppointmentFeatureTest {
 
     protected static final AddAppointmentRequest ADD_APPOINTMENT_REQUEST = new AddAppointmentRequest(
             2,
-            LocalDate.now(),
+            LocalDateTime.now(),
             1000 * 60 * 15,
             "A description"
     );
     protected static final ChangeAppointmentRequest CHANGE_APPOINTMENT_REQUEST = new ChangeAppointmentRequest(
             APPOINTMENT_ID,
             DOCTOR_ID,
-            LocalDate.now(),
+            LocalDateTime.now(),
             1000 * 60,
             "String"
     );

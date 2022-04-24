@@ -4,6 +4,8 @@ import io.vitalir.vitalirspring.features.appointment.domain.request.AddAppointme
 import io.vitalir.vitalirspring.features.appointment.domain.request.ChangeAppointmentRequest;
 import io.vitalir.vitalirspring.features.user.domain.model.User;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,4 +17,6 @@ public interface AppointmentService {
     long addAppointment(User user, AddAppointmentRequest request);
 
     long changeAppointment(long userId, ChangeAppointmentRequest request);
+
+    List<Appointment> getAppointmentsInInterval(User currentUser, LocalDateTime start, LocalDateTime end);
 }

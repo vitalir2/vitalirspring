@@ -9,6 +9,7 @@ import io.vitalir.vitalirspring.features.doctors.domain.DoctorRepository;
 import io.vitalir.vitalirspring.features.user.domain.UserRepository;
 import io.vitalir.vitalirspring.features.user.domain.model.User;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -93,5 +94,26 @@ public class AppointmentServiceImpl implements AppointmentService {
         );
         appointmentRepository.save(newAppointment);
         return 0;
+    }
+
+    @Override
+    public List<Appointment> getAppointmentsInInterval(User currentUser, LocalDateTime start, LocalDateTime end) {
+        if (start.isAfter(end)) {
+            throw new IllegalArgumentException("Date start=" + start + " happens before end=" + end);
+        }
+        return currentUser.getAppointments()
+                .stream()
+                .filter(appointment -> happensInInterval(appointment, start, end))
+                .toList();
+    }
+
+    private boolean happensInInterval(Appointment appointment, LocalDateTime startDate, LocalDateTime endDate) {
+        var appointmentStartDate = appointment.getStartDate();
+        var appointmentEndDate = appointmentStartDate.plusMinutes(
+                appointment.getDurationMinutes()
+        );
+        var appointmentStartDateInInterval = appointmentStartDate.isAfter(startDate);
+        var appointmentEndDateInInterval = appointmentEndDate.isBefore(endDate);
+        return appointmentStartDateInInterval && appointmentEndDateInInterval;
     }
 }

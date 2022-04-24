@@ -18,6 +18,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -143,7 +144,7 @@ public class AppointmentControllerTest extends AppointmentFeatureTest {
     void whenAddAppointmentByDoctorIdWhichDoesNotExist_returnBadRequest() throws Exception {
         var addAppointmentRequest = new AddAppointmentRequest(
                 2,
-                LocalDate.now(),
+                LocalDateTime.now(),
                 1000 * 60 * 15,
                 "A description"
         );
