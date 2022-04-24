@@ -34,30 +34,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(AppointmentController.class)
 @ActiveProfiles("test")
-public class AppointmentControllerTest {
+public class AppointmentControllerTest extends AppointmentFeatureTest {
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
     private AppointmentService appointmentService;
-
-    private static final long USER_ID = 1;
-
-    private static final long DOCTOR_ID = 2;
-
-    private static final Appointment APPOINTMENT = new Appointment();
-
-    private static final long APPOINTMENT_ID = APPOINTMENT.getId();
-
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().registerModule(new JavaTimeModule());
-
-    private static final ChangeAppointmentRequest CHANGE_APPOINTMENT_REQUEST = new ChangeAppointmentRequest(
-            APPOINTMENT_ID,
-            DOCTOR_ID,
-            LocalDate.now(),
-            1000 * 60,
-            "String"
-    );
 
     @Test
     void whenGetAppointmentsByExistingUserId_returnIt() throws Exception {

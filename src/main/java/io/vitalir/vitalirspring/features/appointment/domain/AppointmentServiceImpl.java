@@ -1,6 +1,7 @@
 package io.vitalir.vitalirspring.features.appointment.domain;
 
 import io.vitalir.vitalirspring.features.appointment.domain.exception.IllegalUserIdException;
+import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidAppointmentIdException;
 import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidDoctorIdException;
 import io.vitalir.vitalirspring.features.appointment.domain.request.AddAppointmentRequest;
 import io.vitalir.vitalirspring.features.appointment.domain.request.ChangeAppointmentRequest;
@@ -75,6 +76,25 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public long changeAppointment(long userId, ChangeAppointmentRequest request) {
+        var optionalAppointment = getAppointmentsByUserId(userId).stream()
+                .filter(appointment -> appointment.getId() == request.appointmentId())
+                .findFirst();
+        if (optionalAppointment.isEmpty()) {
+            throw new InvalidAppointmentIdException();
+        }
+        var optionalDoctor = doctorRepository.findById(request.doctorId());
+        if (optionalDoctor.isEmpty()) {
+            throw new InvalidDoctorIdException();
+        }
+        var newAppointment = new Appointment(
+                0,
+                optionalDoctor.get(),
+                optionalAppointment.get().getUser(),
+                request.description(),
+                request.date(),
+                request.duration()
+        );
+        appointmentRepository.save(newAppointment);
         return 0;
     }
 }

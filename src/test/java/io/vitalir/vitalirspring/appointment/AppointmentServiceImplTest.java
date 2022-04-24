@@ -2,8 +2,10 @@ package io.vitalir.vitalirspring.appointment;
 
 import io.vitalir.vitalirspring.features.appointment.domain.*;
 import io.vitalir.vitalirspring.features.appointment.domain.exception.IllegalUserIdException;
+import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidAppointmentIdException;
 import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidDoctorIdException;
 import io.vitalir.vitalirspring.features.appointment.domain.request.AddAppointmentRequest;
+import io.vitalir.vitalirspring.features.appointment.domain.request.ChangeAppointmentRequest;
 import io.vitalir.vitalirspring.features.doctors.domain.Doctor;
 import io.vitalir.vitalirspring.features.doctors.domain.DoctorRepository;
 import io.vitalir.vitalirspring.features.user.domain.UserRepository;
@@ -152,6 +154,60 @@ public class AppointmentServiceImplTest extends AppointmentFeatureTest {
                 .willReturn(Optional.empty());
 
         assertThatThrownBy(() -> appointmentService.addAppointment(ADD_APPOINTMENT_REQUEST))
+                .isInstanceOf(InvalidDoctorIdException.class);
+    }
+
+    @Test
+    void whenChangeAppointmentByIdsWhichExist_returnThem() {
+        given(userRepository.existsById(USER_ID))
+                .willReturn(true);
+        given(appointmentRepository.getAppointmentsByUserId(USER_ID))
+                .willReturn(List.of((APPOINTMENT)));
+        given(doctorRepository.findById(DOCTOR_ID))
+                .willReturn(Optional.of(DOCTOR));
+
+        var result = appointmentService.changeAppointment(USER_ID, CHANGE_APPOINTMENT_REQUEST);
+
+        assertThat(result).isEqualTo(APPOINTMENT_ID);
+        verify(appointmentRepository).save(any());
+    }
+
+    @Test
+    void whenChangeAppointmentByUserIdWhichDoesNotExist_throwInvalidAppointmentId() {
+        given(userRepository.existsById(USER_ID))
+                .willReturn(true);
+        given(appointmentRepository.getAppointmentsByUserId(USER_ID))
+                .willReturn(List.of((APPOINTMENT)));
+
+        assertThatThrownBy(() -> appointmentService.changeAppointment(USER_ID, new ChangeAppointmentRequest(
+                -1,
+                -1,
+                LocalDate.now(),
+                0L,
+                ""
+        )))
+                .isInstanceOf(InvalidAppointmentIdException.class);
+    }
+
+    @Test
+    void whenChangeAppointmentByAppointmentIdWhichDoesNotExist_throwInvalidUserId() {
+        given(userRepository.existsById(USER_ID))
+                .willReturn(false);
+
+        assertThatThrownBy(() -> appointmentService.changeAppointment(USER_ID, CHANGE_APPOINTMENT_REQUEST))
+                .isInstanceOf(IllegalUserIdException.class);
+    }
+
+    @Test
+    void whenChangeAppointmentByDoctorIdWhichDoesNotExist_throwInvalidDoctorId() {
+        given(userRepository.existsById(USER_ID))
+                .willReturn(true);
+        given(appointmentRepository.getAppointmentsByUserId(USER_ID))
+                .willReturn(List.of((APPOINTMENT)));
+        given(doctorRepository.findById(DOCTOR_ID))
+                .willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> appointmentService.changeAppointment(USER_ID, CHANGE_APPOINTMENT_REQUEST))
                 .isInstanceOf(InvalidDoctorIdException.class);
     }
 }
