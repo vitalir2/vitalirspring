@@ -113,18 +113,12 @@ public class AppointmentControllerTest extends AppointmentFeatureTest {
 
     @Test
     void whenAddAppointmentByIdsWhichExist_returnAddedAppointmentId() throws Exception {
-        var addAppointmentRequest = new AddAppointmentRequest(
-                2,
-                LocalDate.now(),
-                1000 * 60 * 15,
-                "A description"
-        );
         setupMockUser();
         given(appointmentService.addAppointment(any(), any()))
                 .willReturn(APPOINTMENT_ID);
         var requestBuilder = post(HttpEndpoints.APPOINTMENT_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(OBJECT_MAPPER.writeValueAsBytes(addAppointmentRequest));
+                .content(OBJECT_MAPPER.writeValueAsBytes(ADD_APPOINTMENT_REQUEST));
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isCreated())
@@ -134,18 +128,12 @@ public class AppointmentControllerTest extends AppointmentFeatureTest {
 
     @Test
     void whenAddAppointmentByUserIdWhichDoesNotExist_returnBadRequest() throws Exception {
-        var addAppointmentRequest = new AddAppointmentRequest(
-                2,
-                LocalDate.now(),
-                1000 * 60 * 15,
-                "A description"
-        );
         setupMockUser();
         given(appointmentService.addAppointment(any(), any()))
                 .willThrow(new InvalidUserIdException());
         var requestBuilder = post(HttpEndpoints.APPOINTMENT_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(OBJECT_MAPPER.writeValueAsBytes(addAppointmentRequest));
+                .content(OBJECT_MAPPER.writeValueAsBytes(ADD_APPOINTMENT_REQUEST));
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isBadRequest());
@@ -172,9 +160,10 @@ public class AppointmentControllerTest extends AppointmentFeatureTest {
 
     @Test
     void whenChangeAppointmentWhichExists_changeIt() throws Exception {
+        setupMockUser();
         given(appointmentService.changeAppointment(USER_ID, CHANGE_APPOINTMENT_REQUEST))
                 .willReturn(APPOINTMENT_ID);
-        var requestBuilder = put(HttpEndpoints.APPOINTMENT_ENDPOINT + USER_ID)
+        var requestBuilder = put(HttpEndpoints.APPOINTMENT_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(OBJECT_MAPPER.writeValueAsBytes(CHANGE_APPOINTMENT_REQUEST));
 
@@ -185,9 +174,10 @@ public class AppointmentControllerTest extends AppointmentFeatureTest {
 
     @Test
     void whenChangeAppointmentByUserIdWhichDoesNotExist_returnBadRequest() throws Exception {
+        setupMockUser();
         given(appointmentService.changeAppointment(USER_ID, CHANGE_APPOINTMENT_REQUEST))
                 .willThrow(new InvalidUserIdException());
-        var requestBuilder = put(HttpEndpoints.APPOINTMENT_ENDPOINT + USER_ID)
+        var requestBuilder = put(HttpEndpoints.APPOINTMENT_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(OBJECT_MAPPER.writeValueAsBytes(CHANGE_APPOINTMENT_REQUEST));
 
@@ -197,9 +187,10 @@ public class AppointmentControllerTest extends AppointmentFeatureTest {
 
     @Test
     void whenChangeAppointmentByAppointmentIdWhichDoesNotExist_returnBadRequest() throws Exception {
+        setupMockUser();
         given(appointmentService.changeAppointment(USER_ID, CHANGE_APPOINTMENT_REQUEST))
                 .willThrow(new InvalidAppointmentIdException());
-        var requestBuilder = put(HttpEndpoints.APPOINTMENT_ENDPOINT + USER_ID)
+        var requestBuilder = put(HttpEndpoints.APPOINTMENT_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(OBJECT_MAPPER.writeValueAsBytes(CHANGE_APPOINTMENT_REQUEST));
 
@@ -210,5 +201,7 @@ public class AppointmentControllerTest extends AppointmentFeatureTest {
     private void setupMockUser() {
         given(currentUserService.getCurrentUser())
                 .willReturn(Optional.of(USER));
+        given(currentUserService.getCurrentUserId())
+                .willReturn(Optional.of(USER_ID));
     }
 }

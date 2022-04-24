@@ -62,12 +62,15 @@ public class AppointmentController implements AppointmentApi {
     }
 
     @Override
-    @PutMapping(value = "/{userId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Long> changeAppointmentByIds(
-            @PathVariable long userId,
             @RequestBody ChangeAppointmentRequest request
     ) {
-        var result = appointmentService.changeAppointment(userId, request);
+        var userId = currentUserService.getCurrentUserId();
+        if (userId.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+        var result = appointmentService.changeAppointment(userId.get(), request);
         return ResponseEntity.ok(result);
     }
 

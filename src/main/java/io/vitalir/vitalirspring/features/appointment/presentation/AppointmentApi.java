@@ -14,6 +14,7 @@ import io.vitalir.vitalirspring.features.appointment.domain.request.ChangeAppoin
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 
 import java.util.List;
 
@@ -115,6 +116,14 @@ public interface AppointmentApi {
     @Operation(
             method = HttpMethods.PUT,
             summary = "Обновить существующую запись для пользователя по userId",
+            parameters = {
+                    @Parameter(
+                            name = HttpHeaders.AUTHORIZATION,
+                            in = ParameterIn.HEADER,
+                            required = true,
+                            description = "Bearer token"
+                    )
+            },
             responses = {
                     @ApiResponse(
                             responseCode = "200",
@@ -123,8 +132,12 @@ public interface AppointmentApi {
                     @ApiResponse(
                             responseCode = "400",
                             description = "An invalid userId or appointment does not exist"
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized"
                     )
             }
     )
-    ResponseEntity<Long> changeAppointmentByIds(long userId, ChangeAppointmentRequest request);
+    ResponseEntity<Long> changeAppointmentByIds(ChangeAppointmentRequest request);
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.vitalir.vitalirspring.common.JavaDateProvider;
 import io.vitalir.vitalirspring.features.appointment.domain.Appointment;
+import io.vitalir.vitalirspring.features.appointment.domain.request.AddAppointmentRequest;
 import io.vitalir.vitalirspring.features.appointment.domain.request.ChangeAppointmentRequest;
 import io.vitalir.vitalirspring.features.user.domain.model.Role;
 import io.vitalir.vitalirspring.features.user.domain.model.User;
@@ -37,6 +38,12 @@ public class AppointmentFeatureTest {
 
     protected static final String BEARER_HEADER = "Bearer " + BEARER_TOKEN;
 
+    protected static final AddAppointmentRequest ADD_APPOINTMENT_REQUEST = new AddAppointmentRequest(
+            2,
+            LocalDate.now(),
+            1000 * 60 * 15,
+            "A description"
+    );
     protected static final ChangeAppointmentRequest CHANGE_APPOINTMENT_REQUEST = new ChangeAppointmentRequest(
             APPOINTMENT_ID,
             DOCTOR_ID,
