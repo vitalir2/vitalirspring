@@ -7,6 +7,7 @@ import io.vitalir.vitalirspring.features.appointment.domain.Appointment;
 import io.vitalir.vitalirspring.features.appointment.domain.request.AddAppointmentRequest;
 import io.vitalir.vitalirspring.features.appointment.domain.request.ChangeAppointmentRequest;
 import io.vitalir.vitalirspring.features.doctors.domain.Doctor;
+import io.vitalir.vitalirspring.features.doctors.domain.MedicalSpecialty;
 import io.vitalir.vitalirspring.features.user.domain.model.Role;
 import io.vitalir.vitalirspring.features.user.domain.model.User;
 import io.vitalir.vitalirspring.security.jwt.JwtProvider;
@@ -55,7 +56,7 @@ public class AppointmentFeatureTest {
             "String"
     );
 
-    protected static final Doctor DOCTOR = new Doctor("");
+    protected static final Doctor DOCTOR = new Doctor("", Set.of(MedicalSpecialty.ENDOCRINOLOGY));
 
     protected static final Appointment FIRST_APPOINTMENT = new Appointment(
             0L,

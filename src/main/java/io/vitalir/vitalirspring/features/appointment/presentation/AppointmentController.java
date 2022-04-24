@@ -81,11 +81,12 @@ public class AppointmentController implements AppointmentApi {
 
     @Override
     @GetMapping
-    public ResponseEntity<List<Appointment>> getAppointmentsForCurrentUserByPeriodOfTime(
+    public ResponseEntity<List<Appointment>> getAppointmentsForCurrentUserByParams(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
-            @RequestParam(name = "specialty", required = false) MedicalSpecialty medicalSpecialty
-            ) {
+            @RequestParam(name = "specialty", required = false) MedicalSpecialty medicalSpecialty,
+            @RequestParam(name = "doctorId", required = false) Long doctorId
+    ) {
         if (log.isDebugEnabled()) {
             log.debug("Got query params: startDate=" + startDate + ", endDate=" + endDate);
         }
@@ -93,7 +94,13 @@ public class AppointmentController implements AppointmentApi {
         if (currentUser.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
-        var result = appointmentService.getAppointmentsInInterval(currentUser.get(), startDate, endDate, medicalSpecialty);
+        var result = appointmentService.getAppointmentsForCurrentUserByParams(
+                currentUser.get(),
+                startDate,
+                endDate,
+                medicalSpecialty,
+                doctorId
+        );
         return ResponseEntity.ok(result);
     }
 

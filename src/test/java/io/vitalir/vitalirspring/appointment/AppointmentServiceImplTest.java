@@ -6,8 +6,8 @@ import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidApp
 import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidDoctorIdException;
 import io.vitalir.vitalirspring.features.appointment.domain.request.AddAppointmentRequest;
 import io.vitalir.vitalirspring.features.appointment.domain.request.ChangeAppointmentRequest;
-import io.vitalir.vitalirspring.features.doctors.domain.Doctor;
 import io.vitalir.vitalirspring.features.doctors.domain.DoctorRepository;
+import io.vitalir.vitalirspring.features.doctors.domain.MedicalSpecialty;
 import io.vitalir.vitalirspring.features.user.domain.UserRepository;
 import io.vitalir.vitalirspring.features.user.domain.model.Role;
 import io.vitalir.vitalirspring.features.user.domain.model.User;
@@ -200,7 +200,13 @@ public class AppointmentServiceImplTest extends AppointmentFeatureTest {
         var startDate = LocalDateTime.of(2022, 1, 14, 14, 30);
         var endDate = LocalDateTime.of(2022, 5, 14, 22, 0);
 
-        var result = appointmentService.getAppointmentsInInterval(USER_WITH_APPOINTMENTS, startDate, endDate, null);
+        var result = appointmentService.getAppointmentsForCurrentUserByParams(
+                USER_WITH_APPOINTMENTS,
+                startDate,
+                endDate,
+                null,
+                null
+        );
 
         assertThat(result).isNotNull();
         assertThat(result.size()).isEqualTo(2);
@@ -213,7 +219,13 @@ public class AppointmentServiceImplTest extends AppointmentFeatureTest {
         var startDate = LocalDateTime.of(2022, 3, 14, 14, 30);
         var endDate = LocalDateTime.of(2022, 5, 14, 22, 0);
 
-        var result = appointmentService.getAppointmentsInInterval(USER_WITH_APPOINTMENTS, startDate, endDate, null);
+        var result = appointmentService.getAppointmentsForCurrentUserByParams(
+                USER_WITH_APPOINTMENTS,
+                startDate,
+                endDate,
+                null,
+                null
+        );
 
         assertThat(result).isNotNull();
         assertThat(result.size()).isEqualTo(1);
@@ -226,7 +238,13 @@ public class AppointmentServiceImplTest extends AppointmentFeatureTest {
         var startDate = LocalDateTime.of(2022, 2, 14, 14, 30);
         var endDate = LocalDateTime.of(2022, 3, 14, 22, 0);
 
-        var result = appointmentService.getAppointmentsInInterval(USER_WITH_APPOINTMENTS, startDate, endDate, null);
+        var result = appointmentService.getAppointmentsForCurrentUserByParams(
+                USER_WITH_APPOINTMENTS,
+                startDate,
+                endDate,
+                null,
+                null
+        );
 
         assertThat(result).isNotNull();
         assertThat(result.size()).isEqualTo(1);
@@ -235,14 +253,68 @@ public class AppointmentServiceImplTest extends AppointmentFeatureTest {
     }
 
     @Test
+    void whenGetAppointmentsByIntervalAndSpecWithAppointmentsThere_returnThem() {
+        var startDate = LocalDateTime.of(2022, 2, 14, 14, 30);
+        var endDate = LocalDateTime.of(2022, 3, 14, 22, 0);
+
+        var result = appointmentService.getAppointmentsForCurrentUserByParams(
+                USER_WITH_APPOINTMENTS,
+                startDate,
+                endDate,
+                MedicalSpecialty.ENDOCRINOLOGY,
+                null
+        );
+
+        assertThat(result).isNotNull();
+        assertThat(result.size()).isEqualTo(1);
+        assertThat(anyAppointmentContainsWithId(result, FIRST_APPOINTMENT.getId())).isFalse();
+        assertThat(anyAppointmentContainsWithId(result, SECOND_APPOINTMENT.getId())).isTrue();
+    }
+
+    @Test
+    void whenGetAppointmentsByIntervalAndSpecWithAppointmentsWithNoSpec_returnThem() {
+        var startDate = LocalDateTime.of(2022, 2, 14, 14, 30);
+        var endDate = LocalDateTime.of(2022, 3, 14, 22, 0);
+
+        var result = appointmentService.getAppointmentsForCurrentUserByParams(
+                USER_WITH_APPOINTMENTS,
+                startDate,
+                endDate,
+                MedicalSpecialty.CARDIOLOGY,
+                null
+        );
+
+        assertThat(result).isNotNull();
+        assertThat(result.size()).isEqualTo(0);
+    }
+
+    @Test
+    void whenGetAppointmentsByIntervalAndDoctorIdWithAppointmentsWithNoSpecifiedDoctor_returnEmpty() {
+        var startDate = LocalDateTime.of(2022, 1, 14, 14, 30);
+        var endDate = LocalDateTime.of(2022, 12, 14, 22, 0);
+
+        var result = appointmentService.getAppointmentsForCurrentUserByParams(
+                USER_WITH_APPOINTMENTS,
+                startDate,
+                endDate,
+                null,
+                1234L
+        );
+
+        assertThat(result).isNotNull();
+        assertThat(result.size()).isEqualTo(0);
+    }
+
+    @Test
     void whenGetAppointmentsByIntervalWhenNoAppointmentsThere_returnEmpty() {
         var startDate = LocalDateTime.of(2022, 6, 14, 14, 30);
         var endDate = LocalDateTime.of(2022, 7, 14, 22, 0);
 
-        var result = appointmentService.getAppointmentsInInterval(
+        var result = appointmentService.getAppointmentsForCurrentUserByParams(
                 USER_WITH_APPOINTMENTS,
                 startDate,
                 endDate,
+                null,
                 null
         );
 
@@ -256,7 +328,14 @@ public class AppointmentServiceImplTest extends AppointmentFeatureTest {
         var endDate = LocalDateTime.of(2022, 3, 14, 22, 0);
 
         assertThatThrownBy(
-                () -> appointmentService.getAppointmentsInInterval(USER_WITH_APPOINTMENTS, startDate, endDate, null))
+                () -> appointmentService.getAppointmentsForCurrentUserByParams(
+                        USER_WITH_APPOINTMENTS,
+                        startDate,
+                        endDate,
+                        null,
+                        null
+                )
+        )
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

@@ -98,11 +98,12 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<Appointment> getAppointmentsInInterval(
+    public List<Appointment> getAppointmentsForCurrentUserByParams(
             User currentUser,
             LocalDateTime start,
             LocalDateTime end,
-            MedicalSpecialty medicalSpecialty
+            MedicalSpecialty medicalSpecialty,
+            Long doctorId
     ) {
         if (start.isAfter(end)) {
             throw new IllegalArgumentException("Date start=" + start + " happens before end=" + end);
@@ -113,6 +114,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         if (medicalSpecialty != null) {
             filteredAppointments = filteredAppointments
                     .filter(appointment -> appointment.getDoctor().getMedicalSpecialties().contains(medicalSpecialty));
+        }
+        if (doctorId != null) {
+            filteredAppointments = filteredAppointments
+                    .filter(appointment -> appointment.getDoctor().getId() == doctorId);
         }
         return filteredAppointments.toList();
     }

@@ -167,6 +167,11 @@ public interface AppointmentApi {
                             in = ParameterIn.QUERY
                     ),
                     @Parameter(
+                            name = "doctorId",
+                            description = "Id врача",
+                            in = ParameterIn.QUERY
+                    ),
+                    @Parameter(
                             name = HttpHeaders.AUTHORIZATION,
                             description = "Bearer token",
                             required = true,
@@ -188,9 +193,10 @@ public interface AppointmentApi {
                     )
             }
     )
-    ResponseEntity<List<Appointment>> getAppointmentsForCurrentUserByPeriodOfTime(
+    ResponseEntity<List<Appointment>> getAppointmentsForCurrentUserByParams(
             LocalDateTime startDate,
             LocalDateTime endDate,
-            MedicalSpecialty medicalSpecialty
+            MedicalSpecialty medicalSpecialty,
+            Long doctorId
     );
 }

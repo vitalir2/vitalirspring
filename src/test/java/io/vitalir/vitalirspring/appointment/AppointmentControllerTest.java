@@ -16,13 +16,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -207,11 +205,12 @@ public class AppointmentControllerTest extends AppointmentFeatureTest {
     @Test
     void whenGetCurrentUserAppointmentsByDate_returnThem() throws Exception {
         setupMockUser(USER_WITH_APPOINTMENTS);
-        given(appointmentService.getAppointmentsInInterval(
+        given(appointmentService.getAppointmentsForCurrentUserByParams(
                 any(),
                 any(),
                 any(),
-                any()
+                any(),
+                isNull()
         )).willReturn(List.of(FIRST_APPOINTMENT, SECOND_APPOINTMENT));
         LocalDateTime startDate = LocalDateTime.of(2022, 3, 15, 12, 0);
         LocalDateTime endDate = LocalDateTime.of(2022, 4, 25, 15, 30);
@@ -228,11 +227,12 @@ public class AppointmentControllerTest extends AppointmentFeatureTest {
     @Test
     void whenGetCurrentUserAppointmentsByInvalidDate_returnThem() throws Exception {
         setupMockUser(USER_WITH_APPOINTMENTS);
-        given(appointmentService.getAppointmentsInInterval(
+        given(appointmentService.getAppointmentsForCurrentUserByParams(
                 any(),
                 any(),
                 any(),
-                any()
+                any(),
+                eq(null)
         )).willThrow(new IllegalArgumentException("Kek"));
         LocalDateTime from = LocalDateTime.of(2022, 5, 15, 12, 0);
         LocalDateTime to = LocalDateTime.of(2022, 4, 25, 15, 30);
@@ -250,11 +250,12 @@ public class AppointmentControllerTest extends AppointmentFeatureTest {
         setupMockUser(USER_WITH_APPOINTMENTS);
         var appointment = new Appointment();
         appointment.setDoctor(new Doctor("Helly", Set.of(MedicalSpecialty.HEPATOLOGY)));
-        given(appointmentService.getAppointmentsInInterval(
+        given(appointmentService.getAppointmentsForCurrentUserByParams(
                 any(),
                 any(),
                 any(),
-                eq(MedicalSpecialty.HEPATOLOGY)
+                eq(MedicalSpecialty.HEPATOLOGY),
+                eq(null)
         )).willReturn(List.of(appointment));
         LocalDateTime from = LocalDateTime.of(2022, 4, 15, 12, 0);
         LocalDateTime to = LocalDateTime.of(2022, 5, 25, 15, 30);
