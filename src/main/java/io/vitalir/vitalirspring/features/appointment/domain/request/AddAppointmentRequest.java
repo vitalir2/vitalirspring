@@ -1,4 +1,4 @@
-package io.vitalir.vitalirspring.features.appointment.domain;
+package io.vitalir.vitalirspring.features.appointment.domain.request;
 
 import java.time.LocalDate;
 

@@ -1,6 +1,9 @@
 package io.vitalir.vitalirspring.appointment;
 
 import io.vitalir.vitalirspring.features.appointment.domain.*;
+import io.vitalir.vitalirspring.features.appointment.domain.exception.IllegalUserIdException;
+import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidDoctorIdException;
+import io.vitalir.vitalirspring.features.appointment.domain.request.AddAppointmentRequest;
 import io.vitalir.vitalirspring.features.doctors.domain.Doctor;
 import io.vitalir.vitalirspring.features.doctors.domain.DoctorRepository;
 import io.vitalir.vitalirspring.features.user.domain.UserRepository;

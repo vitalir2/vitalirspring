@@ -7,8 +7,9 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.vitalir.vitalirspring.common.HttpMethods;
-import io.vitalir.vitalirspring.features.appointment.domain.AddAppointmentRequest;
+import io.vitalir.vitalirspring.features.appointment.domain.request.AddAppointmentRequest;
 import io.vitalir.vitalirspring.features.appointment.domain.Appointment;
+import io.vitalir.vitalirspring.features.appointment.domain.request.ChangeAppointmentRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
@@ -85,5 +86,19 @@ public interface AppointmentApi {
     )
     ResponseEntity<Long> addAppointmentByIds(AddAppointmentRequest request);
 
-    ResponseEntity<Long> changeAppointmentByIds(long userId, Appointment appointment);
+    @Operation(
+            method = HttpMethods.PUT,
+            summary = "Обновить существующую запись для пользователя по userId",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "A successful response"
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "An invalid userId or appointment does not exist"
+                    )
+            }
+    )
+    ResponseEntity<Long> changeAppointmentByIds(long userId, ChangeAppointmentRequest request);
 }

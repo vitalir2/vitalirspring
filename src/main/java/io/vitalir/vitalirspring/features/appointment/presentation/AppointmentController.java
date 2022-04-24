@@ -2,6 +2,11 @@ package io.vitalir.vitalirspring.features.appointment.presentation;
 
 import io.vitalir.vitalirspring.common.HttpEndpoints;
 import io.vitalir.vitalirspring.features.appointment.domain.*;
+import io.vitalir.vitalirspring.features.appointment.domain.exception.IllegalUserIdException;
+import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidAppointmentIdException;
+import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidDoctorIdException;
+import io.vitalir.vitalirspring.features.appointment.domain.request.AddAppointmentRequest;
+import io.vitalir.vitalirspring.features.appointment.domain.request.ChangeAppointmentRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -51,17 +56,19 @@ public class AppointmentController implements AppointmentApi {
     }
 
     @Override
-    public ResponseEntity<Long> changeAppointmentByIds(long userId, Appointment appointment) {
-        return null;
+    @PutMapping(value = "/{userId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Long> changeAppointmentByIds(
+            @PathVariable long userId,
+            @RequestBody ChangeAppointmentRequest request
+    ) {
+        var result = appointmentService.changeAppointment(userId, request);
+        return ResponseEntity.ok(result);
     }
 
-    @ExceptionHandler(value = IllegalUserIdException.class)
-    ResponseEntity<IllegalUserIdException> handleIllegalUserId(IllegalUserIdException exception) {
-        return ResponseEntity.badRequest().body(exception);
-    }
-
-    @ExceptionHandler(value = InvalidDoctorIdException.class)
-    ResponseEntity<InvalidDoctorIdException> handleInvalidDoctorId(InvalidDoctorIdException exception) {
+    @ExceptionHandler(
+            value = {InvalidDoctorIdException.class, IllegalUserIdException.class, InvalidAppointmentIdException.class}
+    )
+    ResponseEntity<RuntimeException> handleIllegalUserId(RuntimeException exception) {
         return ResponseEntity.badRequest().body(exception);
     }
 }

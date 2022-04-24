@@ -4,6 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.vitalir.vitalirspring.common.HttpEndpoints;
 import io.vitalir.vitalirspring.features.appointment.domain.*;
+import io.vitalir.vitalirspring.features.appointment.domain.exception.IllegalUserIdException;
+import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidAppointmentIdException;
+import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidDoctorIdException;
+import io.vitalir.vitalirspring.features.appointment.domain.request.AddAppointmentRequest;
+import io.vitalir.vitalirspring.features.appointment.domain.request.ChangeAppointmentRequest;
 import io.vitalir.vitalirspring.features.appointment.presentation.AppointmentController;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,11 +43,21 @@ public class AppointmentControllerTest {
 
     private static final long USER_ID = 1;
 
+    private static final long DOCTOR_ID = 2;
+
     private static final Appointment APPOINTMENT = new Appointment();
 
     private static final long APPOINTMENT_ID = APPOINTMENT.getId();
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().registerModule(new JavaTimeModule());
+
+    private static final ChangeAppointmentRequest CHANGE_APPOINTMENT_REQUEST = new ChangeAppointmentRequest(
+            APPOINTMENT_ID,
+            DOCTOR_ID,
+            LocalDate.now(),
+            1000 * 60,
+            "String"
+    );
 
     @Test
     void whenGetAppointmentsByExistingUserId_returnIt() throws Exception {
@@ -160,6 +175,43 @@ public class AppointmentControllerTest {
         var requestBuilder = post(HttpEndpoints.APPOINTMENT_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(OBJECT_MAPPER.writeValueAsBytes(addAppointmentRequest));
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void whenChangeAppointmentWhichExists_changeIt() throws Exception {
+        given(appointmentService.changeAppointment(USER_ID, CHANGE_APPOINTMENT_REQUEST))
+                .willReturn(APPOINTMENT_ID);
+        var requestBuilder = put(HttpEndpoints.APPOINTMENT_ENDPOINT + USER_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(OBJECT_MAPPER.writeValueAsBytes(CHANGE_APPOINTMENT_REQUEST));
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", equalTo((int) APPOINTMENT_ID)));
+    }
+
+    @Test
+    void whenChangeAppointmentByUserIdWhichDoesNotExist_returnBadRequest() throws Exception {
+        given(appointmentService.changeAppointment(USER_ID, CHANGE_APPOINTMENT_REQUEST))
+                .willThrow(new IllegalUserIdException());
+        var requestBuilder = put(HttpEndpoints.APPOINTMENT_ENDPOINT + USER_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(OBJECT_MAPPER.writeValueAsBytes(CHANGE_APPOINTMENT_REQUEST));
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void whenChangeAppointmentByAppointmentIdWhichDoesNotExist_returnBadRequest() throws Exception {
+        given(appointmentService.changeAppointment(USER_ID, CHANGE_APPOINTMENT_REQUEST))
+                .willThrow(new InvalidAppointmentIdException());
+        var requestBuilder = put(HttpEndpoints.APPOINTMENT_ENDPOINT + USER_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(OBJECT_MAPPER.writeValueAsBytes(CHANGE_APPOINTMENT_REQUEST));
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isBadRequest());

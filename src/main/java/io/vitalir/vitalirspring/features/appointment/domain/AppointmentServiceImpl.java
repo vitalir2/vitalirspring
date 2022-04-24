@@ -1,9 +1,12 @@
 package io.vitalir.vitalirspring.features.appointment.domain;
 
+import io.vitalir.vitalirspring.features.appointment.domain.exception.IllegalUserIdException;
+import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidDoctorIdException;
+import io.vitalir.vitalirspring.features.appointment.domain.request.AddAppointmentRequest;
+import io.vitalir.vitalirspring.features.appointment.domain.request.ChangeAppointmentRequest;
 import io.vitalir.vitalirspring.features.doctors.domain.DoctorRepository;
 import io.vitalir.vitalirspring.features.user.domain.UserRepository;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,5 +71,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         );
         var result = appointmentRepository.save(appointment);
         return result.getId();
+    }
+
+    @Override
+    public long changeAppointment(long userId, ChangeAppointmentRequest request) {
+        return 0;
     }
 }
