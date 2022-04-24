@@ -1,10 +1,9 @@
 package io.vitalir.vitalirspring.features.user.domain.model;
 
-import io.vitalir.vitalirspring.features.doctors.domain.Appointment;
+import io.vitalir.vitalirspring.features.appointment.domain.Appointment;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -46,6 +45,13 @@ public class User {
         this.email = email;
         this.password = password;
         this.role = role;
+    }
+
+    public User(String email, String password, Role role, Set<Appointment> appointments) {
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.appointments = appointments;
     }
 
     @Override

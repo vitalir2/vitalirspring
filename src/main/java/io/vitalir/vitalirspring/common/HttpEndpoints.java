@@ -12,4 +12,6 @@ public class HttpEndpoints {
             "/swagger-ui/**",
             "/v3/api-docs/**"
     );
+
+    public static final String APPOINTMENT_ENDPOINT = "/api/v1/appointments/";
 }

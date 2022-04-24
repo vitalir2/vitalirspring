@@ -5,3 +5,4 @@ spring:
 
 vitalirspring:
   enable-swagger-security: false
+  enable-csrf: false

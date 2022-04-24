@@ -9,8 +9,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @ActiveProfiles({"test"})
@@ -54,5 +53,17 @@ public class UserRepositoryTest extends UserFeatureTest {
         userRepository.save(validUser);
 
         assertEquals(validUser, testEntityManager.find(User.class, validUser.getId()));
+    }
+
+    @Test
+    public void whenUserShouldExist_returnTrue() {
+        testEntityManager.persist(validUser);
+
+        assertTrue(userRepository.existsById(validUser.getId()));
+    }
+
+    @Test
+    void whenUserDoesNotExist_returnFalse() {
+        assertFalse(userRepository.existsById(validUser.getId()));
     }
 }
