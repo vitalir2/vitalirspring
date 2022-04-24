@@ -4,9 +4,9 @@ import io.vitalir.vitalirspring.features.user.domain.model.User;
 
 import java.util.Optional;
 
-public interface UserService {
+public interface CurrentUserService {
 
-    Optional<User> getUserByEmail(String email);
+    Optional<User> getCurrentUser();
 
-    Optional<User> getUserById(long id);
+    Optional<Long> getCurrentUserId();
 }

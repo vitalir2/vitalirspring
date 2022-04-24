@@ -1,13 +1,13 @@
 package io.vitalir.vitalirspring.appointment;
 
 import io.vitalir.vitalirspring.common.HttpEndpoints;
-import io.vitalir.vitalirspring.features.appointment.domain.*;
-import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidUserIdException;
+import io.vitalir.vitalirspring.features.appointment.domain.AppointmentService;
 import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidAppointmentIdException;
 import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidDoctorIdException;
+import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidUserIdException;
 import io.vitalir.vitalirspring.features.appointment.domain.request.AddAppointmentRequest;
 import io.vitalir.vitalirspring.features.appointment.presentation.AppointmentController;
-import io.vitalir.vitalirspring.features.user.domain.UserService;
+import io.vitalir.vitalirspring.features.user.domain.CurrentUserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -41,7 +41,7 @@ public class AppointmentControllerTest extends AppointmentFeatureTest {
     private AppointmentService appointmentService;
 
     @MockBean
-    private UserService userService;
+    private CurrentUserService currentUserService;
 
     @Test
     void whenGetAppointmentsByExistingUserId_returnIt() throws Exception {
@@ -208,7 +208,7 @@ public class AppointmentControllerTest extends AppointmentFeatureTest {
     }
 
     private void setupMockUser() {
-        given(userService.getCurrentUser())
+        given(currentUserService.getCurrentUser())
                 .willReturn(Optional.of(USER));
     }
 }

@@ -24,10 +24,4 @@ public class UserServiceImpl implements UserService {
     public Optional<User> getUserById(long id) {
         return userRepository.getById(id);
     }
-
-    @Override
-    public Optional<User> getCurrentUser() {
-        var auth = SecurityContextHolder.getContext().getAuthentication();
-        return getUserByEmail(auth.getName());
-    }
 }
