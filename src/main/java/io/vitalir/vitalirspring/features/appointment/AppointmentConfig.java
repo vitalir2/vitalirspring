@@ -1,5 +1,6 @@
 package io.vitalir.vitalirspring.features.appointment;
 
+import io.vitalir.vitalirspring.common.IntervalChecker;
 import io.vitalir.vitalirspring.features.appointment.domain.AppointmentRepository;
 import io.vitalir.vitalirspring.features.appointment.domain.AppointmentService;
 import io.vitalir.vitalirspring.features.appointment.domain.AppointmentServiceImpl;
@@ -17,8 +18,14 @@ public class AppointmentConfig {
             UserRepository userRepository,
             AppointmentRepository appointmentRepository,
             DoctorRepository doctorRepository,
-            ServiceRepository serviceRepository
+            ServiceRepository serviceRepository,
+            IntervalChecker intervalChecker
     ) {
-        return new AppointmentServiceImpl(userRepository, appointmentRepository, doctorRepository, serviceRepository);
+        return new AppointmentServiceImpl(userRepository,
+                appointmentRepository,
+                doctorRepository,
+                serviceRepository,
+                intervalChecker
+        );
     }
 }

@@ -1,5 +1,6 @@
 package io.vitalir.vitalirspring.appointment;
 
+import io.vitalir.vitalirspring.common.IntervalChecker;
 import io.vitalir.vitalirspring.features.appointment.domain.*;
 import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidUserIdException;
 import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidAppointmentIdException;
@@ -45,9 +46,16 @@ public class AppointmentServiceImplTest extends AppointmentFeatureTest {
 
     private AppointmentService appointmentService;
 
+    private final IntervalChecker intervalChecker = new IntervalChecker();
+
     @BeforeEach
     void initBeforeEach() {
-        appointmentService = new AppointmentServiceImpl(userRepository, appointmentRepository, doctorRepository, serviceRepository);
+        appointmentService = new AppointmentServiceImpl(userRepository,
+                appointmentRepository,
+                doctorRepository,
+                serviceRepository,
+                intervalChecker
+        );
     }
 
     private static final Appointment APPOINTMENT = new Appointment();
@@ -145,6 +153,24 @@ public class AppointmentServiceImplTest extends AppointmentFeatureTest {
 
         assertThatThrownBy(() -> appointmentService.addAppointment(USER, ADD_APPOINTMENT_REQUEST))
                 .isInstanceOf(InvalidDoctorIdException.class);
+    }
+
+    @Test
+    void whenAddAppointmentOnDateWhereAnotherOneExists_throwIllegalArg() {
+        given(doctorRepository.findById(DOCTOR_ID))
+                .willReturn(Optional.of(DOCTOR));
+        given(serviceRepository.findById(SERVICE_ID))
+                .willReturn(Optional.of(SERVICE));
+        var requestOnExistingPeriod = new AddAppointmentRequest(
+                DOCTOR_ID,
+                SERVICE_ID,
+                FIRST_APPOINTMENT.getStartDate().minusMinutes(15L),
+                30L
+        );
+
+        assertThatThrownBy(
+                () -> appointmentService.addAppointment(USER_WITH_APPOINTMENTS, requestOnExistingPeriod)
+        ).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test

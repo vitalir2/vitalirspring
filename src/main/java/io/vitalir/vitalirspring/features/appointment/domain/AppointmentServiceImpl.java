@@ -1,5 +1,6 @@
 package io.vitalir.vitalirspring.features.appointment.domain;
 
+import io.vitalir.vitalirspring.common.IntervalChecker;
 import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidUserIdException;
 import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidAppointmentIdException;
 import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidDoctorIdException;
@@ -27,11 +28,18 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final ServiceRepository serviceRepository;
 
-    public AppointmentServiceImpl(UserRepository userRepository, AppointmentRepository appointmentRepository, DoctorRepository doctorRepository, ServiceRepository serviceRepository) {
+    private final IntervalChecker intervalChecker;
+
+    public AppointmentServiceImpl(UserRepository userRepository,
+                                  AppointmentRepository appointmentRepository,
+                                  DoctorRepository doctorRepository,
+                                  ServiceRepository serviceRepository,
+                                  IntervalChecker intervalChecker) {
         this.userRepository = userRepository;
         this.appointmentRepository = appointmentRepository;
         this.doctorRepository = doctorRepository;
         this.serviceRepository = serviceRepository;
+        this.intervalChecker = intervalChecker;
     }
 
     @Override
@@ -65,13 +73,16 @@ public class AppointmentServiceImpl implements AppointmentService {
     public long addAppointment(User user, AddAppointmentRequest request) {
         var doctor = getDoctorByIdOrThrow(request.doctorId());
         var service = getServiceByIdOrThrow(request.serviceId());
+        var fromDate = request.date();
+        var durationMinutes = request.duration();
+        validateAppointmentDate(doctor, user, fromDate, durationMinutes);
         var appointment = new Appointment(
                 0,
                 doctor,
                 user,
                 service,
-                request.date(),
-                request.duration()
+                fromDate,
+                durationMinutes
         );
         var result = appointmentRepository.save(appointment);
         return result.getId();
@@ -87,10 +98,12 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
         var doctor = getDoctorByIdOrThrow(request.doctorId());
         var service = getServiceByIdOrThrow(request.serviceId());
+        var user = optionalAppointment.get().getUser();
+        validateAppointmentDate(doctor, user, request.date(), request.duration());
         var newAppointment = new Appointment(
                 0,
                 doctor,
-                optionalAppointment.get().getUser(),
+                user,
                 service,
                 request.date(),
                 request.duration()
@@ -132,6 +145,31 @@ public class AppointmentServiceImpl implements AppointmentService {
         var appointmentStartDateInInterval = appointmentStartDate.isAfter(startDate);
         var appointmentEndDateInInterval = appointmentEndDate.isBefore(endDate);
         return appointmentStartDateInInterval && appointmentEndDateInInterval;
+    }
+
+    private void validateAppointmentDate(Doctor doctor, User user, LocalDateTime fromDate, long durationMinutes) {
+        var toDate = fromDate.plusMinutes(durationMinutes);
+        var isDoctorBusy = doctor
+                .getAppointments()
+                .stream()
+                .anyMatch(appointment -> isTimeBusy(appointment, fromDate, toDate));
+        var illegalPeriodException = new IllegalArgumentException("Appointment in period: from=" + fromDate + ", to=" + toDate + " already exists");
+        if (isDoctorBusy) {
+            throw illegalPeriodException;
+        }
+        var isUserBusy = user
+                .getAppointments()
+                .stream()
+                .anyMatch(appointment -> isTimeBusy(appointment, fromDate, toDate));
+        if (isUserBusy) {
+            throw illegalPeriodException;
+        }
+    }
+
+    private boolean isTimeBusy(Appointment appointment, LocalDateTime from, LocalDateTime to) {
+        var startAppointmentDate = appointment.getStartDate();
+        var endAppointmentDate = startAppointmentDate.plusMinutes(appointment.getDurationMinutes());
+        return intervalChecker.intersect(startAppointmentDate, endAppointmentDate, from, to);
     }
 
     private Doctor getDoctorByIdOrThrow(long doctorId) {
