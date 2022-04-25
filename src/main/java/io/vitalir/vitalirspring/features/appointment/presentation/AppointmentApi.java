@@ -78,7 +78,6 @@ public interface AppointmentApi {
     )
     ResponseEntity<Appointment> removeAppointmentByIds(long appointmentId);
 
-    // TODO @vitalir: Add handling for dates time
     @Operation(
             method = HttpMethods.POST,
             summary = "Добавить новую запись для пользователя с userId и доктора с doctorId",
@@ -103,7 +102,7 @@ public interface AppointmentApi {
                     ),
                     @ApiResponse(
                             responseCode = "400",
-                            description = "Invalid userId or doctorId"
+                            description = "Invalid parameters"
                     ),
                     @ApiResponse(
                             responseCode = "401",
