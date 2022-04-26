@@ -3,6 +3,8 @@ package io.vitalir.vitalirspring.common;
 import io.vitalir.vitalirspring.features.doctors.domain.Doctor;
 import io.vitalir.vitalirspring.features.doctors.domain.DoctorRepository;
 import io.vitalir.vitalirspring.features.doctors.domain.MedicalSpecialty;
+import io.vitalir.vitalirspring.features.service.Service;
+import io.vitalir.vitalirspring.features.service.ServiceRepository;
 import io.vitalir.vitalirspring.features.user.domain.model.Role;
 import io.vitalir.vitalirspring.features.user.domain.model.User;
 import io.vitalir.vitalirspring.features.user.domain.UserRepository;
@@ -25,10 +27,13 @@ public class CommandLineAppRunner implements CommandLineRunner {
 
     private final DoctorRepository doctorRepository;
 
-    public CommandLineAppRunner(UserRepository userRepository, PasswordEncoder passwordEncoder, DoctorRepository doctorRepository) {
+    private final ServiceRepository servicesRepository;
+
+    public CommandLineAppRunner(UserRepository userRepository, PasswordEncoder passwordEncoder, DoctorRepository doctorRepository, ServiceRepository servicesRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.doctorRepository = doctorRepository;
+        this.servicesRepository = servicesRepository;
     }
 
     @Override
@@ -64,6 +69,12 @@ public class CommandLineAppRunner implements CommandLineRunner {
     private void preInitDoctors() {
         for (var doctor: createInitialDoctors()) {
             doctorRepository.save(doctor);
+        }
+    }
+
+    private void preInitServices() {
+        for (var service: createInitialServices()) {
+            servicesRepository.save(service);
         }
     }
 
@@ -117,6 +128,51 @@ public class CommandLineAppRunner implements CommandLineRunner {
                 doctor6,
                 doctor7,
                 doctor8
+        );
+    }
+
+    private static List<Service> createInitialServices() {
+        var service1 = new Service();
+        service1.setTitle("Gastroscopy");
+        service1.setPrice(10_000);
+
+        var service2 = new Service();
+        service2.setTitle("Colon Cancer Screening");
+        service2.setPrice(15_500);
+
+        var service3 = new Service();
+        service3.setTitle("Family Doctor Consultation");
+        service3.setPrice(10_000);
+
+        var service4 = new Service();
+        service4.setTitle("Chest X-Ray");
+        service4.setPrice(6_000);
+
+        var service5 = new Service();
+        service5.setTitle("Echocardiogram");
+        service5.setPrice(3_300);
+
+        var service6 = new Service();
+        service6.setTitle("Blood Chemical Test");
+        service6.setPrice(2_500);
+
+        var service7 = new Service();
+        service7.setTitle("Nephrologist Consultation");
+        service7.setPrice(3_500);
+
+        var service8 = new Service();
+        service8.setTitle("Endocrinologist Consultation");
+        service8.setPrice(3_000);
+
+        return List.of(
+                service1,
+                service2,
+                service3,
+                service4,
+                service5,
+                service6,
+                service7,
+                service8
         );
     }
 }

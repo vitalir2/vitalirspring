@@ -26,6 +26,7 @@ public class Service {
     private String title;
 
     @Column(name = "price", nullable = false)
+    // Rubbles
     private int price;
 
     public Service(String title) {
