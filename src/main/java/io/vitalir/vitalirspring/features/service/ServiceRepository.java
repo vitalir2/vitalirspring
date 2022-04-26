@@ -1,5 +1,6 @@
 package io.vitalir.vitalirspring.features.service;
 
+import java.util.Optional;
 import java.util.Set;
 
 public interface ServiceRepository {
@@ -10,4 +11,6 @@ public interface ServiceRepository {
     Service getByTitle(String title);
 
     void removeByTitle(String title);
+
+    Optional<Service> findById(long id);
 }

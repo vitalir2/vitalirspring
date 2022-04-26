@@ -1,13 +1,15 @@
 package io.vitalir.vitalirspring.appointment;
 
+import io.vitalir.vitalirspring.common.IntervalChecker;
 import io.vitalir.vitalirspring.features.appointment.domain.*;
 import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidUserIdException;
 import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidAppointmentIdException;
 import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidDoctorIdException;
 import io.vitalir.vitalirspring.features.appointment.domain.request.AddAppointmentRequest;
 import io.vitalir.vitalirspring.features.appointment.domain.request.ChangeAppointmentRequest;
-import io.vitalir.vitalirspring.features.doctors.domain.Doctor;
 import io.vitalir.vitalirspring.features.doctors.domain.DoctorRepository;
+import io.vitalir.vitalirspring.features.doctors.domain.MedicalSpecialty;
+import io.vitalir.vitalirspring.features.service.ServiceRepository;
 import io.vitalir.vitalirspring.features.user.domain.UserRepository;
 import io.vitalir.vitalirspring.features.user.domain.model.Role;
 import io.vitalir.vitalirspring.features.user.domain.model.User;
@@ -17,7 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -39,11 +41,21 @@ public class AppointmentServiceImplTest extends AppointmentFeatureTest {
     @Mock
     private DoctorRepository doctorRepository;
 
+    @Mock
+    private ServiceRepository serviceRepository;
+
     private AppointmentService appointmentService;
+
+    private final IntervalChecker intervalChecker = new IntervalChecker();
 
     @BeforeEach
     void initBeforeEach() {
-        appointmentService = new AppointmentServiceImpl(userRepository, appointmentRepository, doctorRepository);
+        appointmentService = new AppointmentServiceImpl(userRepository,
+                appointmentRepository,
+                doctorRepository,
+                serviceRepository,
+                intervalChecker
+        );
     }
 
     private static final Appointment APPOINTMENT = new Appointment();
@@ -54,14 +66,12 @@ public class AppointmentServiceImplTest extends AppointmentFeatureTest {
 
     private static final AddAppointmentRequest ADD_APPOINTMENT_REQUEST = new AddAppointmentRequest(
             DOCTOR_ID,
-            LocalDate.now(),
-            60 * 1000,
-            ""
+            SERVICE_ID,
+            LocalDateTime.now(),
+            60
     );
 
     private static final User USER = new User("", "");
-
-    private static final Doctor DOCTOR = new Doctor("");
 
     @Test
     void whenGetAppointmentsByUserIdWhichExist_returnThem() {
@@ -127,6 +137,8 @@ public class AppointmentServiceImplTest extends AppointmentFeatureTest {
                 .willReturn(Optional.of(DOCTOR));
         given(appointmentRepository.save(any()))
                 .willReturn(APPOINTMENT);
+        given(serviceRepository.findById(SERVICE_ID))
+                .willReturn(Optional.of(SERVICE));
 
         var result = appointmentService.addAppointment(USER, ADD_APPOINTMENT_REQUEST);
 
@@ -144,6 +156,24 @@ public class AppointmentServiceImplTest extends AppointmentFeatureTest {
     }
 
     @Test
+    void whenAddAppointmentOnDateWhereAnotherOneExists_throwIllegalArg() {
+        given(doctorRepository.findById(DOCTOR_ID))
+                .willReturn(Optional.of(DOCTOR));
+        given(serviceRepository.findById(SERVICE_ID))
+                .willReturn(Optional.of(SERVICE));
+        var requestOnExistingPeriod = new AddAppointmentRequest(
+                DOCTOR_ID,
+                SERVICE_ID,
+                FIRST_APPOINTMENT.getStartDate().minusMinutes(15L),
+                30L
+        );
+
+        assertThatThrownBy(
+                () -> appointmentService.addAppointment(USER_WITH_APPOINTMENTS, requestOnExistingPeriod)
+        ).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
     void whenChangeAppointmentByIdsWhichExist_returnThem() {
         given(userRepository.existsById(USER_ID))
                 .willReturn(true);
@@ -151,6 +181,8 @@ public class AppointmentServiceImplTest extends AppointmentFeatureTest {
                 .willReturn(List.of((APPOINTMENT)));
         given(doctorRepository.findById(DOCTOR_ID))
                 .willReturn(Optional.of(DOCTOR));
+        given(serviceRepository.findById(SERVICE_ID))
+                .willReturn(Optional.of(SERVICE));
 
         var result = appointmentService.changeAppointment(USER_ID, CHANGE_APPOINTMENT_REQUEST);
 
@@ -168,9 +200,9 @@ public class AppointmentServiceImplTest extends AppointmentFeatureTest {
         assertThatThrownBy(() -> appointmentService.changeAppointment(USER_ID, new ChangeAppointmentRequest(
                 -1,
                 -1,
-                LocalDate.now(),
-                0L,
-                ""
+                -1,
+                LocalDateTime.now(),
+                0L
         )))
                 .isInstanceOf(InvalidAppointmentIdException.class);
     }
@@ -195,5 +227,154 @@ public class AppointmentServiceImplTest extends AppointmentFeatureTest {
 
         assertThatThrownBy(() -> appointmentService.changeAppointment(USER_ID, CHANGE_APPOINTMENT_REQUEST))
                 .isInstanceOf(InvalidDoctorIdException.class);
+    }
+
+    @Test
+    void whenGetAppointmentsByIntervalWhenAllAppointmentsThere_returnThem() {
+        var startDate = LocalDateTime.of(2022, 1, 14, 14, 30);
+        var endDate = LocalDateTime.of(2022, 5, 14, 22, 0);
+
+        var result = appointmentService.getAppointmentsForCurrentUserByParams(
+                USER_WITH_APPOINTMENTS,
+                startDate,
+                endDate,
+                null,
+                null
+        );
+
+        assertThat(result).isNotNull();
+        assertThat(result.size()).isEqualTo(2);
+        assertThat(anyAppointmentContainsWithId(result, FIRST_APPOINTMENT.getId())).isTrue();
+        assertThat(anyAppointmentContainsWithId(result, SECOND_APPOINTMENT.getId())).isTrue();
+    }
+
+    @Test
+    void whenGetAppointmentsByIntervalWhenOnlyFirstAppointmentThere_returnIt() {
+        var startDate = LocalDateTime.of(2022, 3, 14, 14, 30);
+        var endDate = LocalDateTime.of(2022, 5, 14, 22, 0);
+
+        var result = appointmentService.getAppointmentsForCurrentUserByParams(
+                USER_WITH_APPOINTMENTS,
+                startDate,
+                endDate,
+                null,
+                null
+        );
+
+        assertThat(result).isNotNull();
+        assertThat(result.size()).isEqualTo(1);
+        assertThat(anyAppointmentContainsWithId(result, FIRST_APPOINTMENT.getId())).isTrue();
+        assertThat(anyAppointmentContainsWithId(result, SECOND_APPOINTMENT.getId())).isFalse();
+    }
+
+    @Test
+    void whenGetAppointmentsByIntervalWhenOnlyLastAppointmentThere_returnIt() {
+        var startDate = LocalDateTime.of(2022, 2, 14, 14, 30);
+        var endDate = LocalDateTime.of(2022, 3, 14, 22, 0);
+
+        var result = appointmentService.getAppointmentsForCurrentUserByParams(
+                USER_WITH_APPOINTMENTS,
+                startDate,
+                endDate,
+                null,
+                null
+        );
+
+        assertThat(result).isNotNull();
+        assertThat(result.size()).isEqualTo(1);
+        assertThat(anyAppointmentContainsWithId(result, FIRST_APPOINTMENT.getId())).isFalse();
+        assertThat(anyAppointmentContainsWithId(result, SECOND_APPOINTMENT.getId())).isTrue();
+    }
+
+    @Test
+    void whenGetAppointmentsByIntervalAndSpecWithAppointmentsThere_returnThem() {
+        var startDate = LocalDateTime.of(2022, 2, 14, 14, 30);
+        var endDate = LocalDateTime.of(2022, 3, 14, 22, 0);
+
+        var result = appointmentService.getAppointmentsForCurrentUserByParams(
+                USER_WITH_APPOINTMENTS,
+                startDate,
+                endDate,
+                MedicalSpecialty.ENDOCRINOLOGY,
+                null
+        );
+
+        assertThat(result).isNotNull();
+        assertThat(result.size()).isEqualTo(1);
+        assertThat(anyAppointmentContainsWithId(result, FIRST_APPOINTMENT.getId())).isFalse();
+        assertThat(anyAppointmentContainsWithId(result, SECOND_APPOINTMENT.getId())).isTrue();
+    }
+
+    @Test
+    void whenGetAppointmentsByIntervalAndSpecWithAppointmentsWithNoSpec_returnThem() {
+        var startDate = LocalDateTime.of(2022, 2, 14, 14, 30);
+        var endDate = LocalDateTime.of(2022, 3, 14, 22, 0);
+
+        var result = appointmentService.getAppointmentsForCurrentUserByParams(
+                USER_WITH_APPOINTMENTS,
+                startDate,
+                endDate,
+                MedicalSpecialty.CARDIOLOGY,
+                null
+        );
+
+        assertThat(result).isNotNull();
+        assertThat(result.size()).isEqualTo(0);
+    }
+
+    @Test
+    void whenGetAppointmentsByIntervalAndDoctorIdWithAppointmentsWithNoSpecifiedDoctor_returnEmpty() {
+        var startDate = LocalDateTime.of(2022, 1, 14, 14, 30);
+        var endDate = LocalDateTime.of(2022, 12, 14, 22, 0);
+
+        var result = appointmentService.getAppointmentsForCurrentUserByParams(
+                USER_WITH_APPOINTMENTS,
+                startDate,
+                endDate,
+                null,
+                1234L
+        );
+
+        assertThat(result).isNotNull();
+        assertThat(result.size()).isEqualTo(0);
+    }
+
+    @Test
+    void whenGetAppointmentsByIntervalWhenNoAppointmentsThere_returnEmpty() {
+        var startDate = LocalDateTime.of(2022, 6, 14, 14, 30);
+        var endDate = LocalDateTime.of(2022, 7, 14, 22, 0);
+
+        var result = appointmentService.getAppointmentsForCurrentUserByParams(
+                USER_WITH_APPOINTMENTS,
+                startDate,
+                endDate,
+                null,
+                null
+        );
+
+        assertThat(result).isNotNull();
+        assertThat(result.size()).isEqualTo(0);
+    }
+
+    @Test
+    void whenGetAppointmentsByIntervalWhichIsInvalid_throwIllegalArgument() {
+        var startDate = LocalDateTime.of(2022, 4, 14, 14, 30);
+        var endDate = LocalDateTime.of(2022, 3, 14, 22, 0);
+
+        assertThatThrownBy(
+                () -> appointmentService.getAppointmentsForCurrentUserByParams(
+                        USER_WITH_APPOINTMENTS,
+                        startDate,
+                        endDate,
+                        null,
+                        null
+                )
+        )
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    private boolean anyAppointmentContainsWithId(List<Appointment> list, long id) {
+        return list.stream()
+                .anyMatch(appointment -> appointment.getId() == id);
     }
 }

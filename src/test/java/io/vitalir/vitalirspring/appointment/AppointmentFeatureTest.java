@@ -6,19 +6,26 @@ import io.vitalir.vitalirspring.common.JavaDateProvider;
 import io.vitalir.vitalirspring.features.appointment.domain.Appointment;
 import io.vitalir.vitalirspring.features.appointment.domain.request.AddAppointmentRequest;
 import io.vitalir.vitalirspring.features.appointment.domain.request.ChangeAppointmentRequest;
+import io.vitalir.vitalirspring.features.doctors.domain.Doctor;
+import io.vitalir.vitalirspring.features.doctors.domain.MedicalSpecialty;
+import io.vitalir.vitalirspring.features.service.Service;
 import io.vitalir.vitalirspring.features.user.domain.model.Role;
 import io.vitalir.vitalirspring.features.user.domain.model.User;
 import io.vitalir.vitalirspring.security.jwt.JwtProvider;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Set;
 
 public class AppointmentFeatureTest {
-
-    protected static final long USER_ID = 1;
 
     protected static final long DOCTOR_ID = 2;
 
     protected static final Appointment APPOINTMENT = new Appointment();
+
+    protected static final Service SERVICE = new Service();
+
+    protected static final long SERVICE_ID = SERVICE.getId();
 
     protected static final long APPOINTMENT_ID = APPOINTMENT.getId();
 
@@ -34,21 +41,50 @@ public class AppointmentFeatureTest {
             Role.USER
     );
 
+    protected static final long USER_ID = USER.getId();
+
     protected static final String BEARER_TOKEN = JWT_PROVIDER.generateToken(USER.getEmail(), USER.getRole());
 
     protected static final String BEARER_HEADER = "Bearer " + BEARER_TOKEN;
 
     protected static final AddAppointmentRequest ADD_APPOINTMENT_REQUEST = new AddAppointmentRequest(
             2,
-            LocalDate.now(),
-            1000 * 60 * 15,
-            "A description"
+            SERVICE_ID,
+            LocalDateTime.now(),
+            1000 * 60 * 15
     );
     protected static final ChangeAppointmentRequest CHANGE_APPOINTMENT_REQUEST = new ChangeAppointmentRequest(
             APPOINTMENT_ID,
             DOCTOR_ID,
-            LocalDate.now(),
-            1000 * 60,
-            "String"
+            SERVICE_ID,
+            LocalDateTime.now(),
+            60
+    );
+
+    protected static final Doctor DOCTOR = new Doctor("", Set.of(MedicalSpecialty.ENDOCRINOLOGY));
+
+    protected static final Appointment FIRST_APPOINTMENT = new Appointment(
+            0L,
+            DOCTOR,
+            USER,
+            SERVICE,
+            LocalDateTime.of(2022, 3, 23, 14, 30),
+            15
+    );
+
+    protected static final Appointment SECOND_APPOINTMENT = new Appointment(
+            2L,
+            DOCTOR,
+            USER,
+            SERVICE,
+            LocalDateTime.of(2022, 2, 26, 15, 50),
+            15
+    );
+
+    protected static final User USER_WITH_APPOINTMENTS = new User(
+            "Hekker",
+            "hackyou",
+            Role.USER,
+            Set.of(FIRST_APPOINTMENT, SECOND_APPOINTMENT)
     );
 }

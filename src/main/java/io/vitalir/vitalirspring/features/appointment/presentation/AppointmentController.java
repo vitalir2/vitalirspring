@@ -7,8 +7,11 @@ import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidApp
 import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidDoctorIdException;
 import io.vitalir.vitalirspring.features.appointment.domain.request.AddAppointmentRequest;
 import io.vitalir.vitalirspring.features.appointment.domain.request.ChangeAppointmentRequest;
+import io.vitalir.vitalirspring.features.doctors.domain.MedicalSpecialty;
 import io.vitalir.vitalirspring.features.user.domain.CurrentUserService;
 import io.vitalir.vitalirspring.features.user.domain.model.User;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +19,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
 @RequestMapping(HttpEndpoints.APPOINTMENT_ENDPOINT)
+@Slf4j
 public class AppointmentController implements AppointmentApi {
 
     private final AppointmentService appointmentService;
@@ -74,10 +79,40 @@ public class AppointmentController implements AppointmentApi {
         return ResponseEntity.ok(result);
     }
 
+    @Override
+    @GetMapping
+    public ResponseEntity<List<Appointment>> getAppointmentsForCurrentUserByParams(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
+            @RequestParam(name = "specialty", required = false) MedicalSpecialty medicalSpecialty,
+            @RequestParam(name = "doctorId", required = false) Long doctorId
+    ) {
+        if (log.isDebugEnabled()) {
+            log.debug("Got query params: startDate=" + startDate + ", endDate=" + endDate);
+        }
+        var currentUser = currentUserService.getCurrentUser();
+        if (currentUser.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+        var result = appointmentService.getAppointmentsForCurrentUserByParams(
+                currentUser.get(),
+                startDate,
+                endDate,
+                medicalSpecialty,
+                doctorId
+        );
+        return ResponseEntity.ok(result);
+    }
+
     @ExceptionHandler(
-            value = {InvalidDoctorIdException.class, InvalidUserIdException.class, InvalidAppointmentIdException.class}
+            value = {
+                    InvalidDoctorIdException.class,
+                    InvalidUserIdException.class,
+                    InvalidAppointmentIdException.class,
+                    IllegalArgumentException.class
+            }
     )
-    ResponseEntity<RuntimeException> handleIllegalUserId(RuntimeException exception) {
+    ResponseEntity<RuntimeException> handleException(RuntimeException exception) {
         return ResponseEntity.badRequest().body(exception);
     }
 
