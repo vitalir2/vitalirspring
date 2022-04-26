@@ -30,8 +30,7 @@ public class Appointment {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @OneToOne
-    @JoinColumn(name = "service_id")
+    @ManyToOne(fetch = FetchType.LAZY)
     private Service service;
 
     @Column(name = "start_date", nullable = false)
