@@ -175,10 +175,11 @@ public class AppointmentServiceImplTest extends AppointmentFeatureTest {
 
     @Test
     void whenChangeAppointmentByIdsWhichExist_returnThem() {
+        var appointment = getAppointmentWithUser();
         given(userRepository.existsById(USER_ID))
                 .willReturn(true);
         given(appointmentRepository.getAppointmentsByUserId(USER_ID))
-                .willReturn(List.of((APPOINTMENT)));
+                .willReturn(List.of((appointment)));
         given(doctorRepository.findById(DOCTOR_ID))
                 .willReturn(Optional.of(DOCTOR));
         given(serviceRepository.findById(SERVICE_ID))
@@ -186,7 +187,7 @@ public class AppointmentServiceImplTest extends AppointmentFeatureTest {
 
         var result = appointmentService.changeAppointment(USER_ID, CHANGE_APPOINTMENT_REQUEST);
 
-        assertThat(result).isEqualTo(APPOINTMENT_ID);
+        assertThat(result).isEqualTo(appointment.getId());
         verify(appointmentRepository).save(any());
     }
 
@@ -376,5 +377,11 @@ public class AppointmentServiceImplTest extends AppointmentFeatureTest {
     private boolean anyAppointmentContainsWithId(List<Appointment> list, long id) {
         return list.stream()
                 .anyMatch(appointment -> appointment.getId() == id);
+    }
+
+    private static Appointment getAppointmentWithUser() {
+        var appointment = new Appointment();
+        appointment.setUser(USER);
+        return appointment;
     }
 }
