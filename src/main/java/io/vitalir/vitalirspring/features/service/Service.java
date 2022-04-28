@@ -1,5 +1,6 @@
 package io.vitalir.vitalirspring.features.service;
 
+import io.vitalir.vitalirspring.features.appointment.domain.Appointment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,6 +8,8 @@ import lombok.Setter;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -26,10 +29,14 @@ public class Service {
     private String title;
 
     @Column(name = "price", nullable = false)
+    // Rubbles
     private int price;
 
+    @OneToMany(mappedBy = "service", fetch = FetchType.LAZY)
+    private List<Appointment> appointments;
+
     public Service(String title) {
-        this(0, title, 0);
+        this(0, title, 0, Collections.emptyList());
     }
 
     @Override
