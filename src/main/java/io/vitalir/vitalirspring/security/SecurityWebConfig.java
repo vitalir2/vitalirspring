@@ -81,6 +81,7 @@ public class SecurityWebConfig extends WebSecurityConfigurerAdapter {
                             .mvcMatchers("/api/v1/services/**").hasRole(Role.ADMIN.name())
                             .mvcMatchers("/api/v1/appointments/**").hasRole(Role.USER.name())
                             .mvcMatchers(HttpMethod.GET, "/api/v1/doctors/**").permitAll()
+                            .mvcMatchers("/actuator/**").permitAll()
                             .mvcMatchers("/api/v1/doctors/**").hasRole(Role.ADMIN.name());
                     configureSwaggerAuth(authorize);
                     authorize.anyRequest().authenticated();

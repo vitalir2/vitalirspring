@@ -2,6 +2,16 @@ spring:
   config:
     activate:
       on-profile: prod
+management:
+  endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
 
 vitalirspring:
   enable-swagger-security: false
