@@ -1,0 +1,37 @@
+services:
+  postgres:
+    image: postgres
+    container_name: vitalirspring-postgres
+    ports:
+      - 5431:5432
+    environment:
+      POSTGRES_PASSWORD: 12345
+      POSTGRES_USER: vitalir
+      POSTGRES_DB: vitalirspring
+  prometheus:
+    image: prom/prometheus
+    container_name: vitalirspring-prometheus
+    ports:
+      - 9090:9090
+    environment:
+      PROMETHEUS_HOST: host.docker.internal
+    depends_on:
+      - spring
+    volumes:
+      - /home/vitalir/Programming/WebDev/BackendSpringMIREA/vitalirspring/src/main/resources/prometheus.yml:/etc/prometheus/prometheus.yml
+  grafana:
+    image: grafana/grafana
+    container_name: vitalirspring-grafana
+    ports:
+      - 3000:3000
+    depends_on:
+      - prometheus
+  spring:
+    build: .
+    container_name: vitalirspring-server
+    ports:
+      - 8080:8080
+    environment:
+      DB_HOST: vitalirspring-postgres
+    depends_on:
+      - postgres
