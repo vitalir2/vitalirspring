@@ -65,7 +65,7 @@ public class ServiceControllerSecurityTest {
     @WithMockUser(roles = "ADMIN")
     public void whenDeleteService_permitForAdmin() throws Exception {
         mockMvc.perform(delete(SERVICES_URL + "kek/").with(csrf()))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
