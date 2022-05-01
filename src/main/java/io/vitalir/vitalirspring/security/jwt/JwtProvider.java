@@ -50,7 +50,7 @@ public class JwtProvider {
     public Authentication getAuthentication(@NonNull String token) {
         var decodedJwt = JWT.decode(token);
         var claims = decodedJwt.getClaims();
-        var subject = decodedJwt.getSubject();
+        var subject = decodedJwt.getClaim("email").asString();
 
         var authoritiesClaim = String.join(",", claims.get(CLAIM_AUTHORITIES).asArray(String.class));
 
