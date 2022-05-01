@@ -76,7 +76,7 @@ public class ServiceControllerTest {
                 .with(csrf());
 
         mockMvc.perform(requestBuilder)
-                .andExpect(status().is(400));
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -121,7 +121,7 @@ public class ServiceControllerTest {
                 .with(csrf());
 
         mockMvc.perform(requestBuilder)
-                .andExpect(status().is(404));
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -166,7 +166,7 @@ public class ServiceControllerTest {
                 .with(csrf());
 
         mockMvc.perform(requestBuilder)
-                .andExpect(status().is(404));
+                .andExpect(status().isBadRequest());
     }
 
     @Test
