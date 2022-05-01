@@ -44,6 +44,7 @@ public class CommandLineAppRunner implements CommandLineRunner {
         }
         String password = parsePassword(args);
         addAdmin(password);
+        preInitServices();
         preInitDoctors();
     }
 
