@@ -36,7 +36,7 @@ public class ServiceController implements ServiceApi {
         if (servicesService.removeService(title) != null) {
             return ResponseEntity.ok(List.of(new Service(title)));
         }
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
 
     @Override
@@ -45,6 +45,6 @@ public class ServiceController implements ServiceApi {
         if (servicesService.changeService(service)) {
             return ResponseEntity.ok(true);
         }
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
 }

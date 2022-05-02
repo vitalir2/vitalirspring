@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.vitalir.vitalirspring.common.HttpMethods;
 import io.vitalir.vitalirspring.features.doctors.domain.Doctor;
 import io.vitalir.vitalirspring.features.doctors.domain.MedicalSpecialty;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -53,6 +54,14 @@ public interface DoctorApi {
     @Operation(
             method = HttpMethods.POST,
             summary = "Добавить нового доктора в систему",
+            parameters = {
+                    @Parameter(
+                            in = ParameterIn.HEADER,
+                            name = HttpHeaders.AUTHORIZATION,
+                            example = "Bearer 'JWT'",
+                            required = true
+                    )
+            },
             responses = {
                     @ApiResponse(
                             responseCode = "201",
@@ -69,6 +78,14 @@ public interface DoctorApi {
     @Operation(
             method = HttpMethods.DELETE,
             summary = "Удалить доктора из системы по id",
+            parameters = {
+                    @Parameter(
+                            in = ParameterIn.HEADER,
+                            name = HttpHeaders.AUTHORIZATION,
+                            example = "Bearer 'JWT'",
+                            required = true
+                    )
+            },
             responses = {
                     @ApiResponse(
                             responseCode = "200",
@@ -85,6 +102,14 @@ public interface DoctorApi {
     @Operation(
             method = HttpMethods.GET,
             summary = "Поменять существующего доктора с таким же id",
+            parameters = {
+                    @Parameter(
+                            in = ParameterIn.HEADER,
+                            name = HttpHeaders.AUTHORIZATION,
+                            example = "Bearer 'JWT'",
+                            required = true
+                    )
+            },
             responses = {
                     @ApiResponse(
                             responseCode = "201",
