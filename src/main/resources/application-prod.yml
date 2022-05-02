@@ -11,8 +11,9 @@ management:
   endpoints:
     web:
       exposure:
-        include: prometheus
+        include: "*"
 
 vitalirspring:
   enable-swagger-security: false
+  enable-actuator-security: false
   enable-csrf: false
