@@ -6,8 +6,6 @@ import io.vitalir.vitalirspring.features.user.domain.model.Role;
 import io.vitalir.vitalirspring.security.jwt.JwtFilter;
 import io.vitalir.vitalirspring.security.jwt.JwtProvider;
 import io.vitalir.vitalirspring.security.jwt.JwtVerifier;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpHeaders;
@@ -22,8 +20,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import java.util.List;
 
 @EnableWebSecurity
 @Configuration
@@ -100,9 +96,9 @@ public class SecurityWebConfig extends WebSecurityConfigurerAdapter {
             AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authorize
     ) {
         if (config.isActuatorSecurityEnabled()) {
-            authorize.mvcMatchers(HttpEndpoints.SPRING_ACTUATOR).hasRole(Role.ADMIN.name());
+            authorize.mvcMatchers(HttpEndpoints.SPRING_ACTUATOR_PATTERN).hasRole(Role.ADMIN.name());
         } else {
-            authorize.mvcMatchers(HttpEndpoints.SPRING_ACTUATOR).permitAll();
+            authorize.mvcMatchers(HttpEndpoints.SPRING_ACTUATOR_PATTERN).permitAll();
         }
     }
 

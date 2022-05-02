@@ -15,5 +15,9 @@ public class HttpEndpoints {
 
     public static final String APPOINTMENT_ENDPOINT = "/api/v1/appointments/";
 
-    public static final String SPRING_ACTUATOR = "/actuator/**";
+    public static final String SPRING_ACTUATOR_BASE = "/actuator/";
+
+    public static final String SPRING_ACTUATOR_PATTERN = SPRING_ACTUATOR_BASE + "**";
+
+    public static final String SPRING_ACTUATOR_HEALTH = SPRING_ACTUATOR_BASE + "health";
 }
