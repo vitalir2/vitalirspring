@@ -1,7 +1,7 @@
 spring:
   config:
     activate:
-      on-profile: prod
+      on-profile: dev
 management:
   endpoint:
     metrics:
@@ -14,6 +14,6 @@ management:
         include: "*"
 
 vitalirspring:
-  enable-swagger-security: true
-  enable-actuator-security: true
+  enable-swagger-security: false
+  enable-actuator-security: false
   enable-csrf: false
