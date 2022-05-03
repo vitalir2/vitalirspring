@@ -28,4 +28,6 @@ public class HttpEndpoints {
     public static final String USERS_ENDPOINT = "/api/v1/users/";
 
     public static final String REGISTER_ENDPOINT = "/api/v1/register/";
+
+    public static final String AUTH_ENDPOINT = "/api/v1/auth/";
 }

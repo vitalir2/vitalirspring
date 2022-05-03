@@ -1,5 +1,6 @@
 package io.vitalir.vitalirspring.features.user.presentation.login;
 
+import io.vitalir.vitalirspring.common.constants.HttpEndpoints;
 import io.vitalir.vitalirspring.features.user.domain.LoginService;
 import io.vitalir.vitalirspring.security.jwt.JwtConstants;
 import org.springframework.http.HttpHeaders;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping(HttpEndpoints.AUTH_ENDPOINT)
 public class LoginController implements LoginApi {
 
     private final LoginService loginService;
