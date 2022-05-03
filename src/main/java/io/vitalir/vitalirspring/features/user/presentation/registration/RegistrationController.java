@@ -1,5 +1,6 @@
 package io.vitalir.vitalirspring.features.user.presentation.registration;
 
+import io.vitalir.vitalirspring.common.constants.HttpEndpoints;
 import io.vitalir.vitalirspring.features.user.domain.RegistrationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,7 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/api/v1/register")
+@RequestMapping(HttpEndpoints.REGISTER_ENDPOINT)
 public class RegistrationController implements RegistrationApi {
 
     private static final long EXISTS_OR_INVALID_FORMAT = -1;
@@ -30,7 +31,7 @@ public class RegistrationController implements RegistrationApi {
         var newUserId =
                 registrationService.register(registrationRequest.email(), registrationRequest.password());
         if (newUserId != EXISTS_OR_INVALID_FORMAT) {
-            return ResponseEntity.created(URI.create("/api/v1/users/" + newUserId)).build();
+            return ResponseEntity.created(URI.create(HttpEndpoints.USERS_ENDPOINT + newUserId)).build();
         }
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }

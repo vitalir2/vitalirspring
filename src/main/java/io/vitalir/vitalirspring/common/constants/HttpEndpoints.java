@@ -26,4 +26,6 @@ public class HttpEndpoints {
     public static final String DOCTORS_ENDPOINT = "/api/v1/doctors/";
 
     public static final String USERS_ENDPOINT = "/api/v1/users/";
+
+    public static final String REGISTER_ENDPOINT = "/api/v1/register/";
 }
