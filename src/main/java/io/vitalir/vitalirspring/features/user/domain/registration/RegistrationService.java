@@ -1,4 +1,4 @@
-package io.vitalir.vitalirspring.features.user.domain;
+package io.vitalir.vitalirspring.features.user.domain.registration;
 
 public interface RegistrationService {
 

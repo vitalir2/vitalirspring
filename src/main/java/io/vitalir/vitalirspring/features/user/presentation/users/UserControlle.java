@@ -1,8 +1,8 @@
-package io.vitalir.vitalirspring.features.user.presentation;
+package io.vitalir.vitalirspring.features.user.presentation.users;
 
 
 import io.vitalir.vitalirspring.common.constants.HttpEndpoints;
-import io.vitalir.vitalirspring.features.user.domain.UserService;
+import io.vitalir.vitalirspring.features.user.domain.users.UserService;
 import io.vitalir.vitalirspring.features.user.domain.model.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

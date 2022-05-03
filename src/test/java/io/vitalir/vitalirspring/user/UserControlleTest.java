@@ -1,9 +1,8 @@
 package io.vitalir.vitalirspring.user;
 
 import io.vitalir.vitalirspring.common.constants.HttpEndpoints;
-import io.vitalir.vitalirspring.features.user.domain.UserService;
-import io.vitalir.vitalirspring.features.user.presentation.UserControlle;
-import jdk.security.jarsigner.JarSigner;
+import io.vitalir.vitalirspring.features.user.domain.users.UserService;
+import io.vitalir.vitalirspring.features.user.presentation.users.UserControlle;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

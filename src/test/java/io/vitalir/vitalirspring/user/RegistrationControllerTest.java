@@ -2,8 +2,7 @@ package io.vitalir.vitalirspring.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vitalir.vitalirspring.common.constants.HttpEndpoints;
-import io.vitalir.vitalirspring.features.user.domain.RegistrationService;
-import io.vitalir.vitalirspring.features.user.domain.UserService;
+import io.vitalir.vitalirspring.features.user.domain.registration.RegistrationService;
 import io.vitalir.vitalirspring.features.user.presentation.registration.RegistrationController;
 import io.vitalir.vitalirspring.features.user.presentation.registration.RegistrationRequest;
 import org.junit.jupiter.api.Test;

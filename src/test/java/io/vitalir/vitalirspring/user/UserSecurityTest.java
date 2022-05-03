@@ -1,8 +1,8 @@
 package io.vitalir.vitalirspring.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.vitalir.vitalirspring.features.user.domain.LoginService;
-import io.vitalir.vitalirspring.features.user.domain.RegistrationService;
+import io.vitalir.vitalirspring.features.user.domain.login.LoginService;
+import io.vitalir.vitalirspring.features.user.domain.registration.RegistrationService;
 import io.vitalir.vitalirspring.features.user.domain.model.LoginResult;
 import io.vitalir.vitalirspring.features.user.presentation.login.LoginRequest;
 import io.vitalir.vitalirspring.features.user.presentation.registration.RegistrationRequest;

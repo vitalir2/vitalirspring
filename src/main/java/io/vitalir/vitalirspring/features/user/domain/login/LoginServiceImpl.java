@@ -1,8 +1,8 @@
-package io.vitalir.vitalirspring.features.user.domain;
+package io.vitalir.vitalirspring.features.user.domain.login;
 
+import io.vitalir.vitalirspring.features.user.domain.users.UserRepository;
 import io.vitalir.vitalirspring.features.user.domain.model.LoginResult;
 import io.vitalir.vitalirspring.security.jwt.JwtProvider;
-import lombok.extern.java.Log;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

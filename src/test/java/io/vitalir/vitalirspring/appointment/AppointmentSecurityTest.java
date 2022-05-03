@@ -2,7 +2,7 @@ package io.vitalir.vitalirspring.appointment;
 
 import io.vitalir.vitalirspring.common.constants.HttpEndpoints;
 import io.vitalir.vitalirspring.features.appointment.domain.AppointmentService;
-import io.vitalir.vitalirspring.features.user.domain.CurrentUserService;
+import io.vitalir.vitalirspring.features.user.domain.users.CurrentUserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;

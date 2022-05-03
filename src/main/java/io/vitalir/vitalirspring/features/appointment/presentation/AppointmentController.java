@@ -8,7 +8,7 @@ import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidDoc
 import io.vitalir.vitalirspring.features.appointment.domain.request.AddAppointmentRequest;
 import io.vitalir.vitalirspring.features.appointment.domain.request.ChangeAppointmentRequest;
 import io.vitalir.vitalirspring.features.doctors.domain.MedicalSpecialty;
-import io.vitalir.vitalirspring.features.user.domain.CurrentUserService;
+import io.vitalir.vitalirspring.features.user.domain.users.CurrentUserService;
 import io.vitalir.vitalirspring.features.user.domain.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;

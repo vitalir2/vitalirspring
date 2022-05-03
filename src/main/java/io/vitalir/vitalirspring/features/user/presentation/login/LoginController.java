@@ -1,7 +1,7 @@
 package io.vitalir.vitalirspring.features.user.presentation.login;
 
 import io.vitalir.vitalirspring.common.constants.HttpEndpoints;
-import io.vitalir.vitalirspring.features.user.domain.LoginService;
+import io.vitalir.vitalirspring.features.user.domain.login.LoginService;
 import io.vitalir.vitalirspring.security.jwt.JwtConstants;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

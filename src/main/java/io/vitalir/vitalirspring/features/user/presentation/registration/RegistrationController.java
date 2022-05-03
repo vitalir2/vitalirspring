@@ -1,7 +1,7 @@
 package io.vitalir.vitalirspring.features.user.presentation.registration;
 
 import io.vitalir.vitalirspring.common.constants.HttpEndpoints;
-import io.vitalir.vitalirspring.features.user.domain.RegistrationService;
+import io.vitalir.vitalirspring.features.user.domain.registration.RegistrationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
