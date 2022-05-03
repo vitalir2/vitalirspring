@@ -1,5 +1,6 @@
 package io.vitalir.vitalirspring.user;
 
+import io.vitalir.vitalirspring.common.constants.HttpEndpoints;
 import io.vitalir.vitalirspring.features.user.domain.UserService;
 import io.vitalir.vitalirspring.features.user.presentation.UserControlle;
 import jdk.security.jarsigner.JarSigner;
@@ -33,7 +34,7 @@ public class UserControlleTest extends UserFeatureTest {
     @Test
     public void whenGetUserByEmailWhichExists_returnIt() throws Exception {
         given(userService.getUserByEmail(VALID_EMAIL)).willReturn(Optional.of(VALID_USER));
-        RequestBuilder requestBuilder = get("/api/v1/users")
+        RequestBuilder requestBuilder = get(HttpEndpoints.USERS_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
                 .queryParam("email", VALID_EMAIL);
 
@@ -46,7 +47,7 @@ public class UserControlleTest extends UserFeatureTest {
     @Test
     public void whenGetUserByEmailWhichDoesNotExist_returnNull() throws Exception {
         given(userService.getUserByEmail(VALID_EMAIL)).willReturn(Optional.empty());
-        RequestBuilder requestBuilder = get("/api/v1/users")
+        RequestBuilder requestBuilder = get(HttpEndpoints.USERS_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
                 .queryParam("email", VALID_EMAIL);
 
@@ -57,7 +58,7 @@ public class UserControlleTest extends UserFeatureTest {
     @Test
     public void whenGetUserByIdWhichExists_returnIt() throws Exception {
         given(userService.getUserById(VALID_UID)).willReturn(Optional.of(VALID_USER));
-        var requestBuilder = get("/api/v1/users/" + VALID_UID)
+        var requestBuilder = get(HttpEndpoints.USERS_ENDPOINT + VALID_UID)
                 .queryParam("id", String.valueOf(VALID_UID));
 
         mockMvc.perform(requestBuilder)
@@ -69,7 +70,7 @@ public class UserControlleTest extends UserFeatureTest {
     @Test
     public void whenGetUserByIdWhichDoesNotExist_returnBadRequest() throws Exception {
         given(userService.getUserById(VALID_UID)).willReturn(Optional.empty());
-        var requestBuilder = get("/api/v1/users/" + VALID_UID)
+        var requestBuilder = get(HttpEndpoints.USERS_ENDPOINT + VALID_UID)
                 .queryParam("id", String.valueOf(VALID_UID));
 
         mockMvc.perform(requestBuilder)
