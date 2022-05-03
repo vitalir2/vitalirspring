@@ -1,6 +1,6 @@
 package io.vitalir.vitalirspring.appointment;
 
-import io.vitalir.vitalirspring.common.IntervalChecker;
+import io.vitalir.vitalirspring.common.time.IntervalChecker;
 import io.vitalir.vitalirspring.features.appointment.domain.*;
 import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidUserIdException;
 import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidAppointmentIdException;

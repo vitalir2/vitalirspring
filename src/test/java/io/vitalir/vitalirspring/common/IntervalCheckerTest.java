@@ -1,5 +1,6 @@
 package io.vitalir.vitalirspring.common;
 
+import io.vitalir.vitalirspring.common.time.IntervalChecker;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;

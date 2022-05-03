@@ -1,6 +1,6 @@
 package io.vitalir.vitalirspring.features.appointment;
 
-import io.vitalir.vitalirspring.common.IntervalChecker;
+import io.vitalir.vitalirspring.common.time.IntervalChecker;
 import io.vitalir.vitalirspring.features.appointment.domain.AppointmentRepository;
 import io.vitalir.vitalirspring.features.appointment.domain.AppointmentService;
 import io.vitalir.vitalirspring.features.appointment.domain.AppointmentServiceImpl;

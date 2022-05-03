@@ -2,7 +2,7 @@ package io.vitalir.vitalirspring.security.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import io.vitalir.vitalirspring.common.DateProvider;
+import io.vitalir.vitalirspring.common.time.DateProvider;
 import io.vitalir.vitalirspring.features.user.domain.model.Role;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

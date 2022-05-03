@@ -2,7 +2,7 @@ package io.vitalir.vitalirspring.appointment;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import io.vitalir.vitalirspring.common.JavaDateProvider;
+import io.vitalir.vitalirspring.common.time.JavaDateProvider;
 import io.vitalir.vitalirspring.features.appointment.domain.Appointment;
 import io.vitalir.vitalirspring.features.appointment.domain.request.AddAppointmentRequest;
 import io.vitalir.vitalirspring.features.appointment.domain.request.ChangeAppointmentRequest;
