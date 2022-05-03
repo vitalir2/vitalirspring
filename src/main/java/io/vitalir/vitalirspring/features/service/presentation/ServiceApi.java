@@ -3,10 +3,14 @@ package io.vitalir.vitalirspring.features.service.presentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.vitalir.vitalirspring.common.errors.SwaggerErrorAttributes;
 import io.vitalir.vitalirspring.features.service.domain.Service;
+import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
@@ -41,7 +45,8 @@ public interface ServiceApi {
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Successful adding"),
-                    @ApiResponse(responseCode = "400", description = "Invalid service"),
+                    @ApiResponse(responseCode = "400", description = "Invalid service",
+                        content = @Content(schema = @Schema(implementation = SwaggerErrorAttributes.class))),
                     @ApiResponse(responseCode = "403", description = "Authorization is failed")
             }
     )
@@ -72,7 +77,8 @@ public interface ServiceApi {
                     ),
                     @ApiResponse(
                             responseCode = "400",
-                            description = "Service wasn't found with that title"
+                            description = "Service wasn't found with that title",
+                            content = @Content(schema = @Schema(implementation = SwaggerErrorAttributes.class))
                     )
             }
     )
@@ -98,7 +104,8 @@ public interface ServiceApi {
                     ),
                     @ApiResponse(
                             responseCode = "400",
-                            description = "Service with that key is not found"
+                            description = "Service with that key is not found",
+                            content = @Content(schema = @Schema(implementation = SwaggerErrorAttributes.class))
                     )
             }
     )

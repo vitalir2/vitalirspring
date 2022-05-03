@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.vitalir.vitalirspring.common.constants.HttpMethods;
+import io.vitalir.vitalirspring.common.errors.SwaggerErrorAttributes;
 import io.vitalir.vitalirspring.features.user.domain.model.User;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,8 @@ public interface UserApi {
                     ),
                     @ApiResponse(
                             responseCode = "400",
-                            description = "User not found"
+                            description = "User not found",
+                            content = @Content(schema = @Schema(implementation = SwaggerErrorAttributes.class))
                     )
             }
     )
@@ -43,7 +45,8 @@ public interface UserApi {
                     ),
                     @ApiResponse(
                             responseCode = "400",
-                            description = "User not found"
+                            description = "User not found",
+                            content = @Content(schema = @Schema(implementation = SwaggerErrorAttributes.class))
                     )
             }
     )
