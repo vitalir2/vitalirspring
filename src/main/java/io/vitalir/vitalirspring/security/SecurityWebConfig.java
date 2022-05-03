@@ -1,6 +1,6 @@
 package io.vitalir.vitalirspring.security;
 
-import io.vitalir.vitalirspring.common.HttpEndpoints;
+import io.vitalir.vitalirspring.common.constants.HttpEndpoints;
 import io.vitalir.vitalirspring.common.properties.PropertiesSecurityConfig;
 import io.vitalir.vitalirspring.features.user.domain.model.Role;
 import io.vitalir.vitalirspring.security.jwt.JwtFilter;

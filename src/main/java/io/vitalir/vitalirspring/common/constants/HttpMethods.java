@@ -1,4 +1,4 @@
-package io.vitalir.vitalirspring.common;
+package io.vitalir.vitalirspring.common.constants;
 
 public class HttpMethods {
 

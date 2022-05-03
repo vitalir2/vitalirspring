@@ -1,6 +1,6 @@
 package io.vitalir.vitalirspring.appointment;
 
-import io.vitalir.vitalirspring.common.HttpEndpoints;
+import io.vitalir.vitalirspring.common.constants.HttpEndpoints;
 import io.vitalir.vitalirspring.features.appointment.domain.Appointment;
 import io.vitalir.vitalirspring.features.appointment.domain.AppointmentService;
 import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidAppointmentIdException;

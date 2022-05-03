@@ -1,4 +1,4 @@
-package io.vitalir.vitalirspring.common;
+package io.vitalir.vitalirspring.common.constants;
 
 import java.util.List;
 
