@@ -1,4 +1,4 @@
-package io.vitalir.vitalirspring.common;
+package io.vitalir.vitalirspring.common.properties;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +13,9 @@ public class PropertiesConfig {
     @Value("#{new Boolean('${vitalirspring.enable-swagger-security}')}")
     private Boolean isSwaggerSecurityEnabled;
 
+    @Value("#{new Boolean('${vitalirspring.enable-actuator-security}')}")
+    private Boolean isActuatorSecurityEnabled;
+
     @Value("#{new Boolean('${vitalirspring.enable-csrf}')}")
     private Boolean isCsrfEnabled;
 
@@ -21,13 +24,12 @@ public class PropertiesConfig {
         return jwtSecret;
     }
 
-    @Bean("enable-swagger-security")
-    public boolean isSwaggerSecurityEnabled() {
-        return isSwaggerSecurityEnabled;
-    }
-
-    @Bean("enable-csrf")
-    public boolean isCsrfEnabled() {
-        return isCsrfEnabled;
+    @Bean
+    public PropertiesSecurityConfig propertiesSecurityConfig() {
+        return new PropertiesSecurityConfig(
+                isSwaggerSecurityEnabled,
+                isActuatorSecurityEnabled,
+                isCsrfEnabled
+        );
     }
 }

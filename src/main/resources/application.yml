@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: prod
+    active: dev
   jpa:
     hibernate:
       ddl-auto: create
@@ -11,6 +11,8 @@ spring:
     password: 12345
 
 vitalirspring:
+  enable-actuator-security: true
   enable-swagger-security: true
   enable-csrf: true
+
 jwt_secret: default

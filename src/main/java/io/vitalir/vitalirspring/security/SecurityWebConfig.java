@@ -1,12 +1,11 @@
 package io.vitalir.vitalirspring.security;
 
 import io.vitalir.vitalirspring.common.HttpEndpoints;
+import io.vitalir.vitalirspring.common.properties.PropertiesSecurityConfig;
 import io.vitalir.vitalirspring.features.user.domain.model.Role;
 import io.vitalir.vitalirspring.security.jwt.JwtFilter;
 import io.vitalir.vitalirspring.security.jwt.JwtProvider;
 import io.vitalir.vitalirspring.security.jwt.JwtVerifier;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpHeaders;
@@ -22,8 +21,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import java.util.List;
-
 @EnableWebSecurity
 @Configuration
 @Profile({"prod", "test-security"})
@@ -34,25 +31,19 @@ public class SecurityWebConfig extends WebSecurityConfigurerAdapter {
     private final JwtVerifier jwtVerifier;
     private final PasswordEncoder passwordEncoder;
 
-    private final boolean enableSwaggerSecurity;
-
-    private final boolean isCsrfEnabled;
+    private final PropertiesSecurityConfig config;
 
     public SecurityWebConfig(
             UserDetailsService userDetailsService,
             JwtProvider jwtProvider, JwtVerifier jwtVerifier,
             PasswordEncoder passwordEncoder,
-            @Qualifier("enable-swagger-security")
-            boolean enableSwaggerSecurity,
-            @Qualifier("enable-csrf")
-            boolean isCsrfEnabled
+            PropertiesSecurityConfig config
     ) {
         this.userDetailsService = userDetailsService;
         this.jwtProvider = jwtProvider;
         this.jwtVerifier = jwtVerifier;
         this.passwordEncoder = passwordEncoder;
-        this.enableSwaggerSecurity = enableSwaggerSecurity;
-        this.isCsrfEnabled = isCsrfEnabled;
+        this.config = config;
     }
 
     @Override
@@ -81,9 +72,9 @@ public class SecurityWebConfig extends WebSecurityConfigurerAdapter {
                             .mvcMatchers("/api/v1/services/**").hasRole(Role.ADMIN.name())
                             .mvcMatchers("/api/v1/appointments/**").hasRole(Role.USER.name())
                             .mvcMatchers(HttpMethod.GET, "/api/v1/doctors/**").permitAll()
-                            .mvcMatchers("/actuator/**").permitAll()
                             .mvcMatchers("/api/v1/doctors/**").hasRole(Role.ADMIN.name());
                     configureSwaggerAuth(authorize);
+                    configureActuatorAuth(authorize);
                     authorize.anyRequest().authenticated();
                 }
         );
@@ -93,7 +84,7 @@ public class SecurityWebConfig extends WebSecurityConfigurerAdapter {
             AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authorize
     ) {
         for (String endpoint : HttpEndpoints.SWAGGER_ENDPOINTS) {
-            if (enableSwaggerSecurity) {
+            if (config.isSwaggerSecurityEnabled()) {
                 authorize.mvcMatchers(endpoint).hasRole(Role.ADMIN.name());
             } else {
                 authorize.mvcMatchers(endpoint).permitAll();
@@ -101,8 +92,18 @@ public class SecurityWebConfig extends WebSecurityConfigurerAdapter {
         }
     }
 
+    private void configureActuatorAuth(
+            AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authorize
+    ) {
+        if (config.isActuatorSecurityEnabled()) {
+            authorize.mvcMatchers(HttpEndpoints.SPRING_ACTUATOR_PATTERN).hasRole(Role.ADMIN.name());
+        } else {
+            authorize.mvcMatchers(HttpEndpoints.SPRING_ACTUATOR_PATTERN).permitAll();
+        }
+    }
+
     private void configureCsrf(HttpSecurity http) throws Exception {
-        if (isCsrfEnabled) {
+        if (config.isCsrfEnabled()) {
             http.csrf(csrf -> csrf
                     .ignoringRequestMatchers(request -> {
                         var userAgent = request.getHeader(HttpHeaders.USER_AGENT);

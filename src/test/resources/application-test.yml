@@ -18,4 +18,10 @@ logging:
     org:
       springframework:
         security: DEBUG
+
 jwt_secret: "secret"
+
+vitalirspring:
+  enable-swagger-security: true
+  enable-actuator-security: true
+  enable-csrf: true
