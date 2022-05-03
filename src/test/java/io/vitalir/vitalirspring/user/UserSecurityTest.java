@@ -1,6 +1,7 @@
 package io.vitalir.vitalirspring.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.vitalir.vitalirspring.common.constants.HttpEndpoints;
 import io.vitalir.vitalirspring.features.user.domain.login.LoginService;
 import io.vitalir.vitalirspring.features.user.domain.registration.RegistrationService;
 import io.vitalir.vitalirspring.features.user.domain.model.LoginResult;
@@ -45,7 +46,7 @@ public class UserSecurityTest extends UserFeatureTest {
     @Test
     public void whenLoginWithoutAuth_permitIt() throws Exception {
         given(loginService.login(VALID_EMAIL, VALID_PASSWORD)).willReturn(Optional.of(new LoginResult(123L, "Bearer ...")));
-        var requestBuilder = post("/api/v1/auth")
+        var requestBuilder = post(HttpEndpoints.AUTH_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginRequest))
                 .with(csrf());
@@ -57,7 +58,7 @@ public class UserSecurityTest extends UserFeatureTest {
     @Test
     public void whenRegisterWithoutAuth_permitIt() throws Exception {
         given(registrationService.register(VALID_EMAIL, VALID_PASSWORD)).willReturn(123L);
-        var requestBuilder = post("/api/v1/register")
+        var requestBuilder = post(HttpEndpoints.REGISTER_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(registrationRequest))
                 .with(csrf());
