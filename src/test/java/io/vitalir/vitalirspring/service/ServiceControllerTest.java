@@ -1,6 +1,7 @@
 package io.vitalir.vitalirspring.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.vitalir.vitalirspring.common.constants.HttpEndpoints;
 import io.vitalir.vitalirspring.features.service.Service;
 import io.vitalir.vitalirspring.features.service.ServiceController;
 import io.vitalir.vitalirspring.features.service.ServicesService;
@@ -40,7 +41,7 @@ public class ServiceControllerTest {
 
         given(servicesService.getServices()).willReturn(services);
 
-        var requestBuilder = get("/api/v1/services/")
+        var requestBuilder = get(HttpEndpoints.SERVICES_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder)
@@ -56,7 +57,7 @@ public class ServiceControllerTest {
 
         given(servicesService.addService(any())).willReturn(true);
 
-        var requestBuilder = post("/api/v1/services")
+        var requestBuilder = post(HttpEndpoints.SERVICES_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(newService))
                 .with(csrf());
@@ -70,7 +71,7 @@ public class ServiceControllerTest {
         var newInvalidService = new Service(null);
         var objectMapper = new ObjectMapper();
 
-        var requestBuilder = post("/api/v1/services")
+        var requestBuilder = post(HttpEndpoints.SERVICES_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(newInvalidService))
                 .with(csrf());
@@ -84,7 +85,7 @@ public class ServiceControllerTest {
         var newInvalidService = new Service(null);
         var objectMapper = new ObjectMapper();
 
-        var requestBuilder = post("/api/v1/services")
+        var requestBuilder = post(HttpEndpoints.SERVICES_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(newInvalidService))
                 .with(csrf());
@@ -100,7 +101,7 @@ public class ServiceControllerTest {
         given(servicesService.removeService(any())).willReturn(service);
 
         var requestBuilder = delete(
-                "/api/v1/services/" + service.getTitle()
+                HttpEndpoints.SERVICES_ENDPOINT + service.getTitle()
         )
                 .with(csrf());
 
@@ -116,7 +117,7 @@ public class ServiceControllerTest {
 
         given(servicesService.removeService(any())).willReturn(null);
         var requestBuilder = delete(
-                "/api/v1/services/" + service.getTitle()
+                HttpEndpoints.SERVICES_ENDPOINT + service.getTitle()
         )
                 .with(csrf());
 
@@ -129,7 +130,7 @@ public class ServiceControllerTest {
         var service = new Service("service");
 
         var requestBuilder = delete(
-                "/api/v1/services/" + service.getTitle()
+                HttpEndpoints.SERVICES_ENDPOINT + service.getTitle()
         )
                 .with(csrf());
         mockMvc.perform(requestBuilder);
@@ -143,7 +144,7 @@ public class ServiceControllerTest {
         var objectMapper = new ObjectMapper();
         given(servicesService.changeService(serviceAfter)).willReturn(true);
 
-        var requestBuilder = put("/api/v1/services")
+        var requestBuilder = put(HttpEndpoints.SERVICES_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(serviceAfter))
                 .with(csrf());
@@ -160,7 +161,7 @@ public class ServiceControllerTest {
 
         given(servicesService.changeService(serviceChanged)).willReturn(false);
 
-        var requestBuilder = put("/api/v1/services")
+        var requestBuilder = put(HttpEndpoints.SERVICES_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(serviceChanged))
                 .with(csrf());
@@ -174,7 +175,7 @@ public class ServiceControllerTest {
         var serviceChanged = new Service("service");
         var objectMapper = new ObjectMapper();
 
-        var requestBuilder = put("/api/v1/services")
+        var requestBuilder = put(HttpEndpoints.SERVICES_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(serviceChanged))
                 .with(csrf());

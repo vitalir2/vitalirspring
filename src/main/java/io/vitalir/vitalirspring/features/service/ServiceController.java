@@ -1,5 +1,6 @@
 package io.vitalir.vitalirspring.features.service;
 
+import io.vitalir.vitalirspring.common.constants.HttpEndpoints;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/api/v1/services")
+@RequestMapping(HttpEndpoints.SERVICES_ENDPOINT)
 @RequiredArgsConstructor
 public class ServiceController implements ServiceApi {
     private final ServicesService servicesService;
