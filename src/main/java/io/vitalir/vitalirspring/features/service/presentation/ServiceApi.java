@@ -1,4 +1,4 @@
-package io.vitalir.vitalirspring.features.service;
+package io.vitalir.vitalirspring.features.service.presentation;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.vitalir.vitalirspring.features.service.domain.Service;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 

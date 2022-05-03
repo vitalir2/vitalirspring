@@ -9,8 +9,8 @@ import io.vitalir.vitalirspring.features.appointment.domain.request.ChangeAppoin
 import io.vitalir.vitalirspring.features.doctors.domain.Doctor;
 import io.vitalir.vitalirspring.features.doctors.domain.DoctorRepository;
 import io.vitalir.vitalirspring.features.doctors.domain.MedicalSpecialty;
-import io.vitalir.vitalirspring.features.service.Service;
-import io.vitalir.vitalirspring.features.service.ServiceRepository;
+import io.vitalir.vitalirspring.features.service.domain.Service;
+import io.vitalir.vitalirspring.features.service.domain.ServiceRepository;
 import io.vitalir.vitalirspring.features.user.domain.users.UserRepository;
 import io.vitalir.vitalirspring.features.user.domain.model.User;
 

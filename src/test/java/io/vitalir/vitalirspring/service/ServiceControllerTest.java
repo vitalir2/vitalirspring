@@ -2,9 +2,9 @@ package io.vitalir.vitalirspring.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vitalir.vitalirspring.common.constants.HttpEndpoints;
-import io.vitalir.vitalirspring.features.service.Service;
-import io.vitalir.vitalirspring.features.service.ServiceController;
-import io.vitalir.vitalirspring.features.service.ServicesService;
+import io.vitalir.vitalirspring.features.service.domain.Service;
+import io.vitalir.vitalirspring.features.service.presentation.ServiceController;
+import io.vitalir.vitalirspring.features.service.domain.ServicesService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

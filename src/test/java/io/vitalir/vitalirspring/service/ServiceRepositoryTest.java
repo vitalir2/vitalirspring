@@ -1,7 +1,7 @@
 package io.vitalir.vitalirspring.service;
 
-import io.vitalir.vitalirspring.features.service.Service;
-import io.vitalir.vitalirspring.features.service.ServiceRepository;
+import io.vitalir.vitalirspring.features.service.domain.Service;
+import io.vitalir.vitalirspring.features.service.domain.ServiceRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

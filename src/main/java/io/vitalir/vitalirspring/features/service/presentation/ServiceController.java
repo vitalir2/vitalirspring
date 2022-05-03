@@ -1,6 +1,8 @@
-package io.vitalir.vitalirspring.features.service;
+package io.vitalir.vitalirspring.features.service.presentation;
 
 import io.vitalir.vitalirspring.common.constants.HttpEndpoints;
+import io.vitalir.vitalirspring.features.service.domain.Service;
+import io.vitalir.vitalirspring.features.service.domain.ServicesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
