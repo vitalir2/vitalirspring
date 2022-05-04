@@ -1,15 +1,23 @@
-Plan for project:
-- We have auth
-- Every client has his appointments
-- We have list of services / doctors for observation
-- Admin / Client
-- Client can register an appointment with a doctor that has free time in that period
-- Admin can add / remove / update services / doctors from the website
-- Client can change his appointment list (remove them but at least 1 day until the appointment, add)
+# Курсовая работа по предмету "Шаблоны проектирования на языке Java"
 
-* GET -> get,
-* POST -> add,
-* PUT -> change,
-* DELETE -> remove
+## Используемые технологии
+- Spring Framework: Spring Core, Spring Boot, Spring Data Jpa, Spring Actuator, Spring MVC, Spring Security;
+- PosgreSQL;
+- Hibernate ORM, HikariConfig;
+- Prometheus, Grafana;
+- Docker, Docker Compose;
 
-4701 - Grafana Graphs ID
+## Архитектура приложения
+Построено по Clean Architecture, с тремя слоями для каждой feature: слой контроллер, бизнес слой и дата слой.
+
+Типичное содержимое пакета особенности приложения:
+
+TODO: add image with class diagram of `service` feature
+
+## Запуск приложения
+
+Сначала требуется склонировать репозиторий с помощью команды `git clone "repository link"`.
+Затем, запустить в корневой директории проекта команду `./gradlew build`.
+После этого, запускается команда `docker compose up`, и, в итоге, сервер запускается по адресу `http://localhost:8080/`.
+
+Документация доступна по адресу `http://localhost:8080/swagger-ui/index.html`.
