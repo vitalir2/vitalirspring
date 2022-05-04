@@ -1,7 +1,7 @@
 package io.vitalir.vitalirspring.user;
 
-import io.vitalir.vitalirspring.common.DateProvider;
-import io.vitalir.vitalirspring.common.JavaDateProvider;
+import io.vitalir.vitalirspring.common.time.DateProvider;
+import io.vitalir.vitalirspring.common.time.JavaDateProvider;
 import io.vitalir.vitalirspring.features.user.domain.model.Role;
 import io.vitalir.vitalirspring.features.user.domain.model.User;
 import io.vitalir.vitalirspring.security.jwt.JwtProvider;

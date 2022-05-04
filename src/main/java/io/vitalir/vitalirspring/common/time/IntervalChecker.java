@@ -1,4 +1,4 @@
-package io.vitalir.vitalirspring.common;
+package io.vitalir.vitalirspring.common.time;
 
 import org.springframework.stereotype.Component;
 

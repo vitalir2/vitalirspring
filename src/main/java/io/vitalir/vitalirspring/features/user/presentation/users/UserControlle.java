@@ -1,7 +1,8 @@
-package io.vitalir.vitalirspring.features.user.presentation;
+package io.vitalir.vitalirspring.features.user.presentation.users;
 
 
-import io.vitalir.vitalirspring.features.user.domain.UserService;
+import io.vitalir.vitalirspring.common.constants.HttpEndpoints;
+import io.vitalir.vitalirspring.features.user.domain.users.UserService;
 import io.vitalir.vitalirspring.features.user.domain.model.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping("/api/v1/users")
+@RequestMapping(HttpEndpoints.USERS_ENDPOINT)
 public class UserControlle implements UserApi {
 
     private final UserService userService;

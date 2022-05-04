@@ -1,6 +1,5 @@
+spring.profiles.active: "dev"
 spring:
-  profiles:
-    active: dev
   jpa:
     hibernate:
       ddl-auto: create
@@ -9,10 +8,5 @@ spring:
     username: vitalir
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/vitalirspring
     password: 12345
-
-vitalirspring:
-  enable-actuator-security: true
-  enable-swagger-security: true
-  enable-csrf: true
 
 jwt_secret: default

@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.vitalir.vitalirspring.common.HttpMethods;
+import io.vitalir.vitalirspring.common.constants.HttpMethods;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 

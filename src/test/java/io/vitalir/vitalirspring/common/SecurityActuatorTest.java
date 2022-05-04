@@ -1,5 +1,6 @@
 package io.vitalir.vitalirspring.common;
 
+import io.vitalir.vitalirspring.common.constants.HttpEndpoints;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;

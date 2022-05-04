@@ -3,8 +3,11 @@ package io.vitalir.vitalirspring.features.doctors.presentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.vitalir.vitalirspring.common.HttpMethods;
+import io.vitalir.vitalirspring.common.constants.HttpMethods;
+import io.vitalir.vitalirspring.common.errors.SwaggerErrorAttributes;
 import io.vitalir.vitalirspring.features.doctors.domain.Doctor;
 import io.vitalir.vitalirspring.features.doctors.domain.MedicalSpecialty;
 import org.springframework.http.HttpHeaders;
@@ -45,7 +48,8 @@ public interface DoctorApi {
                     ),
                     @ApiResponse(
                             responseCode = "400",
-                            description = "Doctor is not found"
+                            description = "Doctor is not found",
+                            content = @Content(schema = @Schema(implementation = SwaggerErrorAttributes.class))
                     )
             }
     )
@@ -69,7 +73,8 @@ public interface DoctorApi {
                     ),
                     @ApiResponse(
                             responseCode = "400",
-                            description = "Invalid doctor model"
+                            description = "Invalid doctor model",
+                            content = @Content(schema = @Schema(implementation = SwaggerErrorAttributes.class))
                     )
             }
     )
@@ -93,7 +98,8 @@ public interface DoctorApi {
                     ),
                     @ApiResponse(
                             responseCode = "400",
-                            description = "Doctor was not found"
+                            description = "Doctor was not found",
+                            content = @Content(schema = @Schema(implementation = SwaggerErrorAttributes.class))
                     )
             }
     )
@@ -117,7 +123,8 @@ public interface DoctorApi {
                     ),
                     @ApiResponse(
                             responseCode = "400",
-                            description = "Doctor with this id does not exist or invalid doctor model"
+                            description = "Doctor with this id does not exist or invalid doctor model",
+                            content = @Content(schema = @Schema(implementation = SwaggerErrorAttributes.class))
                     )
             }
     )

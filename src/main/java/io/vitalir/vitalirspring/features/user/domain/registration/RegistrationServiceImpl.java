@@ -1,5 +1,6 @@
-package io.vitalir.vitalirspring.features.user.domain;
+package io.vitalir.vitalirspring.features.user.domain.registration;
 
+import io.vitalir.vitalirspring.features.user.domain.users.UserRepository;
 import io.vitalir.vitalirspring.features.user.domain.model.Role;
 import io.vitalir.vitalirspring.features.user.domain.model.User;
 import org.springframework.security.crypto.password.PasswordEncoder;

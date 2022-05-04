@@ -1,19 +1,15 @@
 package io.vitalir.vitalirspring.user;
 
-import io.vitalir.vitalirspring.features.user.domain.LoginService;
-import io.vitalir.vitalirspring.features.user.domain.LoginServiceImpl;
-import io.vitalir.vitalirspring.features.user.domain.UserRepository;
+import io.vitalir.vitalirspring.features.user.domain.login.LoginService;
+import io.vitalir.vitalirspring.features.user.domain.login.LoginServiceImpl;
+import io.vitalir.vitalirspring.features.user.domain.users.UserRepository;
 import io.vitalir.vitalirspring.features.user.domain.model.Role;
-import io.vitalir.vitalirspring.features.user.domain.model.User;
-import io.vitalir.vitalirspring.security.jwt.JwtProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 

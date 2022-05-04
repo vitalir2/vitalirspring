@@ -1,6 +1,6 @@
 package io.vitalir.vitalirspring.appointment;
 
-import io.vitalir.vitalirspring.common.IntervalChecker;
+import io.vitalir.vitalirspring.common.time.IntervalChecker;
 import io.vitalir.vitalirspring.features.appointment.domain.*;
 import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidUserIdException;
 import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidAppointmentIdException;
@@ -9,8 +9,8 @@ import io.vitalir.vitalirspring.features.appointment.domain.request.AddAppointme
 import io.vitalir.vitalirspring.features.appointment.domain.request.ChangeAppointmentRequest;
 import io.vitalir.vitalirspring.features.doctors.domain.DoctorRepository;
 import io.vitalir.vitalirspring.features.doctors.domain.MedicalSpecialty;
-import io.vitalir.vitalirspring.features.service.ServiceRepository;
-import io.vitalir.vitalirspring.features.user.domain.UserRepository;
+import io.vitalir.vitalirspring.features.service.domain.ServiceRepository;
+import io.vitalir.vitalirspring.features.user.domain.users.UserRepository;
 import io.vitalir.vitalirspring.features.user.domain.model.Role;
 import io.vitalir.vitalirspring.features.user.domain.model.User;
 import org.junit.jupiter.api.BeforeEach;

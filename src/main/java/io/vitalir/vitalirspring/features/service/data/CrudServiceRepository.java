@@ -1,5 +1,7 @@
-package io.vitalir.vitalirspring.features.service;
+package io.vitalir.vitalirspring.features.service.data;
 
+import io.vitalir.vitalirspring.features.service.domain.Service;
+import io.vitalir.vitalirspring.features.service.domain.ServiceRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository

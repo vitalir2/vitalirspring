@@ -2,9 +2,12 @@ package io.vitalir.vitalirspring.features.user.presentation.login;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.vitalir.vitalirspring.common.HttpMethods;
+import io.vitalir.vitalirspring.common.constants.HttpMethods;
+import io.vitalir.vitalirspring.common.errors.SwaggerErrorAttributes;
 import org.springframework.http.ResponseEntity;
 
 public interface LoginApi {
@@ -27,7 +30,8 @@ public interface LoginApi {
                     ),
                     @ApiResponse(
                             responseCode = "400",
-                            description = "Invalid user or password"
+                            description = "Invalid user or password",
+                            content = @Content(schema = @Schema(implementation = SwaggerErrorAttributes.class))
                     )
             }
     )

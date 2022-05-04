@@ -1,4 +1,4 @@
-package io.vitalir.vitalirspring.features.service;
+package io.vitalir.vitalirspring.features.service.domain;
 
 import lombok.RequiredArgsConstructor;
 

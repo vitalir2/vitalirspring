@@ -1,5 +1,7 @@
 package io.vitalir.vitalirspring.common;
 
+import io.vitalir.vitalirspring.common.time.DateProvider;
+import io.vitalir.vitalirspring.common.time.JavaDateProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

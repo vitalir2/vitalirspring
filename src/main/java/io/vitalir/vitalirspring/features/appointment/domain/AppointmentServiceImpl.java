@@ -1,6 +1,6 @@
 package io.vitalir.vitalirspring.features.appointment.domain;
 
-import io.vitalir.vitalirspring.common.IntervalChecker;
+import io.vitalir.vitalirspring.common.time.IntervalChecker;
 import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidUserIdException;
 import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidAppointmentIdException;
 import io.vitalir.vitalirspring.features.appointment.domain.exception.InvalidDoctorIdException;
@@ -9,9 +9,9 @@ import io.vitalir.vitalirspring.features.appointment.domain.request.ChangeAppoin
 import io.vitalir.vitalirspring.features.doctors.domain.Doctor;
 import io.vitalir.vitalirspring.features.doctors.domain.DoctorRepository;
 import io.vitalir.vitalirspring.features.doctors.domain.MedicalSpecialty;
-import io.vitalir.vitalirspring.features.service.Service;
-import io.vitalir.vitalirspring.features.service.ServiceRepository;
-import io.vitalir.vitalirspring.features.user.domain.UserRepository;
+import io.vitalir.vitalirspring.features.service.domain.Service;
+import io.vitalir.vitalirspring.features.service.domain.ServiceRepository;
+import io.vitalir.vitalirspring.features.user.domain.users.UserRepository;
 import io.vitalir.vitalirspring.features.user.domain.model.User;
 
 import java.time.LocalDateTime;

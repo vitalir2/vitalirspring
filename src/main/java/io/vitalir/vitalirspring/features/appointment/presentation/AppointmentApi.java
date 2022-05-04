@@ -6,7 +6,8 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.vitalir.vitalirspring.common.HttpMethods;
+import io.vitalir.vitalirspring.common.constants.HttpMethods;
+import io.vitalir.vitalirspring.common.errors.SwaggerErrorAttributes;
 import io.vitalir.vitalirspring.features.appointment.domain.request.AddAppointmentRequest;
 import io.vitalir.vitalirspring.features.appointment.domain.Appointment;
 import io.vitalir.vitalirspring.features.appointment.domain.request.ChangeAppointmentRequest;
@@ -38,7 +39,8 @@ public interface AppointmentApi {
                     ),
                     @ApiResponse(
                             responseCode = "400",
-                            description = "An unexpected error"
+                            description = "An unexpected error",
+                            content = @Content(schema = @Schema(implementation = SwaggerErrorAttributes.class))
                     )
             }
     )
@@ -63,16 +65,13 @@ public interface AppointmentApi {
                     @ApiResponse(
                             responseCode = "400",
                             description = "An unexpected error",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(
-                                            implementation = ResponseEntity.class
-                                    )
-                            )
+                            content = @Content(schema = @Schema(implementation = SwaggerErrorAttributes.class))
+
                     ),
                     @ApiResponse(
                             responseCode = "401",
-                            description = "Unauthorized"
+                            description = "Unauthorized",
+                            content = @Content(schema = @Schema(implementation = SwaggerErrorAttributes.class))
                     )
             }
     )
@@ -102,11 +101,13 @@ public interface AppointmentApi {
                     ),
                     @ApiResponse(
                             responseCode = "400",
-                            description = "Invalid parameters"
+                            description = "Invalid parameters",
+                            content = @Content(schema = @Schema(implementation = SwaggerErrorAttributes.class))
                     ),
                     @ApiResponse(
                             responseCode = "401",
-                            description = "Unauthorized"
+                            description = "Unauthorized",
+                            content = @Content(schema = @Schema(implementation = SwaggerErrorAttributes.class))
                     )
             }
     )
@@ -130,11 +131,13 @@ public interface AppointmentApi {
                     ),
                     @ApiResponse(
                             responseCode = "400",
-                            description = "An invalid userId or appointment does not exist"
+                            description = "An invalid userId or appointment does not exist",
+                            content = @Content(schema = @Schema(implementation = SwaggerErrorAttributes.class))
                     ),
                     @ApiResponse(
                             responseCode = "401",
-                            description = "Unauthorized"
+                            description = "Unauthorized",
+                            content = @Content(schema = @Schema(implementation = SwaggerErrorAttributes.class))
                     )
             }
     )
@@ -184,11 +187,13 @@ public interface AppointmentApi {
                     ),
                     @ApiResponse(
                             responseCode = "400",
-                            description = "Invalid query params"
+                            description = "Invalid query params",
+                            content = @Content(schema = @Schema(implementation = SwaggerErrorAttributes.class))
                     ),
                     @ApiResponse(
                             responseCode = "401",
-                            description = "Invalid Authorization header"
+                            description = "Invalid Authorization header",
+                            content = @Content(schema = @Schema(implementation = SwaggerErrorAttributes.class))
                     )
             }
     )

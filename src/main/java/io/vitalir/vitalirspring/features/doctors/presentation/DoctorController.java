@@ -1,5 +1,6 @@
 package io.vitalir.vitalirspring.features.doctors.presentation;
 
+import io.vitalir.vitalirspring.common.constants.HttpEndpoints;
 import io.vitalir.vitalirspring.features.doctors.domain.Doctor;
 import io.vitalir.vitalirspring.features.doctors.domain.DoctorService;
 import io.vitalir.vitalirspring.features.doctors.domain.MedicalSpecialty;
@@ -13,7 +14,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/doctors")
+@RequestMapping(HttpEndpoints.DOCTORS_ENDPOINT)
 public class DoctorController implements DoctorApi {
 
     private final DoctorService doctorService;

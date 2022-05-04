@@ -1,4 +1,4 @@
-package io.vitalir.vitalirspring.common;
+package io.vitalir.vitalirspring.common.constants;
 
 import java.util.List;
 
@@ -20,4 +20,14 @@ public class HttpEndpoints {
     public static final String SPRING_ACTUATOR_PATTERN = SPRING_ACTUATOR_BASE + "**";
 
     public static final String SPRING_ACTUATOR_HEALTH = SPRING_ACTUATOR_BASE + "health";
+
+    public static final String SERVICES_ENDPOINT = "/api/v1/services/";
+
+    public static final String DOCTORS_ENDPOINT = "/api/v1/doctors/";
+
+    public static final String USERS_ENDPOINT = "/api/v1/users/";
+
+    public static final String REGISTER_ENDPOINT = "/api/v1/register/";
+
+    public static final String AUTH_ENDPOINT = "/api/v1/auth/";
 }

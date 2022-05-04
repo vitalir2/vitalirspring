@@ -2,18 +2,17 @@ package io.vitalir.vitalirspring.appointment;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import io.vitalir.vitalirspring.common.JavaDateProvider;
+import io.vitalir.vitalirspring.common.time.JavaDateProvider;
 import io.vitalir.vitalirspring.features.appointment.domain.Appointment;
 import io.vitalir.vitalirspring.features.appointment.domain.request.AddAppointmentRequest;
 import io.vitalir.vitalirspring.features.appointment.domain.request.ChangeAppointmentRequest;
 import io.vitalir.vitalirspring.features.doctors.domain.Doctor;
 import io.vitalir.vitalirspring.features.doctors.domain.MedicalSpecialty;
-import io.vitalir.vitalirspring.features.service.Service;
+import io.vitalir.vitalirspring.features.service.domain.Service;
 import io.vitalir.vitalirspring.features.user.domain.model.Role;
 import io.vitalir.vitalirspring.features.user.domain.model.User;
 import io.vitalir.vitalirspring.security.jwt.JwtProvider;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 

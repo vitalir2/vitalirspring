@@ -1,9 +1,9 @@
 package io.vitalir.vitalirspring.service;
 
-import io.vitalir.vitalirspring.features.service.Service;
-import io.vitalir.vitalirspring.features.service.ServiceRepository;
-import io.vitalir.vitalirspring.features.service.ServicesService;
-import io.vitalir.vitalirspring.features.service.ServicesServiceImpl;
+import io.vitalir.vitalirspring.features.service.domain.Service;
+import io.vitalir.vitalirspring.features.service.domain.ServiceRepository;
+import io.vitalir.vitalirspring.features.service.domain.ServicesService;
+import io.vitalir.vitalirspring.features.service.domain.ServicesServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

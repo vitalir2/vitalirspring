@@ -1,8 +1,8 @@
 package io.vitalir.vitalirspring.appointment;
 
-import io.vitalir.vitalirspring.common.HttpEndpoints;
+import io.vitalir.vitalirspring.common.constants.HttpEndpoints;
 import io.vitalir.vitalirspring.features.appointment.domain.AppointmentService;
-import io.vitalir.vitalirspring.features.user.domain.CurrentUserService;
+import io.vitalir.vitalirspring.features.user.domain.users.CurrentUserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -10,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 

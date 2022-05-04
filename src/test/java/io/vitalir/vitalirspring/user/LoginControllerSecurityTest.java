@@ -1,7 +1,8 @@
 package io.vitalir.vitalirspring.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.vitalir.vitalirspring.features.user.domain.LoginService;
+import io.vitalir.vitalirspring.common.constants.HttpEndpoints;
+import io.vitalir.vitalirspring.features.user.domain.login.LoginService;
 import io.vitalir.vitalirspring.features.user.domain.model.LoginResult;
 import io.vitalir.vitalirspring.features.user.domain.model.Role;
 import io.vitalir.vitalirspring.features.user.presentation.login.LoginRequest;
@@ -55,7 +56,7 @@ public class LoginControllerSecurityTest extends UserFeatureTest {
         var expectedJwt = jwtProvider.generateToken(VALID_EMAIL, Role.USER);
         given(loginService.login(VALID_EMAIL, VALID_PASSWORD))
                 .willReturn(Optional.of(new LoginResult(123L, expectedJwt)));
-        var requestBuilder = post("/api/v1/auth")
+        var requestBuilder = post(HttpEndpoints.AUTH_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(loginRequest))
                 .with(csrf());
@@ -76,7 +77,7 @@ public class LoginControllerSecurityTest extends UserFeatureTest {
         var loginRequest = new LoginRequest(VALID_EMAIL, VALID_PASSWORD);
         given(loginService.login(VALID_EMAIL, VALID_PASSWORD))
                 .willReturn(Optional.empty());
-        var requestBuilder = post("/api/v1/auth")
+        var requestBuilder = post(HttpEndpoints.AUTH_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(loginRequest))
                 .with(csrf());

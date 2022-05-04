@@ -1,8 +1,8 @@
 package io.vitalir.vitalirspring.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.vitalir.vitalirspring.features.user.domain.RegistrationService;
-import io.vitalir.vitalirspring.features.user.domain.UserService;
+import io.vitalir.vitalirspring.common.constants.HttpEndpoints;
+import io.vitalir.vitalirspring.features.user.domain.registration.RegistrationService;
 import io.vitalir.vitalirspring.features.user.presentation.registration.RegistrationController;
 import io.vitalir.vitalirspring.features.user.presentation.registration.RegistrationRequest;
 import org.junit.jupiter.api.Test;
@@ -37,13 +37,13 @@ public class RegistrationControllerTest extends UserFeatureTest {
         var registrationRequest = new RegistrationRequest(VALID_EMAIL, VALID_PASSWORD);
         given(registrationService.register(VALID_EMAIL, VALID_PASSWORD))
                 .willReturn(123L);
-        var requestBuilder = post("/api/v1/register")
+        var requestBuilder = post(HttpEndpoints.REGISTER_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(registrationRequest));
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isCreated())
-                .andExpect(header().string(HttpHeaders.LOCATION, "/api/v1/users/" + 123L));
+                .andExpect(header().string(HttpHeaders.LOCATION, HttpEndpoints.USERS_ENDPOINT + 123L));
         verify(registrationService).register(VALID_EMAIL, VALID_PASSWORD);
     }
 
@@ -52,7 +52,7 @@ public class RegistrationControllerTest extends UserFeatureTest {
         var registrationRequest = new RegistrationRequest(VALID_EMAIL, VALID_PASSWORD);
         given(registrationService.register(VALID_EMAIL, VALID_PASSWORD))
                 .willReturn(-1L);
-        var requestBuilder = post("/api/v1/register")
+        var requestBuilder = post(HttpEndpoints.REGISTER_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(registrationRequest));
 
